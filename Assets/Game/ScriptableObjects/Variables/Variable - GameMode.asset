@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75cb2c0dc2cee4211b27b91f5e01070b, type: 3}
+  m_Name: Variable - GameMode
+  m_EditorClassIdentifier: 
+  debug: 0
+  developerDescription: 
+  value: {fileID: 11400000, guid: 9c0d04d2290b14bf58e6590fd7bf925b, type: 2}
