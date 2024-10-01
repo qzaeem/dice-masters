@@ -11,7 +11,6 @@ namespace DiceGame.Game
     {
         #region Networked Variables
         [Networked] public int dieID { get; set; }
-        private NetworkBool _isRolling { get; set; }
         #endregion
 
         public enum Direction { UP, DOWN, RIGHT, LEFT, FORWARD, BACKWARD }
@@ -29,6 +28,7 @@ namespace DiceGame.Game
         [SerializeField] private List<ValueDirection> valueDirections;
         public int currentValue;
         private Rigidbody _rBody;
+        private bool _isRolling = false;
 
         public bool IsRollable { get; set; }
         public bool IsRolling { get { return _isRolling; } }
@@ -47,19 +47,23 @@ namespace DiceGame.Game
             currentValue = 0;
         }
 
-        public void Roll()
+        private void Roll()
         {
             if (!IsRollable || _isRolling)
                 return;
 
-            _rBody.isKinematic = false;
             _isRolling = true;
+            StartCoroutine(RollRoutine());
+
+            if (!Runner.IsSharedModeMasterClient)
+                return;
+
+            _rBody.isKinematic = false;
             _rBody.AddForce(Vector3.up * upwardForce);
             float xT = Random.Range(-maxTorque, maxTorque);
             float yT = Random.Range(-maxTorque, maxTorque);
             float zT = Random.Range(-maxTorque, maxTorque);
             _rBody.AddTorque(new Vector3(xT, yT, zT));
-            StartCoroutine(RollRoutine());
         }
 
         private void SetValue()
@@ -101,9 +105,29 @@ namespace DiceGame.Game
                 yield return new WaitForSeconds(1);
             }
 
-            _isRolling = false;
             SetValue();
+            _isRolling = false;
             onRollComplete.Execute();
         }
+
+        public void RequestRoll()
+        {
+            RollDiceOnMasterRpc();
+        }
+
+        #region RPCs
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        private void RollDiceOnMasterRpc()
+        {
+            if (Runner.IsSharedModeMasterClient)
+                RollDiceRpc();
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        private void RollDiceRpc()
+        {
+            Roll();
+        }
+        #endregion
     }
 }

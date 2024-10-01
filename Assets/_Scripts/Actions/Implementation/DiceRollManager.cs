@@ -35,7 +35,7 @@ namespace DiceGame.ScriptableObjects
             base.Execute();
             foreach(var die in dice)
             {
-                die.Roll();
+                die.RequestRoll();
             }
         }
 

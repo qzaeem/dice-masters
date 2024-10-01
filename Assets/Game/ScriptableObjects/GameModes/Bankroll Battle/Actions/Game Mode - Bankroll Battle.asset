@@ -9,10 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c279e73013d94c54b9b7bb88a368cb8, type: 3}
-  m_Name: Variable - PlayersList
+  m_Script: {fileID: 11500000, guid: 1a0621b570a004682a4c19dc7a619d8e, type: 3}
+  m_Name: Game Mode - Bankroll Battle
   m_EditorClassIdentifier: 
   debug: 0
   developerDescription: 
-  value: []
-  changeMasterAction: {fileID: 11400000, guid: aa78dd14c8d12469e9c580ed442a70cf, type: 2}
+  mode: 0
+  diceRollManager: {fileID: 0}
+  onDiceRollComplete: {fileID: 0}
+  gameScore: {fileID: 0}
+  players: {fileID: 0}
+  numberOfDice: 2
+  isMultiplayer: 1
+  showScoresOnEnd: 0

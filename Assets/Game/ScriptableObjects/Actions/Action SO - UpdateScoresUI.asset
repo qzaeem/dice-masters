@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a0621b570a004682a4c19dc7a619d8e, type: 3}
-  m_Name: Game Mode - Bankroll Battle
+  m_Script: {fileID: 11500000, guid: fa6c2742922e84fafa90bb557cafe3b6, type: 3}
+  m_Name: Action SO - UpdateScoresUI
   m_EditorClassIdentifier: 
-  mode: 0
-  numberOfDice: 2
+  debug: 0
+  developerDescription: 

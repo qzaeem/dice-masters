@@ -634,9 +634,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 835019923885809947, guid: 6a9ebe980413f419fb0eb6278a70e092, type: 3}
-  gameManagerPrefab: {fileID: 5918531391349098236, guid: ab8382d77cd4b493d9755bf6eee48624, type: 3}
   diceRollManager: {fileID: 11400000, guid: 80d59675ce8914458a4fb16da9d9dd67, type: 2}
-  players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
+  currentGameMode: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
+  onDiceRollComplete: {fileID: 11400000, guid: 98bf1e3685ef546829537bbdc7031818, type: 2}
+  diePrefab: {fileID: 3306910344171916638, guid: 0026e63a840d94e849b5f28321e48592, type: 3}
+  gridSpacing: 1.75
+  grid:
+  - rows: 2
+    colums: 2
+  - rows: 2
+    colums: 3
+  - rows: 2
+    colums: 4
+  - rows: 3
+    colums: 3
+  - rows: 2
+    colums: 5
+  - rows: 3
+    colums: 4
 --- !u!114 &1489285796
 MonoBehaviour:
   m_ObjectHideFlags: 0

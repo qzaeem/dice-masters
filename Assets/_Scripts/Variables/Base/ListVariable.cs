@@ -6,7 +6,7 @@ public abstract class ListVariable<T> : Variable<List<T>>
 {
     public Action<T> onListValueChange;
 
-    public void Add(T thing)
+    public virtual void Add(T thing)
     {
         if (!value.Contains(thing))
         {
@@ -16,7 +16,7 @@ public abstract class ListVariable<T> : Variable<List<T>>
         value.RemoveAll(v => v == null);
     }
 
-    public void Remove(T thing)
+    public virtual void Remove(T thing)
     {
         if (value.Contains(thing))
         {
@@ -26,7 +26,7 @@ public abstract class ListVariable<T> : Variable<List<T>>
         value.RemoveAll(v => v == null);
     }
 
-    public void Clear()
+    public virtual void Clear()
     {
         foreach (var item in value)
         {
