@@ -35,16 +35,16 @@ namespace DiceGame.UI
             animatedPanel.gameObject.SetActive(false);
         }
 
-        private void Start()
+        private void Awake()
         {
             animationSequence.Kill();
-            animatedPanel.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
 
-        public void SetMessage(string msg)
+        public void ShowMessage(string msg)
         {
             messageTMP.text = msg;
+            gameObject.SetActive(true);
         }
     }
 }

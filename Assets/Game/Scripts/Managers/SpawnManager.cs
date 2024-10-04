@@ -10,59 +10,50 @@ namespace DiceGame.Game
     {
         [System.Serializable] public class Grid { public int rows, colums; }
         #region Networked Properties
-        [Networked] private bool _isRolling { get; set; }
+        [Networked, OnChangedRender(nameof(SpawnGameModeMenu))] public bool isGameInProgress { get; set; }
         #endregion
 
+        [SerializeField] private GameManager gameManager;
         [SerializeField] private PlayerManager playerPrefab;
         [SerializeField] private DiceRollManager diceRollManager;
         [SerializeField] private GameModeVariable currentGameMode;
-        [SerializeField] private ActionSO onDiceRollComplete;
+        [SerializeField] private PlayerInfoVariable playerInfo;
+        [SerializeField] private PlayersListVariable players;
         [SerializeField] private Dice diePrefab;
         [SerializeField] private float gridSpacing;
         [SerializeField] private List<Grid> grid;
 
         public override void Spawned()
         {
+            players.value.Clear();
             diceRollManager.Initialize();
             var player = Runner.Spawn(playerPrefab);
-            player.playerRef = Runner.LocalPlayer;
+            SetPlayerInfo(player);
             Runner.SetPlayerObject(Runner.LocalPlayer, player.Object);
-            onDiceRollComplete.executeAction += OnDiceRollComplete;
+            SpawnGameModeMenu();
 
             if (!Runner.IsSharedModeMasterClient) return;
 
-            _isRolling = false;
+            StartNewGame();
+        }
 
+        private void StartNewGame()
+        {
             int totalNumberOfDice = currentGameMode.value.GetNumberOfDice();
             Grid selectedGrid = grid.FirstOrDefault(g => g.rows * g.colums == totalNumberOfDice);
             int rows = selectedGrid != null ? selectedGrid.rows : ((totalNumberOfDice - 1) / 3) + 1;
             int columns = selectedGrid != null ? selectedGrid.colums : totalNumberOfDice / rows;
             SpawnDice(rows, columns);
+            isGameInProgress = true;
         }
 
-        public void RollDice()
+        private void SpawnGameModeMenu()
         {
-            if (!Runner.IsSharedModeMasterClient)
+            if (!isGameInProgress)
                 return;
 
-            diceRollManager.Execute();
-        }
-
-        public void OnDiceRollComplete()
-        {
-            if (!Runner.IsSharedModeMasterClient)
-                return;
-
-            _isRolling = false;
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.R) && !_isRolling)
-            {
-                _isRolling = true;
-                RollDice();
-            }
+            currentGameMode.value.SpawnGameModeMenu();
+            currentGameMode.value.Initialize();
         }
 
         private void SpawnDice(int rows, int columns)
@@ -84,9 +75,15 @@ namespace DiceGame.Game
             }
         }
 
+        private void SetPlayerInfo(PlayerManager player)
+        {
+            PlayerManager.LocalPlayer = player;
+            player.playerRef = Runner.LocalPlayer;
+            player.playerName = playerInfo.value.playerName;
+        }
+
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            onDiceRollComplete.executeAction -= OnDiceRollComplete;
             diceRollManager.OnDestroy();
         }
     }

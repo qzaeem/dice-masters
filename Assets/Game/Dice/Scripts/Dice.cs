@@ -11,6 +11,7 @@ namespace DiceGame.Game
     {
         #region Networked Variables
         [Networked] public int dieID { get; set; }
+        [Networked] public bool IsRollable { get; set; }
         #endregion
 
         public enum Direction { UP, DOWN, RIGHT, LEFT, FORWARD, BACKWARD }
@@ -28,9 +29,9 @@ namespace DiceGame.Game
         [SerializeField] private List<ValueDirection> valueDirections;
         public int currentValue;
         private Rigidbody _rBody;
-        private bool _isRolling = false;
 
-        public bool IsRollable { get; set; }
+        private bool _isRolling = false;
+        private bool _rollingStarted = false;
         public bool IsRolling { get { return _isRolling; } }
 
         private void Awake()
@@ -41,24 +42,40 @@ namespace DiceGame.Game
         public override void Spawned()
         {
             diceRollManager.AddDie(this);
-            _rBody.isKinematic = true;
-            IsRollable = true;
-            _isRolling = false;
             currentValue = 0;
-        }
-
-        private void Roll()
-        {
-            if (!IsRollable || _isRolling)
-                return;
-
-            _isRolling = true;
-            StartCoroutine(RollRoutine());
+            _isRolling = false;
+            _rollingStarted = false;
 
             if (!Runner.IsSharedModeMasterClient)
                 return;
 
+            IsRollable = true;
+        }
+
+        public override void Render()
+        {
+            if (!(_rollingStarted && Runner.IsSharedModeMasterClient))
+                return;
+            
+            if(_rBody.angularVelocity == Vector3.zero && _rBody.linearVelocity == Vector3.zero)
+            {
+                CompleteRollRpc();
+            }
+        }
+
+        private void Roll()
+        {
+            if (!Runner.IsSharedModeMasterClient)
+            {
+                _isRolling = true;
+                return;
+            }
+
+            if (!IsRollable || _isRolling)
+                return;
+
             _rBody.isKinematic = false;
+            _isRolling = true;
             _rBody.AddForce(Vector3.up * upwardForce);
             float xT = Random.Range(-maxTorque, maxTorque);
             float yT = Random.Range(-maxTorque, maxTorque);
@@ -96,18 +113,16 @@ namespace DiceGame.Game
             }
         }
 
-        private IEnumerator RollRoutine()
+        private IEnumerator StartRoll()
         {
-            yield return new WaitForSeconds(1);
+            Roll();
 
-            while (_rBody.angularVelocity != Vector3.zero || _rBody.linearVelocity != Vector3.zero)
+            while(_rBody.angularVelocity == Vector3.zero || _rBody.linearVelocity == Vector3.zero)
             {
-                yield return new WaitForSeconds(1);
+                yield return null;
             }
 
-            SetValue();
-            _isRolling = false;
-            onRollComplete.Execute();
+            _rollingStarted = true;
         }
 
         public void RequestRoll()
@@ -119,14 +134,17 @@ namespace DiceGame.Game
         [Rpc(RpcSources.All, RpcTargets.All)]
         private void RollDiceOnMasterRpc()
         {
-            if (Runner.IsSharedModeMasterClient)
-                RollDiceRpc();
+            StartCoroutine(StartRoll());
         }
 
         [Rpc(RpcSources.All, RpcTargets.All)]
-        private void RollDiceRpc()
+        private void CompleteRollRpc()
         {
-            Roll();
+            StopAllCoroutines();
+            SetValue();
+            _isRolling = false;
+            _rollingStarted = false;
+            onRollComplete.Execute();
         }
         #endregion
     }

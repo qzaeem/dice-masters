@@ -46,8 +46,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isMasterClient: 0
+  _hasRiskedScore: 0
+  _playerName: 
+  _totalScore: 0
   players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
   changeMasterAction: {fileID: 11400000, guid: aa78dd14c8d12469e9c580ed442a70cf, type: 2}
+  masterUpdatedAction: {fileID: 11400000, guid: 9b4fca7bee2434d37a42b977af630bbd, type: 2}
+  updateScoresUI: {fileID: 11400000, guid: c625d679f16d44983adf056923026493, type: 2}
+  onRiskedScore: {fileID: 11400000, guid: 30ad1ff0c4c7d43e4a462515888d541c, type: 2}
 --- !u!114 &3011495748907548536
 MonoBehaviour:
   m_ObjectHideFlags: 0

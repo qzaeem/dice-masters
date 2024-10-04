@@ -14,11 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debug: 0
   developerDescription: 
+  gameManager: {fileID: 0}
   mode: 0
-  diceRollManager: {fileID: 0}
-  onDiceRollComplete: {fileID: 0}
-  gameScore: {fileID: 0}
-  players: {fileID: 0}
+  diceRollManager: {fileID: 11400000, guid: 80d59675ce8914458a4fb16da9d9dd67, type: 2}
+  onDiceRollComplete: {fileID: 11400000, guid: 98bf1e3685ef546829537bbdc7031818, type: 2}
+  masterUpdatedAction: {fileID: 11400000, guid: 9b4fca7bee2434d37a42b977af630bbd, type: 2}
+  gameScore: {fileID: 11400000, guid: 0abd165647e3949a4b265bbfe1fb2ddb, type: 2}
+  roundVariable: {fileID: 11400000, guid: ebe3cda3a30ac48618ecd34fa3d53732, type: 2}
+  players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
   numberOfDice: 2
+  gameModeMenu: {fileID: 5053802370064084290, guid: c550866a1f39e4c988f41e6c4a984580, type: 3}
   isMultiplayer: 1
   showScoresOnEnd: 0
