@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa6c2742922e84fafa90bb557cafe3b6, type: 3}
-  m_Name: Action SO - Risked Score
+  m_Script: {fileID: 11500000, guid: 159fdf9759d2043fa8a358a11911dc5f, type: 3}
+  m_Name: Variable - Dice Rolling
   m_EditorClassIdentifier: 
   debug: 0
   developerDescription: 
+  value: 0

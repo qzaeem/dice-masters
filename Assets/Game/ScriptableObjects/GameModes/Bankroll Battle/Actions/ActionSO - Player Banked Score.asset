@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75cb2c0dc2cee4211b27b91f5e01070b, type: 3}
-  m_Name: Variable - GameMode
+  m_Script: {fileID: 11500000, guid: fa6c2742922e84fafa90bb557cafe3b6, type: 3}
+  m_Name: ActionSO - Player Banked Score
   m_EditorClassIdentifier: 
   debug: 0
   developerDescription: 
-  value: {fileID: 11400000, guid: 6e03d6235c28547ecbeb83b2f6bf6210, type: 2}

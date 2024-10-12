@@ -22,6 +22,9 @@ namespace DiceGame.UI
         [Header("Scriptable Objects")]
         public GameModeBase gameMode;
         public IntVariable roundVariable;
+        public IntVariable rollVariable;
+        public IntVariable gameScore;
+        public BoolVariable diceRollingVariable;
         public ActionSO updateScoresUI;
 
         public virtual void OnEnable()
@@ -29,7 +32,8 @@ namespace DiceGame.UI
             bankScoreButton.onClick.AddListener(BankScore);
             rollDiceButton.onClick.AddListener(RollDice);
             updateScoresUI.executeAction += OnUpdateScoresUI;
-            gameMode.gameScore.onValueChange += OnUpdateGameScore;
+            gameScore.onValueChange += OnUpdateGameScore;
+            diceRollingVariable.onValueChange += OnDiceRollChanged;
         }
 
         public virtual void OnDisable()
@@ -37,7 +41,8 @@ namespace DiceGame.UI
             bankScoreButton.onClick.RemoveListener(BankScore);
             rollDiceButton.onClick.RemoveListener(RollDice);
             updateScoresUI.executeAction -= OnUpdateScoresUI;
-            gameMode.gameScore.onValueChange -= OnUpdateGameScore;
+            gameScore.onValueChange -= OnUpdateGameScore;
+            diceRollingVariable.onValueChange -= OnDiceRollChanged;
         }
 
         public virtual void Start()
@@ -69,12 +74,12 @@ namespace DiceGame.UI
             gameMode.BankScore();
         }
 
-        public virtual void ChangeRound(int val)
+        public virtual void EnableRollDiceButton(bool enabled)
         {
-
+            rollDiceButton.gameObject.SetActive(enabled);
         }
 
-        public virtual void NextTurn()
+        public virtual void OnRoundChanged(int val)
         {
 
         }
@@ -89,6 +94,13 @@ namespace DiceGame.UI
 
         }
 
+        public virtual void OnDiceRollChanged(bool val)
+        {
+            if(val)
+                rollDiceButton.gameObject.SetActive(false);
+        }
+
+        public abstract void EndGame();
         public abstract void OnMasterChanged();
     }
 }

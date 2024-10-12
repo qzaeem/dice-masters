@@ -374,6 +374,7 @@ MonoBehaviour:
   nameInputField: {fileID: 1333667813}
   loadingPanel: {fileID: 1829086825}
   playerInfo: {fileID: 11400000, guid: dbf87bbad57bd467f81383641cc79f7f, type: 2}
+  currentGameMode: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
 --- !u!1 &203844586
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,9 +832,13 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11452418, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
+      propertyPath: startMinimized
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.00018310547
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x

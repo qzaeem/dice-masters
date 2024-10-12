@@ -19,6 +19,7 @@ namespace DiceGame.Game
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private PlayerInfoVariable playerInfo;
         [SerializeField] private PlayersListVariable players;
+        [SerializeField] private StringListVariable playerNames;
         [SerializeField] private Dice diePrefab;
         [SerializeField] private float gridSpacing;
         [SerializeField] private List<Grid> grid;
@@ -32,7 +33,7 @@ namespace DiceGame.Game
             Runner.SetPlayerObject(Runner.LocalPlayer, player.Object);
             SpawnGameModeMenu();
 
-            if (!Runner.IsSharedModeMasterClient) return;
+            if (!Runner.IsMasterClient()) return;
 
             StartNewGame();
         }
@@ -52,6 +53,7 @@ namespace DiceGame.Game
             if (!isGameInProgress)
                 return;
 
+            currentGameMode.value.gameManager = gameManager;
             currentGameMode.value.SpawnGameModeMenu();
             currentGameMode.value.Initialize();
         }
@@ -85,6 +87,7 @@ namespace DiceGame.Game
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             diceRollManager.OnDestroy();
+            players.value.Clear();
         }
     }
 }

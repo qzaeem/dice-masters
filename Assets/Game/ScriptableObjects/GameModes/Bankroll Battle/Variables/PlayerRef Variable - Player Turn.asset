@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa6c2742922e84fafa90bb557cafe3b6, type: 3}
-  m_Name: Action SO - Change Master Client
+  m_Script: {fileID: 11500000, guid: 5a2d0d7db9f914e52b5632414c9d0668, type: 3}
+  m_Name: PlayerRef Variable - Player Turn
   m_EditorClassIdentifier: 
   debug: 0
   developerDescription: 

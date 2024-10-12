@@ -12,6 +12,7 @@ namespace DiceGame.UI
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private GameObject loadingPanel;
         [SerializeField] private PlayerInfoVariable playerInfo;
+        [SerializeField] private GameModeVariable currentGameMode;
 
         private void OnEnable()
         {
@@ -37,6 +38,7 @@ namespace DiceGame.UI
 
         private void StartGame()
         {
+            GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             playerInfo.value.playerName = nameInputField.text;
             NetworkManager.Instance.StartGame();
             loadingPanel.SetActive(true);

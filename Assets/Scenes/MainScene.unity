@@ -480,9 +480,12 @@ MonoBehaviour:
   currentGameMode: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
   diceRollManager: {fileID: 11400000, guid: 80d59675ce8914458a4fb16da9d9dd67, type: 2}
   onDiceRollComplete: {fileID: 11400000, guid: 98bf1e3685ef546829537bbdc7031818, type: 2}
-  onRiskedScore: {fileID: 11400000, guid: 30ad1ff0c4c7d43e4a462515888d541c, type: 2}
+  changePlayerTurnVariable: {fileID: 11400000, guid: b6e799f5a2eb24f6893ff4c82eddd00e, type: 2}
+  gameScoreVariable: {fileID: 11400000, guid: 0abd165647e3949a4b265bbfe1fb2ddb, type: 2}
   roundVariable: {fileID: 11400000, guid: ebe3cda3a30ac48618ecd34fa3d53732, type: 2}
+  rollVariable: {fileID: 11400000, guid: 2183a4f7df58b4ba7ada4dbcb4177f31, type: 2}
   canBankScoreVariable: {fileID: 11400000, guid: 1909bd9013a174f848a60a81098bf9b8, type: 2}
+  diceRollingVariable: {fileID: 11400000, guid: c92d1b210ca1c45209f94d4f9e4d4d57, type: 2}
 --- !u!4 &888285351
 Transform:
   m_ObjectHideFlags: 0
@@ -709,6 +712,7 @@ MonoBehaviour:
   currentGameMode: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
   playerInfo: {fileID: 11400000, guid: dbf87bbad57bd467f81383641cc79f7f, type: 2}
   players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
+  playerNames: {fileID: 11400000, guid: 35147188cd122475880dd03e0289dc27, type: 2}
   diePrefab: {fileID: 3306910344171916638, guid: 0026e63a840d94e849b5f28321e48592, type: 3}
   gridSpacing: 1.75
   grid:

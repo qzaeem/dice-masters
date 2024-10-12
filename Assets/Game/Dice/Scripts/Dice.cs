@@ -46,7 +46,7 @@ namespace DiceGame.Game
             _isRolling = false;
             _rollingStarted = false;
 
-            if (!Runner.IsSharedModeMasterClient)
+            if (!Runner.IsMasterClient())
                 return;
 
             IsRollable = true;
@@ -54,7 +54,7 @@ namespace DiceGame.Game
 
         public override void Render()
         {
-            if (!(_rollingStarted && Runner.IsSharedModeMasterClient))
+            if (!(_rollingStarted && Runner.IsMasterClient()))
                 return;
             
             if(_rBody.angularVelocity == Vector3.zero && _rBody.linearVelocity == Vector3.zero)
@@ -65,7 +65,7 @@ namespace DiceGame.Game
 
         private void Roll()
         {
-            if (!Runner.IsSharedModeMasterClient)
+            if (!Runner.IsMasterClient())
             {
                 _isRolling = true;
                 return;

@@ -7,30 +7,31 @@ namespace DiceGame.Game
     public class PlayerManager : NetworkBehaviour
     {
         #region Networked Variables
+        [Networked, OnChangedRender(nameof(OnPlayerBankedScore))] public bool hasBankedScore { get; set; }
         [Networked] public PlayerRef playerRef { get; set; }
         [Networked] public bool isMasterClient { get; set; }
-        [Networked, OnChangedRender(nameof(OnRiskedScore))] public bool hasRiskedScore { get; set; }
         [Networked] public string playerName { get; set; } // Default length is 16
-
         [Networked, OnChangedRender(nameof(OnTotalScoreChanged))]
         public int totalScore { get; set; }
         #endregion
 
         [SerializeField] private PlayersListVariable players;
-        [SerializeField] private ActionSO changeMasterAction;
         [SerializeField] private ActionSO masterUpdatedAction;
         [SerializeField] private ActionSO updateScoresUI;
-        [SerializeField] private ActionSO onRiskedScore;
+        [SerializeField] private ActionSO playerBankedScoreAction;
 
         public static PlayerManager LocalPlayer { get; set; }
 
         public override void Spawned()
         {
             players.Add(this);
-            changeMasterAction.executeAction += OnMasterLeft;
+            players.changeMasterAction += OnMasterLeft;
 
             if(Object.HasStateAuthority)
+            {
                 totalScore = 0;
+                hasBankedScore = false;
+            }
 
             if (!Runner.IsNetworkObjectOfMasterClient(Object))
                 return;
@@ -49,17 +50,14 @@ namespace DiceGame.Game
             updateScoresUI.Execute();
         }
 
-        private void OnRiskedScore()
+        private void OnPlayerBankedScore()
         {
-            if (hasRiskedScore)
-            {
-                onRiskedScore.Execute();
-            }
+            playerBankedScoreAction.Execute();
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
-            changeMasterAction.executeAction -= OnMasterLeft;
+            players.changeMasterAction -= OnMasterLeft;
             players.Remove(this);
         }
     }

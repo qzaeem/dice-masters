@@ -14,14 +14,17 @@ namespace DiceGame.UI
         [Header("Fields")]
         [SerializeField] private BoolVariable canBankScoreVariable;
         [SerializeField] private PlayersListVariable players;
+        [SerializeField] private PlayerRefVariable changeTurnVariable;
 
         [Header("Local Player")]
-        [SerializeField] private Button riskScoreButton;
         [SerializeField] private TMP_Text localPlayerNameTMP;
         [SerializeField] private TMP_Text localPlayerScoreTMP;
         [SerializeField] private TMP_Text winnerNameTMP;
         [SerializeField] private TMP_Text winnerScoreTMP;
         [SerializeField] private TMP_Text roundTMP;
+        [SerializeField] private Image backgroundImage;
+        [SerializeField] private Color normalColor;
+        [SerializeField] private Color highlightedColor;
 
         [Header("Other Players")]
         [SerializeField] private PlayerInfoEntryUI playerInfoEntryUIPrefab;
@@ -30,22 +33,24 @@ namespace DiceGame.UI
         private Dictionary<PlayerRef, PlayerInfoEntryUI> otherPlayersEntries
             = new Dictionary<PlayerRef, PlayerInfoEntryUI>();
 
+        private bool _isHighlighted;
+
         public override void OnEnable()
         {
             base.OnEnable();
-            riskScoreButton.onClick.AddListener(RiskScore);
-            canBankScoreVariable.onValueChange += OnChangeBankable;
-            roundVariable.onValueChange += ChangeRound;
             players.onListValueChange += UpdatePlayerInfoEntries;
+            players.playerRemovedAction += OnPlayerRemoved;
+            changeTurnVariable.onValueChange += OnPlayerTurnChange;
+            canBankScoreVariable.onValueChange += OnChangeBankable;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
-            riskScoreButton.onClick.RemoveListener(RiskScore);
-            canBankScoreVariable.onValueChange -= OnChangeBankable;
-            roundVariable.onValueChange -= ChangeRound;
             players.onListValueChange -= UpdatePlayerInfoEntries;
+            players.playerRemovedAction -= OnPlayerRemoved;
+            changeTurnVariable.onValueChange -= OnPlayerTurnChange;
+            canBankScoreVariable.onValueChange -= OnChangeBankable;
         }
 
         public override void Start()
@@ -53,9 +58,21 @@ namespace DiceGame.UI
             base.Start();
             gameModeBankrollBattle = gameMode as GameModeBankrollBattle;
             localPlayerNameTMP.text = localPlayerManager.playerName;
-            riskScoreButton.interactable = false;
             roundTMP.text = $"ROUND {roundVariable.value}";
             UpdatePlayerInfoEntries(null);
+            OnPlayerTurnChange(gameMode.ActivePlayerTurn);
+            if (gameMode.HasGameEnded)
+            {
+                EndGame();
+            }
+        }
+
+        private void OnPlayerRemoved(PlayerRef playerRef)
+        {
+            if(playerRef == gameMode.ActivePlayerTurn && !gameMode.IsRolling)
+            {
+                gameMode.ChangePlayerTurn();
+            }
         }
 
         private void UpdatePlayerInfoEntries(PlayerManager player)
@@ -80,85 +97,101 @@ namespace DiceGame.UI
             OnUpdateScoresUI();
         }
 
-        public override void ChangeRound(int value)
+        public override void OnRoundChanged(int value)
         {
             roundTMP.text = $"ROUND {value}";
-
-            rollDiceButton.gameObject.SetActive(localPlayerManager.isMasterClient);
-            localPlayerManager.hasRiskedScore = false;
+            bankScoreButton.interactable = false;
         }
 
         private void OnChangeBankable(bool value)
         {
-            bankScoreButton.interactable = value;
-            riskScoreButton.interactable = value;
-        }
-
-        private void RiskScore()
-        {
-            bankScoreButton.interactable = false;
-            riskScoreButton.interactable = false;
-            localPlayerManager.hasRiskedScore = true;
+            bankScoreButton.interactable = value
+                && !PlayerManager.LocalPlayer.hasBankedScore
+                && rollVariable.value >= 3;
         }
 
         public override void BankScore()
         {
             base.BankScore();
-            riskScoreButton.interactable = false;
             bankScoreButton.interactable = false;
+            rollDiceButton.gameObject.SetActive(false);
         }
 
         public override void RollDice()
         {
             base.RollDice();
             bankScoreButton.interactable = false;
-            riskScoreButton.interactable = false;
         }
 
         public override void OnDiceRollComplete(List<Dice> dice)
         {
             var diceValues = dice.Select(d => d.currentValue).ToList();
+            var sum = diceValues.Sum();
 
-            if(diceValues.Sum() == 7)
+            if (sum == 7)
             {
-                EndGame();
+                //int sevensRolled = gameModeBankrollBattle.RolledSeven(); Don't need number of times 7 is rolled anymore
+
+                if (rollVariable.value > 3)
+                {
+                    ShowRollMessage("Rolled \'7\'. Round Over!");
+                    gameMode.IncrementRound();
+                    return;
+                }
+
+                sum = 70;
+                ShowRollMessage("Rolled a \'7\'. 70 points!");
+            }
+
+            gameMode.ChangePlayerTurn();
+
+            if (diceValues.All(d => d == diceValues[0]))
+            {
+                ShowRollMessage("DOUBLES!");
+                gameModeBankrollBattle.DoubleGameScore();
                 return;
             }
 
-            if(diceValues.All(d => d == diceValues[0]))
+            gameMode.UpdateGameScore(gameMode.GameScore + sum);
+        }
+
+        public void OnPlayerTurnChange(PlayerRef playerRef)
+        {
+            _isHighlighted = false;
+            backgroundImage.color = normalColor;
+            foreach (var kvp in otherPlayersEntries) kvp.Value.SetHighlight(false);
+
+            if (playerRef == PlayerManager.LocalPlayer.playerRef)
             {
-                ShowRollMessage("DOUBLES!");
-                diceValues = diceValues.Select(d => d * 2).ToList();
+                rollDiceButton.gameObject.SetActive(true);
+                backgroundImage.color = highlightedColor;
+                _isHighlighted = true;
+                return;
             }
 
-            gameMode.UpdateGameScore(diceValues.Sum());
-            bankScoreButton.interactable = true;
-            riskScoreButton.interactable = true;
+            rollDiceButton.gameObject.SetActive(false);
+            var entry = otherPlayersEntries.FirstOrDefault(kvp => kvp.Key == playerRef).Value;
+
+            if (entry != null)
+            {
+                entry.SetHighlight(true);
+            }
         }
 
         public override void OnMasterChanged()
         {
-            if (gameMode.HasGameEnded)
-            {
-                return;
-            }
-
-            if (!gameMode.gameManager.IsRolling && localPlayerManager.isMasterClient)
-            {
-                rollDiceButton.gameObject.SetActive(true);
-            }
+            
         }
 
-        private void EndGame()
+        public override void EndGame()
         {
             gameMode.OnGameEnded();
-            ShowRollMessage("\'7\' ends the game!");
             var winner = gameMode.players.value.OrderByDescending(p => p.totalScore).FirstOrDefault();
             winnerNameTMP.text = winner.playerName;
             winnerScoreTMP.text = winner.totalScore.ToString();
+            rollDiceButton.gameObject.SetActive(false);
             gameResultPanel.SetActive(true);
             bankScoreButton.gameObject.SetActive(false);
-            riskScoreButton.gameObject.SetActive(false);
         }
 
         public override void OnUpdateScoresUI()
