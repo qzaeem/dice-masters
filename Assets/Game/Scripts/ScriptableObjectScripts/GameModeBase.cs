@@ -27,9 +27,10 @@ namespace DiceGame.ScriptableObjects
 
         [Header("Settings")]
         public bool isMultiplayer = true;
+        public bool networkedDice = true;
         public bool showScoresOnEnd = false;
 
-        protected MenuBase gameMenu;
+        public MenuBase gameMenu { get; set; }
         protected bool _hasGameEnded = false;
 
         public bool HasGameEnded { get { return _hasGameEnded; } set { _hasGameEnded = value; } }
@@ -41,6 +42,7 @@ namespace DiceGame.ScriptableObjects
         {
             gameScore.Set(gameManager.GameScore);
             _hasGameEnded = false;
+            players.playerRemovedAction += OnPlayerRemoved; players.playerRemovedAction += OnPlayerRemoved;
             onDiceRollComplete.executeAction += OnDiceRollComplete;
             masterUpdatedAction.executeAction += OnMasterChanged;
             playerBankedScoreAction.executeAction += OnPlayerBankedScore;
@@ -49,6 +51,7 @@ namespace DiceGame.ScriptableObjects
 
         public override void OnDestroy()
         {
+            players.playerRemovedAction -= OnPlayerRemoved;
             onDiceRollComplete.executeAction -= OnDiceRollComplete;
             masterUpdatedAction.executeAction -= OnMasterChanged;
             playerBankedScoreAction.executeAction -= OnPlayerBankedScore;
@@ -157,6 +160,17 @@ namespace DiceGame.ScriptableObjects
             gameManager.SetGameScore(0);
         }
 
+        public virtual void OnPlayerRemoved(PlayerRef playerRef)
+        {
+            if (!isMultiplayer)
+                return;
+
+            if (playerRef == ActivePlayerTurn && !IsRolling)
+            {
+                ChangePlayerTurn();
+            }
+        }
+
         public virtual void OnPlayerBankedScore()
         {
 
@@ -175,4 +189,5 @@ public class SettingsData
 {
     public bool isMultiplayer;
     public bool showScoresOnEnd;
+    public bool hasGameEnded;
 }

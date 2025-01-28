@@ -46,13 +46,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hasBankedScore: 0
+  _totalScore: 0
   _isMasterClient: 0
   _playerName: 
-  _totalScore: 0
+  gameModeVariable: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
   players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
   masterUpdatedAction: {fileID: 11400000, guid: 9b4fca7bee2434d37a42b977af630bbd, type: 2}
   updateScoresUI: {fileID: 11400000, guid: c625d679f16d44983adf056923026493, type: 2}
   playerBankedScoreAction: {fileID: 11400000, guid: 4732acc78e30c44108fd791f0fb6f6f7, type: 2}
+  playerFinishedRollAction: {fileID: 11400000, guid: 3455b2f6a81a34d7c931d0590894cc31, type: 2}
+  greedRollRecordAction: {fileID: 11400000, guid: b690e4835fae6419785bb7628f7a68f6, type: 2}
 --- !u!114 &3011495748907548536
 MonoBehaviour:
   m_ObjectHideFlags: 0

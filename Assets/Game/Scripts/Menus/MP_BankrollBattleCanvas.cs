@@ -39,7 +39,6 @@ namespace DiceGame.UI
         {
             base.OnEnable();
             players.onListValueChange += UpdatePlayerInfoEntries;
-            players.playerRemovedAction += OnPlayerRemoved;
             changeTurnVariable.onValueChange += OnPlayerTurnChange;
             canBankScoreVariable.onValueChange += OnChangeBankable;
         }
@@ -48,7 +47,6 @@ namespace DiceGame.UI
         {
             base.OnDisable();
             players.onListValueChange -= UpdatePlayerInfoEntries;
-            players.playerRemovedAction -= OnPlayerRemoved;
             changeTurnVariable.onValueChange -= OnPlayerTurnChange;
             canBankScoreVariable.onValueChange -= OnChangeBankable;
         }
@@ -64,14 +62,6 @@ namespace DiceGame.UI
             if (gameMode.HasGameEnded)
             {
                 EndGame();
-            }
-        }
-
-        private void OnPlayerRemoved(PlayerRef playerRef)
-        {
-            if(playerRef == gameMode.ActivePlayerTurn && !gameMode.IsRolling)
-            {
-                gameMode.ChangePlayerTurn();
             }
         }
 
@@ -123,9 +113,10 @@ namespace DiceGame.UI
             bankScoreButton.interactable = false;
         }
 
-        public override void OnDiceRollComplete(List<Dice> dice)
+        public override void OnDiceRollComplete(List<IPlayableDice> dice)
         {
-            var diceValues = dice.Select(d => d.currentValue).ToList();
+            base.OnDiceRollComplete(dice);
+            var diceValues = dice.Select(d => d.CurrentValue).ToList();
             var sum = diceValues.Sum();
 
             if (sum == 7)
@@ -145,13 +136,14 @@ namespace DiceGame.UI
 
             gameMode.ChangePlayerTurn();
 
-            if (diceValues.All(d => d == diceValues[0]))
+            if (diceValues.All(d => d == diceValues[0]) && rollVariable.value > 3)
             {
                 ShowRollMessage("DOUBLES!");
                 gameModeBankrollBattle.DoubleGameScore();
                 return;
             }
 
+            ShowSmallAreaMessage($"Rolled a \'{sum}\'");
             gameMode.UpdateGameScore(gameMode.GameScore + sum);
         }
 

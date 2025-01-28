@@ -11,7 +11,6 @@ namespace DiceGame.UI
     {
         [HideInInspector] public PlayerManager localPlayerManager;
 
-        public RollMessagePanel rollMsgPanel;
         public GameObject gameResultPanel;
         public TMP_Text gameScoreTMP;
 
@@ -27,9 +26,18 @@ namespace DiceGame.UI
         public BoolVariable diceRollingVariable;
         public ActionSO updateScoresUI;
 
+        [Header("Dice Roll Diplay")]
+        [SerializeField] protected Transform dieRecordContainer;
+        [SerializeField] protected Image dieRollRecordPrefab;
+        [SerializeField] protected Color dieNormalColor, dieInactiveColor;
+        [SerializeField] protected List<Sprite> diceSprites;
+
+        protected PopupManagerCanvas popupManager;
+        protected Dictionary<int, Image> diceRecord = new Dictionary<int, Image>();
+
         public virtual void OnEnable()
         {
-            bankScoreButton.onClick.AddListener(BankScore);
+            if(bankScoreButton) bankScoreButton.onClick.AddListener(BankScore);
             rollDiceButton.onClick.AddListener(RollDice);
             updateScoresUI.executeAction += OnUpdateScoresUI;
             gameScore.onValueChange += OnUpdateGameScore;
@@ -38,7 +46,7 @@ namespace DiceGame.UI
 
         public virtual void OnDisable()
         {
-            bankScoreButton.onClick.RemoveListener(BankScore);
+            if (bankScoreButton) bankScoreButton.onClick.RemoveListener(BankScore);
             rollDiceButton.onClick.RemoveListener(RollDice);
             updateScoresUI.executeAction -= OnUpdateScoresUI;
             gameScore.onValueChange -= OnUpdateGameScore;
@@ -47,10 +55,10 @@ namespace DiceGame.UI
 
         public virtual void Start()
         {
-            rollMsgPanel.gameObject.SetActive(false);
+            popupManager = PopupManagerCanvas.Instance;
             gameScoreTMP.text = gameMode.gameScore.value.ToString();
             gameResultPanel.SetActive(false);
-            bankScoreButton.interactable = false;
+            if (bankScoreButton) bankScoreButton.interactable = false;
         }
 
         public virtual void OnUpdateGameScore(int score)
@@ -60,7 +68,12 @@ namespace DiceGame.UI
 
         public virtual void ShowRollMessage(string message)
         {
-            rollMsgPanel.ShowMessage(message);
+            popupManager.ShowFullScreenMessage(message);
+        }
+
+        public virtual void ShowSmallAreaMessage(string message)
+        {
+            popupManager.ShowSmallAreaMessage(message);
         }
 
         public virtual void RollDice()
@@ -72,6 +85,26 @@ namespace DiceGame.UI
         public virtual void BankScore()
         {
             gameMode.BankScore();
+        }
+
+        public virtual void UpdateDiceRecord(List<IPlayableDice> dice)
+        {
+            foreach (var die in dice)
+            {
+                Image image;
+
+                if (!diceRecord.ContainsKey(die.dieID))
+                {
+                    image = Instantiate(dieRollRecordPrefab, dieRecordContainer);
+                    diceRecord.Add(die.dieID, image);
+                }
+
+                image = diceRecord[die.dieID];
+                image.sprite = die.IsRollable ? diceSprites[die.CurrentValue - 1] : image.sprite;
+                var color = dieNormalColor;
+                color.a = die.IsRollable ? dieNormalColor.a : dieInactiveColor.a;
+                image.color = color;
+            }
         }
 
         public virtual void EnableRollDiceButton(bool enabled)
@@ -89,9 +122,9 @@ namespace DiceGame.UI
 
         }
 
-        public virtual void OnDiceRollComplete(List<Dice> dice)
+        public virtual void OnDiceRollComplete(List<IPlayableDice> dice)
         {
-
+            UpdateDiceRecord(dice);
         }
 
         public virtual void OnDiceRollChanged(bool val)

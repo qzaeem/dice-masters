@@ -108,6 +108,5 @@ namespace DiceGame.ScriptableObjects
 public class BankrollBattleData : SettingsData
 {
     public int sevensRolled;
-    public bool hasGameEnded;
     public int maxRounds;
 }

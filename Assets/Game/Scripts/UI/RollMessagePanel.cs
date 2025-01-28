@@ -6,12 +6,12 @@ namespace DiceGame.UI
 {
     public class RollMessagePanel : MonoBehaviour
     {
-        [SerializeField] private RectTransform animatedPanel;
-        [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private TMP_Text messageTMP;
-        private Sequence animationSequence;
+        [SerializeField] protected RectTransform animatedPanel;
+        [SerializeField] protected CanvasGroup canvasGroup;
+        [SerializeField] protected TMP_Text messageTMP;
+        protected Sequence animationSequence;
 
-        private void OnEnable()
+        public virtual void OnEnable()
         {
             animationSequence.Kill();
             animatedPanel.localScale = Vector3.one * 0.25f;
@@ -30,18 +30,17 @@ namespace DiceGame.UI
                 });
         }
 
-        private void OnDisable()
+        public virtual void OnDisable()
         {
             animatedPanel.gameObject.SetActive(false);
         }
 
-        private void Awake()
+        public virtual void Awake()
         {
             animationSequence.Kill();
-            gameObject.SetActive(false);
         }
 
-        public void ShowMessage(string msg)
+        public virtual void ShowMessage(string msg)
         {
             messageTMP.text = msg;
             gameObject.SetActive(true);

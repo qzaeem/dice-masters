@@ -7,32 +7,25 @@ using System.Linq;
 
 namespace DiceGame.Game
 {
-    public class Dice : NetworkBehaviour
+    public class Dice : NetworkBehaviour, IPlayableDice
     {
         #region Networked Variables
         [Networked] public int dieID { get; set; }
         [Networked] public bool IsRollable { get; set; }
         #endregion
 
-        public enum Direction { UP, DOWN, RIGHT, LEFT, FORWARD, BACKWARD }
-
-        [System.Serializable]
-        public class ValueDirection
-        {
-            public Direction direction;
-            public int value;
-        }
-
         [SerializeField] private DiceRollManager diceRollManager;
         [SerializeField] private float upwardForce, maxTorque;
         [SerializeField] private ActionSO onRollComplete;
         [SerializeField] private List<ValueDirection> valueDirections;
-        public int currentValue;
+        public int _currentValue;
         private Rigidbody _rBody;
 
         private bool _isRolling = false;
         private bool _rollingStarted = false;
         public bool IsRolling { get { return _isRolling; } }
+        public int CurrentValue { get { return _currentValue; } set { _currentValue = value; } }
+        public Vector3 Position { get { return transform.position; } set { transform.position = value; } }
 
         private void Awake()
         {
@@ -42,7 +35,7 @@ namespace DiceGame.Game
         public override void Spawned()
         {
             diceRollManager.AddDie(this);
-            currentValue = 0;
+            _currentValue = 0;
             _isRolling = false;
             _rollingStarted = false;
 
@@ -65,14 +58,14 @@ namespace DiceGame.Game
 
         private void Roll()
         {
+            if (!IsRollable || _isRolling)
+                return;
+
             if (!Runner.IsMasterClient())
             {
                 _isRolling = true;
                 return;
             }
-
-            if (!IsRollable || _isRolling)
-                return;
 
             _rBody.isKinematic = false;
             _isRolling = true;
@@ -99,7 +92,7 @@ namespace DiceGame.Game
                 ref alignment, ref value);
             CheckDirection(-transform.forward, valueDirections.First(d => d.direction == Direction.BACKWARD).value,
                 ref alignment, ref value);
-            currentValue = value;
+            _currentValue = value;
         }
 
         private void CheckDirection(Vector3 dir, int dirVal, ref float alignment, ref int value)
@@ -127,7 +120,15 @@ namespace DiceGame.Game
 
         public void RequestRoll()
         {
+            if (!IsRollable)
+                return;
+
             RollDiceOnMasterRpc();
+        }
+
+        public void LockDie(bool isLocked)
+        {
+            LockDieRpc(isLocked);
         }
 
         #region RPCs
@@ -145,6 +146,15 @@ namespace DiceGame.Game
             _isRolling = false;
             _rollingStarted = false;
             onRollComplete.Execute();
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        private void LockDieRpc(bool isLocked)
+        {
+            if (!Runner.IsMasterClient())
+                return;
+
+            IsRollable = !isLocked;
         }
         #endregion
     }

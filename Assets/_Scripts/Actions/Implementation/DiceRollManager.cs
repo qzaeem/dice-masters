@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DiceGame.Game;
 using UnityEngine;
+using System.Linq;
 
 namespace DiceGame.ScriptableObjects
 {
@@ -10,7 +11,9 @@ namespace DiceGame.ScriptableObjects
     {
         [SerializeField] private ActionSO onDieRollComplete;
         [SerializeField] private ActionSO onDiceRollComplete;
-        public List<Dice> dice;
+        public List<IPlayableDice> dice;
+
+        public bool AllDiceLocked => dice.All(d => !d.IsRollable);
 
         public override void Initialize()
         {
@@ -20,7 +23,7 @@ namespace DiceGame.ScriptableObjects
                 dice.Clear();
                 return;
             }
-            dice = new List<Dice>();
+            dice = new List<IPlayableDice>();
         }
 
         public override void OnDestroy()
@@ -39,7 +42,7 @@ namespace DiceGame.ScriptableObjects
             }
         }
 
-        public void AddDie(Dice die)
+        public void AddDie(IPlayableDice die)
         {
             if (!dice.Contains(die))
             {
@@ -47,7 +50,7 @@ namespace DiceGame.ScriptableObjects
             }
         }
 
-        public void RemoveDie(Dice die)
+        public void RemoveDie(IPlayableDice die)
         {
             if (!dice.Contains(die))
             {
@@ -56,12 +59,31 @@ namespace DiceGame.ScriptableObjects
             dice.Remove(die);
         }
 
+        public void LockDice(List<int> diceIds, bool isLocked)
+        {
+            diceIds.ForEach(id =>
+            {
+                var die = dice.FirstOrDefault(d => d.dieID == id);
+
+                if (die != null)
+                    die.LockDie(isLocked);
+            });
+        }
+
+        public void UnlockAllDice()
+        {
+            dice.ForEach(d =>
+            {
+                d.LockDie(false);
+            });
+        }
+
         public void OnDieCompletedRoll()
         {
             bool rollComplete = true;
             foreach(var die in dice)
             {
-                if(!die.IsRolling && die.IsRollable)
+                if(!die.IsRollable || !die.IsRolling)
                 {
                     continue;
                 }

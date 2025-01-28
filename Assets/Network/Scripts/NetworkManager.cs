@@ -4,6 +4,7 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
 using UnityEngine.Events;
+using DiceGame.ScriptableObjects;
 using UnityEngine.SceneManagement;
 
 namespace DiceGame.Network
@@ -11,6 +12,7 @@ namespace DiceGame.Network
     public class NetworkManager : Models.MonoBehaviourSingleton<NetworkManager>, INetworkRunnerCallbacks
     {
 		[SerializeField] private NetworkRunner networkRunnerPrefab;
+        [SerializeField] private GameModeVariable currentGameMode;
 		[SerializeField] private int gameSceneIndex;
 		private NetworkRunner _networkRunner;
 		private NetworkEvents _networkEvents;
@@ -32,7 +34,7 @@ namespace DiceGame.Network
 
 			var startArguments = new StartGameArgs()
 			{
-				GameMode = GameMode.Shared,
+				GameMode = currentGameMode.value.isMultiplayer ? GameMode.Shared : GameMode.Single,
 				SessionName = "dice",
                 PlayerCount = 4,
 				// We need to specify a session property for matchmaking to decide where the player wants to join.
@@ -47,6 +49,7 @@ namespace DiceGame.Network
 
 		private void AddListeners()
         {
+            _networkRunner.AddCallbacks(this);
 			AddShutdownListener(OnShutdown);
 			AddConnectedToServerListener(OnConnectedToServer);
 			AddDisconnectedFromServerListener(OnDisconnectedFromServer);

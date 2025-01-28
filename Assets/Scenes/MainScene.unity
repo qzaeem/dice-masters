@@ -714,6 +714,7 @@ MonoBehaviour:
   players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
   playerNames: {fileID: 11400000, guid: 35147188cd122475880dd03e0289dc27, type: 2}
   diePrefab: {fileID: 3306910344171916638, guid: 0026e63a840d94e849b5f28321e48592, type: 3}
+  dieLocalPrefab: {fileID: 3199948841851414995, guid: 22269d9161d1e46b7869438bba0ef0c9, type: 3}
   gridSpacing: 1.75
   grid:
   - rows: 2

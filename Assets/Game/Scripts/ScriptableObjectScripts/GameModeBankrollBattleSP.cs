@@ -11,12 +11,16 @@ namespace DiceGame.ScriptableObjects
     public class GameModeBankrollBattleSP : GameModeBase
     {
         [SerializeField] private int maxRounds;
+        [SerializeField] private int minPlayers;
+        [SerializeField] private int maxPlayers;
         [SerializeField] private StringListVariable playerNames;
         private SP_BankrollBattleCanvas bankrollBattleCanvas;
         private Dictionary<int, PlayerGameData> _playersData = new Dictionary<int, PlayerGameData>();
         private int _sevensRolled;
         private int _activePlayerID;
 
+        public int MinPlayers { get { return minPlayers; } }
+        public int MaxPlayers { get { return maxPlayers; } }
         public Dictionary<int, PlayerGameData> PlayersData { get { return _playersData; } }
 
         private void SpawnPlayers()
@@ -55,10 +59,11 @@ namespace DiceGame.ScriptableObjects
 
         public override void OnDiceRollComplete()
         {
+            base.OnDiceRollComplete();
             gameManager.EnableBankingAbility();
 
             var dice = diceRollManager.dice;
-            var diceValues = dice.Select(d => d.currentValue).ToList();
+            var diceValues = dice.Select(d => d.CurrentValue).ToList();
             var sum = diceValues.Sum();
 
             if (sum == 7)
@@ -76,13 +81,14 @@ namespace DiceGame.ScriptableObjects
 
             ChangePlayerTurn();
 
-            if (diceValues.All(d => d == diceValues[0]))
+            if (diceValues.All(d => d == diceValues[0]) && rollVariable.value > 3)
             {
                 gameMenu.ShowRollMessage("DOUBLES!");
                 DoubleGameScore();
                 return;
             }
 
+            gameMenu.ShowSmallAreaMessage($"Rolled a \'{sum}\'");
             UpdateGameScore(GameScore + sum);
         }
 
@@ -168,6 +174,12 @@ namespace DiceGame.ScriptableObjects
             _activePlayerID = 0;
             bankrollBattleCanvas.OnPlayerTurnChange(0);
             gameMenu.OnRoundChanged(round);
+        }
+
+        public void SetSettings(int maxRounds, bool showScoresAtEnd)
+        {
+            this.maxRounds = maxRounds;
+            showScoresOnEnd = showScoresAtEnd;
         }
     }
 }

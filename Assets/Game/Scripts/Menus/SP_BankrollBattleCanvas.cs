@@ -3,10 +3,6 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
-using Fusion;
-using UnityEngine.UI;
-using DiceGame.UI;
-using DiceGame.Game;
 
 namespace DiceGame.UI
 {
@@ -44,7 +40,7 @@ namespace DiceGame.UI
 
         public override void Start()
         {
-            rollMsgPanel.gameObject.SetActive(false);
+            popupManager = PopupManagerCanvas.Instance;
             gameScoreTMP.text = gameMode.gameScore.value.ToString();
             gameResultPanel.SetActive(false);
             gameModeBankrollBattle = gameMode as GameModeBankrollBattleSP;
@@ -103,6 +99,9 @@ namespace DiceGame.UI
             winnerScoreTMP.text = winner.totalScore.ToString();
             rollDiceButton.gameObject.SetActive(false);
             gameResultPanel.SetActive(true);
+
+            foreach (var entry in playerEntries.Values)
+                entry.BankButtonVisible(false);
         }
 
         public override void OnUpdateScoresUI()

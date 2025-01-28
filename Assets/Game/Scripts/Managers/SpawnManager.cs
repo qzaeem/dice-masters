@@ -21,6 +21,7 @@ namespace DiceGame.Game
         [SerializeField] private PlayersListVariable players;
         [SerializeField] private StringListVariable playerNames;
         [SerializeField] private Dice diePrefab;
+        [SerializeField] private DiceLocal dieLocalPrefab;
         [SerializeField] private float gridSpacing;
         [SerializeField] private List<Grid> grid;
 
@@ -33,7 +34,12 @@ namespace DiceGame.Game
             Runner.SetPlayerObject(Runner.LocalPlayer, player.Object);
             SpawnGameModeMenu();
 
-            if (!Runner.IsMasterClient()) return;
+            if (!Runner.IsMasterClient())
+            {
+                if (!currentGameMode.value.networkedDice)
+                    StartNewGame();
+                return;
+            }
 
             StartNewGame();
         }
@@ -67,12 +73,14 @@ namespace DiceGame.Game
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    var die = Runner.Spawn(diePrefab);
+                    IPlayableDice die = currentGameMode.value.networkedDice
+                        ? Runner.Spawn(diePrefab) :
+                        Instantiate(dieLocalPrefab);
                     float zPos = startingRow - i * gridSpacing;
                     float xPos = startingColumn + j * gridSpacing;
                     dieID++;
                     die.dieID = dieID;
-                    die.transform.position = new Vector3(xPos, die.transform.position.y, zPos);
+                    die.Position = new Vector3(xPos, die.Position.y, zPos);
                 }
             }
         }
@@ -87,6 +95,7 @@ namespace DiceGame.Game
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             diceRollManager.OnDestroy();
+            currentGameMode.value.OnDestroy();
             players.value.Clear();
         }
     }

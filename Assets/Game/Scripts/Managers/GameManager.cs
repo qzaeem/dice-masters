@@ -221,9 +221,27 @@ public class GameManager : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
-    private void IncrementRoundRpc()
+    public void AnnounceMexicoWinnerRPC(PlayerRef winner)
     {
-        
+        (currentGameMode.value as GameModeMexico).AnnounceWinner(winner);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void EnableRerollDiceRpc([RpcTarget] PlayerRef target)
+    {
+        (currentGameMode.value as GameModeMexico).EnableRerollButton();
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void ShowRollMessageRpc([RpcTarget] PlayerRef target, string message)
+    {
+        currentGameMode.value.gameMenu.ShowRollMessage(message);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void SpawnTilesRpc(string tilesJsonString)
+    {
+        (currentGameMode.value as GameModeTileKnock).SpawnTiles(tilesJsonString);
     }
     #endregion
 

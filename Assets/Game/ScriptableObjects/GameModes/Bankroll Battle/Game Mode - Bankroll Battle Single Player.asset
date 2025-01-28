@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e5afa288638c4ba080240b86abdca77, type: 3}
+  m_Name: Game Mode - Bankroll Battle Single Player
+  m_EditorClassIdentifier: 
+  debug: 0
+  developerDescription: 
+  gameManager: {fileID: 0}
+  mode: 0
+  diceRollManager: {fileID: 11400000, guid: 80d59675ce8914458a4fb16da9d9dd67, type: 2}
+  onDiceRollComplete: {fileID: 11400000, guid: 98bf1e3685ef546829537bbdc7031818, type: 2}
+  masterUpdatedAction: {fileID: 11400000, guid: 9b4fca7bee2434d37a42b977af630bbd, type: 2}
+  playerBankedScoreAction: {fileID: 11400000, guid: 4732acc78e30c44108fd791f0fb6f6f7, type: 2}
+  gameScore: {fileID: 11400000, guid: 0abd165647e3949a4b265bbfe1fb2ddb, type: 2}
+  roundVariable: {fileID: 11400000, guid: ebe3cda3a30ac48618ecd34fa3d53732, type: 2}
+  rollVariable: {fileID: 11400000, guid: 2183a4f7df58b4ba7ada4dbcb4177f31, type: 2}
+  players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
+  numberOfDice: 2
+  gameModeMenuPrefab: {fileID: 7471425362745574928, guid: 4e28efde150ed46a0a0fd327e2c9c2bc, type: 3}
+  isMultiplayer: 0
+  networkedDice: 0
+  showScoresOnEnd: 0
+  maxRounds: 5
+  playerNames: {fileID: 11400000, guid: 35147188cd122475880dd03e0289dc27, type: 2}
