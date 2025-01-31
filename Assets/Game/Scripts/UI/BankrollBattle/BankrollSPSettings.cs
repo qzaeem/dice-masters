@@ -15,6 +15,7 @@ namespace DiceGame.UI
         [SerializeField] private Button startButton;
 
         private int maxRounds;
+        //--- New ---
         public bool isSinglePlayer;
         private void OnEnable()
         {
@@ -54,8 +55,15 @@ namespace DiceGame.UI
 
             //set number of players count
             mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
+
             playerNamesPanel.SetNamesSO();
             modeBankrollBattleSP.SetSettings(maxRounds, scoresAtEndCheck.currentValue);
+            CheckMode(); //--New--
+        }
+
+        //--- New Check Mode ---
+        private void CheckMode()
+        {
             //if single player mode start the game or else open player connection for multiplayer mode
             if (isSinglePlayer)
             {
@@ -66,7 +74,6 @@ namespace DiceGame.UI
                 mainMenu.OpenPlayerConnectionMenu();
             }
         }
-
         private void OnDestroy()
         {
             playerNamesPanel.onFieldValueChanged -= CheckAllFields;

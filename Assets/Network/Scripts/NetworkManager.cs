@@ -18,7 +18,7 @@ namespace DiceGame.Network
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined;
         #endregion
-
+        //Arguments added roomkey and player count
         public async void StartGame(string roomKey, int playerCount)
         {
             _networkRunner = Instantiate(networkRunnerPrefab);
@@ -45,6 +45,7 @@ namespace DiceGame.Network
             var startTask = _networkRunner.StartGame(startArguments);
             await startTask;
         }
+        //Join Room
         public async void JoinRoom(string roomKey)
         {
             if (_networkRunner == null)
@@ -89,7 +90,7 @@ namespace DiceGame.Network
             AddDisconnectedFromServerListener(OnDisconnectedFromServer);
             AddFailedToConnectListener(OnConnectionFailed);
         }
-
+        //Set Scene Index
         public void SetGameSceneIndex(int index)
         {
             gameSceneIndex = index;

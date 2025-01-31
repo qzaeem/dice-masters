@@ -709,8 +709,6 @@ MonoBehaviour:
   modeSelectionMenu: {fileID: 374758681}
   devicesSelectionMenu: {fileID: 1280289196}
   bankrollMenuSP: {fileID: 871525476}
-  bankrollMenuMP: {fileID: 1054799414}
-  playerConnectionMenu: {fileID: 1159969713}
   playerInfo: {fileID: 11400000, guid: dbf87bbad57bd467f81383641cc79f7f, type: 2}
   currentGameMode: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
   gameModes:
@@ -719,6 +717,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5b358a6bbeb0b4541ac03b33675f076f, type: 2}
   - {fileID: 11400000, guid: 9ec97bf561ab94e20a916b0e80779dfa, type: 2}
   - {fileID: 11400000, guid: 893a89e68891049b59aae51fb613c033, type: 2}
+  bankrollMenuMP: {fileID: 1054799414}
+  playerConnectionMenu: {fileID: 1159969713}
   playerCount: 0
 --- !u!1 &96702826
 GameObject:
@@ -8841,6 +8841,17 @@ RectTransform:
   m_AnchoredPosition: {x: 72.256134, y: 40.000008}
   m_SizeDelta: {x: 106.5123, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1099511484 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8906246992588311864, guid: c1f6e518aa6f01e4b833a389a16621f5, type: 3}
+  m_PrefabInstance: {fileID: 502906985}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1119402283
 GameObject:
   m_ObjectHideFlags: 0
@@ -9630,6 +9641,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1199241285}
   - component: {fileID: 1199241286}
+  - component: {fileID: 1199241287}
   m_Layer: 5
   m_Name: RandomMatch
   m_TagString: Untagged
@@ -9672,6 +9684,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backButton: {fileID: 873766462}
+--- !u!114 &1199241287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1199241284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b9c64a81ef6b9e4e980d86c35de58a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startButton: {fileID: 1986493196}
+  playerNameText: {fileID: 1099511484}
+  mainMenu: {fileID: 85601607}
+  playerInfo: {fileID: 11400000, guid: dbf87bbad57bd467f81383641cc79f7f, type: 2}
 --- !u!1 &1248524291
 GameObject:
   m_ObjectHideFlags: 0

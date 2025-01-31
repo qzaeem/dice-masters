@@ -20,15 +20,18 @@ namespace DiceGame.UI
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private GameObject loadingMenu;
         [SerializeField] private Menu nameMenu, modeSelectionMenu, devicesSelectionMenu, bankrollMenuSP;
-        [Header("Multiplayer Modes Menus")]
-        [SerializeField] private Menu bankrollMenuMP, playerConnectionMenu;
         [SerializeField] private PlayerInfoVariable playerInfo;
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private List<GameModeBase> gameModes;
+
+        //--- New ---
+        [Header("Multiplayer Modes Menus")]
+        [SerializeField] private Menu bankrollMenuMP, playerConnectionMenu;
         public int playerCount;
+        string roomKey;
+
         private Menu currentMenu;
         private bool isMultiDevice;
-        string roomKey;
         private void OnEnable()
         {
             startButton.onClick.AddListener(OpenDeviceSelectionPanel);
@@ -86,6 +89,7 @@ namespace DiceGame.UI
                     switch (currentGameMode.value.mode)
                     {
                         case GameModeName.BankrollBattle:
+                            //--- Open bankroll menu multiplayer ---
                             OpenMenu(bankrollMenuMP);
                             break;
                         case GameModeName.Greed:
@@ -95,6 +99,7 @@ namespace DiceGame.UI
                         case GameModeName.KnockEmDown:
                             break;
                     }
+                    //--- open mode settings instead of starting the game for multiplayer ---
                     //StartGame(); // TODO Remove
                 }
                 else
@@ -114,6 +119,8 @@ namespace DiceGame.UI
                 }
             }
         }
+
+        //--- Set scene info index in network manager to load game scene for single player or private room scene for multiplayer---
         private void SetScene()
         {
             int sceneIndex;
@@ -125,6 +132,7 @@ namespace DiceGame.UI
         {
             this.isMultiDevice = isMultiDevice;
             OpenMenu(modeSelectionMenu);
+            //--- Set scene index ---
             SetScene();
         }
 
@@ -144,6 +152,7 @@ namespace DiceGame.UI
             currentMenu = menu;
             currentMenu.OpenMenu(true);
         }
+        //--- New ---
         public void OpenPlayerConnectionMenu()
         {
             OpenMenu(playerConnectionMenu);
@@ -151,12 +160,16 @@ namespace DiceGame.UI
         public void StartGame()
         {
             GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
+            //--- Genreate random room key ---
             roomKey = RoomKeyGenerator.GenerateRoomKey();
             Debug.Log($"Room Key: {roomKey}");
             loadingMenu.SetActive(true);
             gameObject.SetActive(false);
+            //--- New start method arg to get roomkey and player count---
             NetworkManager.Instance.StartGame(roomKey, playerCount);
         }
+
+        //--- New ---
         public void JoinRoom(string roomKeny)
         {
             GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;

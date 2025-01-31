@@ -19,7 +19,7 @@ namespace DiceGame.UI
         [SerializeField] private int minPlayers;
         [SerializeField] private int maxPlayers;
         private List<TMP_InputField> nameFields = new();
-        public int numberOfPlayers { get; private set; }
+        public int numberOfPlayers { get; private set; } // change to public
         public System.Action onFieldValueChanged;
 
         private void OnEnable()
