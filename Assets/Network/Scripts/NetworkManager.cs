@@ -15,14 +15,17 @@ namespace DiceGame.Network
         [SerializeField] private int gameSceneIndex;
         private NetworkRunner _networkRunner;
         private NetworkEvents _networkEvents;
+        public string newRoomKey;
+
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined;
         #endregion
+
         //Arguments added roomkey and player count
         public async void StartGame(string roomKey, int playerCount)
         {
             _networkRunner = Instantiate(networkRunnerPrefab);
-
+            newRoomKey = roomKey;
             // Add listeners
             _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
             AddListeners();
