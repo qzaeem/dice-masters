@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using DiceGame.Network;
+using DiceGame.ScriptableObjects;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using DiceGame.ScriptableObjects;
-using DiceGame.Network;
-using System.Collections.Generic;
 
 namespace DiceGame.UI
 {
@@ -16,9 +16,12 @@ namespace DiceGame.UI
         [SerializeField] private Button battleModeButton;
         [SerializeField] private Button mexicoModeButton;
         [SerializeField] private Button knockDownModeButton;
+
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private GameObject loadingMenu;
         [SerializeField] private Menu nameMenu, modeSelectionMenu, devicesSelectionMenu, bankrollMenuSP;
+        [Header("Multiplayer Modes Settings")]
+        [SerializeField] private Menu bankrollMenuMP;
         [SerializeField] private PlayerInfoVariable playerInfo;
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private List<GameModeBase> gameModes;
@@ -66,7 +69,7 @@ namespace DiceGame.UI
 
             foreach (var mode in gameModes)
             {
-                if(mode.mode == gameMode && mode.isMultiplayer == isMultiDevice)
+                if (mode.mode == gameMode && mode.isMultiplayer == isMultiDevice)
                 {
                     selectedGameMode = mode;
                     break;
@@ -82,6 +85,7 @@ namespace DiceGame.UI
                     switch (currentGameMode.value.mode)
                     {
                         case GameModeName.BankrollBattle:
+                            OpenMenu(bankrollMenuMP);
                             break;
                         case GameModeName.Greed:
                             break;
@@ -90,7 +94,7 @@ namespace DiceGame.UI
                         case GameModeName.KnockEmDown:
                             break;
                     }
-                    StartGame(); // TODO Remove
+                    //StartGame(); // TODO Remove
                 }
                 else
                 {
@@ -124,7 +128,7 @@ namespace DiceGame.UI
 
         private void OpenMenu(Menu menu)
         {
-            if(currentMenu != null)
+            if (currentMenu != null)
             {
                 menu.previousMenu = currentMenu;
                 currentMenu.OpenMenu(false);
