@@ -20,14 +20,15 @@ namespace DiceGame.UI
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private GameObject loadingMenu;
         [SerializeField] private Menu nameMenu, modeSelectionMenu, devicesSelectionMenu, bankrollMenuSP;
-        [Header("Multiplayer Modes Settings")]
-        [SerializeField] private Menu bankrollMenuMP;
+        [Header("Multiplayer Modes Menus")]
+        [SerializeField] private Menu bankrollMenuMP, playerConnectionMenu;
         [SerializeField] private PlayerInfoVariable playerInfo;
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private List<GameModeBase> gameModes;
+        public int playerCount;
         private Menu currentMenu;
         private bool isMultiDevice;
-
+        string roomKey;
         private void OnEnable()
         {
             startButton.onClick.AddListener(OpenDeviceSelectionPanel);
@@ -113,11 +114,18 @@ namespace DiceGame.UI
                 }
             }
         }
-
+        private void SetScene()
+        {
+            int sceneIndex;
+            if (isMultiDevice) sceneIndex = 1;
+            else sceneIndex = 2;
+            NetworkManager.Instance.SetGameSceneIndex(sceneIndex);
+        }
         private void SelectIsMultiplayer(bool isMultiDevice)
         {
             this.isMultiDevice = isMultiDevice;
             OpenMenu(modeSelectionMenu);
+            SetScene();
         }
 
         private void OpenDeviceSelectionPanel()
@@ -136,13 +144,25 @@ namespace DiceGame.UI
             currentMenu = menu;
             currentMenu.OpenMenu(true);
         }
-
+        public void OpenPlayerConnectionMenu()
+        {
+            OpenMenu(playerConnectionMenu);
+        }
         public void StartGame()
+        {
+            GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
+            roomKey = RoomKeyGenerator.GenerateRoomKey();
+            Debug.Log($"Room Key: {roomKey}");
+            loadingMenu.SetActive(true);
+            gameObject.SetActive(false);
+            NetworkManager.Instance.StartGame(roomKey, playerCount);
+        }
+        public void JoinRoom(string roomKeny)
         {
             GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
             gameObject.SetActive(false);
-            NetworkManager.Instance.StartGame();
+            NetworkManager.Instance.JoinRoom(roomKey);
         }
     }
 }

@@ -15,12 +15,11 @@ namespace DiceGame.Network
         [SerializeField] private int gameSceneIndex;
         private NetworkRunner _networkRunner;
         private NetworkEvents _networkEvents;
-        public int playerCount = 0;
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined;
         #endregion
 
-        public async void StartGame()
+        public async void StartGame(string roomKey, int playerCount)
         {
             _networkRunner = Instantiate(networkRunnerPrefab);
 
@@ -34,7 +33,8 @@ namespace DiceGame.Network
             var startArguments = new StartGameArgs()
             {
                 GameMode = currentGameMode.value.isMultiplayer ? GameMode.Shared : GameMode.Single,
-                SessionName = "dice",
+                //SessionName = "dice",
+                SessionName = roomKey,
                 PlayerCount = playerCount,
                 // We need to specify a session property for matchmaking to decide where the player wants to join.
                 // Otherwise players from Platformer scene could connect to ThirdPersonCharacter game etc.
@@ -45,6 +45,41 @@ namespace DiceGame.Network
             var startTask = _networkRunner.StartGame(startArguments);
             await startTask;
         }
+        public async void JoinRoom(string roomKey)
+        {
+            if (_networkRunner == null)
+            {
+                _networkRunner = Instantiate(networkRunnerPrefab);
+                _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
+                AddListeners();
+            }
+
+            var joinArguments = new StartGameArgs()
+            {
+                GameMode = GameMode.Client, // Set to Client mode for joining rooms
+                SessionName = roomKey,      // Room key to join
+            };
+
+            var joinTask = _networkRunner.StartGame(joinArguments);
+
+            try
+            {
+                await joinTask;
+
+                if (joinTask.IsCompletedSuccessfully)
+                {
+                    Debug.Log($"Successfully joined the room: {roomKey}");
+                }
+                else
+                {
+                    Debug.LogError($"Failed to join the room: {roomKey}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error joining the room: {ex.Message}");
+            }
+        }
 
         private void AddListeners()
         {
@@ -53,6 +88,11 @@ namespace DiceGame.Network
             AddConnectedToServerListener(OnConnectedToServer);
             AddDisconnectedFromServerListener(OnDisconnectedFromServer);
             AddFailedToConnectListener(OnConnectionFailed);
+        }
+
+        public void SetGameSceneIndex(int index)
+        {
+            gameSceneIndex = index;
         }
 
         #region NetworkEventCallbacks

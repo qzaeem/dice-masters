@@ -1,9 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using DiceGame.ScriptableObjects;
 using TMPro;
 using UnityEngine;
-using DiceGame.ScriptableObjects;
-using System.Linq;
-using System.Collections;
 using UnityEngine.UI;
 
 namespace DiceGame.UI
@@ -19,7 +19,7 @@ namespace DiceGame.UI
         [SerializeField] private int minPlayers;
         [SerializeField] private int maxPlayers;
         private List<TMP_InputField> nameFields = new();
-        private int numberOfPlayers;
+        public int numberOfPlayers { get; private set; }
         public System.Action onFieldValueChanged;
 
         private void OnEnable()
@@ -74,7 +74,7 @@ namespace DiceGame.UI
                 f.gameObject.SetActive(false);
             });
 
-            for(int i = 0; i < numberOfFields; i++)
+            for (int i = 0; i < numberOfFields; i++)
             {
                 nameFields[i].gameObject.SetActive(true);
             }

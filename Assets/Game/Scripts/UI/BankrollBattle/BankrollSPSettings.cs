@@ -1,8 +1,7 @@
+using DiceGame.ScriptableObjects;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using DiceGame.ScriptableObjects;
-using System.Collections.Generic;
 
 namespace DiceGame.UI
 {
@@ -14,16 +13,19 @@ namespace DiceGame.UI
         [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private CheckMark scoresAtEndCheck;
         [SerializeField] private Button startButton;
-        private int maxRounds;
 
+        private int maxRounds;
+        public bool isSinglePlayer;
         private void OnEnable()
         {
             inputField.onValueChanged.AddListener(OnRoundValueChanged);
+            startButton.onClick.AddListener(StartGame);
         }
 
         private void OnDisable()
         {
             inputField.onValueChanged.RemoveListener(OnRoundValueChanged);
+            startButton.onClick.RemoveListener(StartGame);
         }
 
         private void Start()
@@ -50,9 +52,19 @@ namespace DiceGame.UI
             if (!playerNamesPanel.AllFieldsHaveNames())
                 return;
 
+            //set number of players count
+            mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
             playerNamesPanel.SetNamesSO();
             modeBankrollBattleSP.SetSettings(maxRounds, scoresAtEndCheck.currentValue);
-            mainMenu.StartGame();
+            //if single player mode start the game or else open player connection for multiplayer mode
+            if (isSinglePlayer)
+            {
+                mainMenu.StartGame();
+            }
+            else
+            {
+                mainMenu.OpenPlayerConnectionMenu();
+            }
         }
 
         private void OnDestroy()
