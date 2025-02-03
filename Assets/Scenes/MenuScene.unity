@@ -720,6 +720,7 @@ MonoBehaviour:
   bankrollMenuMP: {fileID: 1054799414}
   playerConnectionMenu: {fileID: 1159969713}
   playerCount: 0
+  isMultiplayer: 0
 --- !u!1 &96702826
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,7 +1646,6 @@ MonoBehaviour:
   playerNamesPanel: {fileID: 1650520365}
   scoresAtEndCheck: {fileID: 4435568890336885671}
   startButton: {fileID: 1119402285}
-  isSinglePlayer: 1
 --- !u!114 &200060621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4118,7 +4118,7 @@ MonoBehaviour:
   nameFieldPrefab: {fileID: 5162377365019821910, guid: 102e7d9fe6e054bd986df1524a02160f, type: 3}
   playerNamesVariable: {fileID: 11400000, guid: 35147188cd122475880dd03e0289dc27, type: 2}
   nameFieldsContainer: {fileID: 997110937}
-  minPlayers: 2
+  minPlayers: 1
   maxPlayers: 10
 --- !u!114 &458153722
 MonoBehaviour:
@@ -5233,8 +5233,8 @@ GameObject:
   m_Component:
   - component: {fileID: 644800519}
   - component: {fileID: 644800522}
-  - component: {fileID: 644800520}
   - component: {fileID: 644800521}
+  - component: {fileID: 644800523}
   m_Layer: 5
   m_Name: BankrollPanelMP
   m_TagString: Untagged
@@ -5263,25 +5263,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &644800520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 644800518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bf01cff8a1a246c7a3e56e7d9e2bd5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainMenu: {fileID: 85601607}
-  modeBankrollBattleSP: {fileID: 11400000, guid: 6e03d6235c28547ecbeb83b2f6bf6210, type: 2}
-  inputField: {fileID: 972025358}
-  playerNamesPanel: {fileID: 458153721}
-  scoresAtEndCheck: {fileID: 1727061367}
-  startButton: {fileID: 1536547315}
-  isSinglePlayer: 0
 --- !u!114 &644800521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5321,6 +5302,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backButton: {fileID: 575775338}
+--- !u!114 &644800523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644800518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f01416cd10017be42aa1cffa909dbf6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 85601607}
+  modeBankrollBattleMP: {fileID: 11400000, guid: 9c0d04d2290b14bf58e6590fd7bf925b, type: 2}
+  inputField: {fileID: 972025358}
+  playerNamesPanel: {fileID: 458153721}
+  scoresAtEndCheck: {fileID: 1727061367}
+  startButton: {fileID: 1536547315}
 --- !u!1 &661927977
 GameObject:
   m_ObjectHideFlags: 0
@@ -8635,7 +8634,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 61, y: 36.133}
+  m_AnchoredPosition: {x: 61, y: 36.133057}
   m_SizeDelta: {x: 88.9124, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1068311830
@@ -13698,6 +13697,8 @@ MonoBehaviour:
   networkRunnerPrefab: {fileID: 6775256915119555292, guid: 2ab4a182399214e72938ce4b94ace956, type: 3}
   currentGameMode: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
   gameSceneIndex: 1
+  NewRoomKey: 
+  PlayerCount: 0
 --- !u!1 &1884812350
 GameObject:
   m_ObjectHideFlags: 0

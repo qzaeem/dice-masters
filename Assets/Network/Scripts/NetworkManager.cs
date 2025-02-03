@@ -15,27 +15,30 @@ namespace DiceGame.Network
         [SerializeField] private int gameSceneIndex;
         private NetworkRunner _networkRunner;
         private NetworkEvents _networkEvents;
-        public string newRoomKey;
+        public string NewRoomKey;
+        public int PlayerCount;
 
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined;
         #endregion
 
         //Arguments added roomkey and player count
-        public async void StartGame(string roomKey, int playerCount)
+        public async void StartGame(string roomKey, int playerCount, GameMode gameMode)
         {
             _networkRunner = Instantiate(networkRunnerPrefab);
-            newRoomKey = roomKey;
+            NewRoomKey = roomKey;
+            PlayerCount = playerCount;
             // Add listeners
             _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
             AddListeners();
 
             var sceneInfo = new NetworkSceneInfo();
-            sceneInfo.AddSceneRef(SceneRef.FromIndex(gameSceneIndex));
+            sceneInfo.AddSceneRef(SceneRef.FromIndex(1));
 
             var startArguments = new StartGameArgs()
             {
-                GameMode = currentGameMode.value.isMultiplayer ? GameMode.Shared : GameMode.Single,
+                //GameMode = currentGameMode.value.isMultiplayer ? GameMode.Shared : GameMode.Single,
+                GameMode = gameMode,
                 //SessionName = "dice",
                 SessionName = roomKey,
                 PlayerCount = playerCount,
@@ -57,11 +60,14 @@ namespace DiceGame.Network
                 _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
                 AddListeners();
             }
+            var sceneInfo = new NetworkSceneInfo();
+            sceneInfo.AddSceneRef(SceneRef.FromIndex(gameSceneIndex));
 
             var joinArguments = new StartGameArgs()
             {
                 GameMode = GameMode.Client, // Set to Client mode for joining rooms
                 SessionName = roomKey,      // Room key to join
+                Scene = sceneInfo,
             };
 
             var joinTask = _networkRunner.StartGame(joinArguments);

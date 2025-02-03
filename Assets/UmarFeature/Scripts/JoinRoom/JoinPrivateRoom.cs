@@ -1,4 +1,5 @@
 using DiceGame.UI;
+using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +29,6 @@ public class JoinPrivateRoom : MonoBehaviour
     }
     void JoinRoom()
     {
-        mainMenu.JoinRoom(roomKey.text);
+        mainMenu.JoinRoom(roomKey.text, GameMode.Client);
     }
 }

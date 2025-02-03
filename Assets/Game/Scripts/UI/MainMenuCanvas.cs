@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DiceGame.Network;
 using DiceGame.ScriptableObjects;
+using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,10 +29,12 @@ namespace DiceGame.UI
         [Header("Multiplayer Modes Menus")]
         [SerializeField] private Menu bankrollMenuMP, playerConnectionMenu;
         public int playerCount;
+        public bool isMultiplayer;
         string roomKey;
 
         private Menu currentMenu;
         private bool isMultiDevice;
+
         private void OnEnable()
         {
             startButton.onClick.AddListener(OpenDeviceSelectionPanel);
@@ -86,6 +89,7 @@ namespace DiceGame.UI
             {
                 if (currentGameMode.value.isMultiplayer)
                 {
+                    isMultiplayer = true;
                     switch (currentGameMode.value.mode)
                     {
                         case GameModeName.BankrollBattle:
@@ -104,6 +108,7 @@ namespace DiceGame.UI
                 }
                 else
                 {
+                    isMultiplayer = false;
                     switch (currentGameMode.value.mode)
                     {
                         case GameModeName.BankrollBattle:
@@ -166,16 +171,24 @@ namespace DiceGame.UI
             loadingMenu.SetActive(true);
             gameObject.SetActive(false);
             //--- New start method arg to get roomkey and player count---
-            NetworkManager.Instance.StartGame(roomKey, playerCount);
+            if (isMultiplayer)
+            {
+                NetworkManager.Instance.StartGame(roomKey, playerCount, GameMode.Shared);
+            }
+            else
+            {
+                NetworkManager.Instance.StartGame(roomKey, playerCount, GameMode.Single);
+            }
         }
 
         //--- New ---
-        public void JoinRoom(string roomKeny)
+        public void JoinRoom(string roomKeny, GameMode mode)
         {
-            GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
+            //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
             gameObject.SetActive(false);
-            NetworkManager.Instance.JoinRoom(roomKey);
+            //NetworkManager.Instance.JoinRoom(roomKey);
+            NetworkManager.Instance.StartGame(roomKey, playerCount, mode);
         }
     }
 }

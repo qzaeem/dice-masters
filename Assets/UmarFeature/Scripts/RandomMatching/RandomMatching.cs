@@ -1,5 +1,6 @@
 using DiceGame.ScriptableObjects;
 using DiceGame.UI;
+using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,6 @@ public class RandomMatching : MonoBehaviour
     }
     private void StartRandomMatch()
     {
-        //mainMenu.JoinRoom(GameMode.AutoHostOrClient, string.Empty);
+        mainMenu.JoinRoom(string.Empty, GameMode.AutoHostOrClient);
     }
 }

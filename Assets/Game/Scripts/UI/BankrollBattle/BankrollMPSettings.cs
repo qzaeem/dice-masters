@@ -5,15 +5,14 @@ using UnityEngine.UI;
 
 namespace DiceGame.UI
 {
-    public class BankrollSPSettings : MonoBehaviour
+    public class BankrollMPSettings : MonoBehaviour
     {
         [SerializeField] private MainMenuCanvas mainMenu;
-        [SerializeField] private GameModeBankrollBattleSP modeBankrollBattleSP;
+        [SerializeField] private GameModeBankrollBattle modeBankrollBattleMP;
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private CheckMark scoresAtEndCheck;
         [SerializeField] private Button startButton;
-
         private int maxRounds;
         private void OnEnable()
         {
@@ -50,12 +49,12 @@ namespace DiceGame.UI
         {
             if (!playerNamesPanel.AllFieldsHaveNames())
                 return;
-
+            //set number of players count
+            mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
             playerNamesPanel.SetNamesSO();
-            modeBankrollBattleSP.SetSettings(maxRounds, scoresAtEndCheck.currentValue);
+            //modeBankrollBattleMP.SetSettingsFromJson(maxRounds, scoresAtEndCheck.currentValue);
             mainMenu.OpenPlayerConnectionMenu();
         }
-
         private void OnDestroy()
         {
             playerNamesPanel.onFieldValueChanged -= CheckAllFields;
