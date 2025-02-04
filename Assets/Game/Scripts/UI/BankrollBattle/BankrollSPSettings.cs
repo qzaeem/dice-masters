@@ -53,7 +53,7 @@ namespace DiceGame.UI
 
             playerNamesPanel.SetNamesSO();
             modeBankrollBattleSP.SetSettings(maxRounds, scoresAtEndCheck.currentValue);
-            mainMenu.OpenPlayerConnectionMenu();
+            mainMenu.StartGame();
         }
 
         private void OnDestroy()

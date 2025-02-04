@@ -28,8 +28,11 @@ namespace DiceGame.UI
             if (previousMenu == null)
                 return;
 
-            previousMenu.OpenMenu(true);
             OpenMenu(false);
+            previousMenu.OpenMenu(true);
+            //update current menu
+            FindObjectOfType<MainMenuCanvas>().SetCurrentMenu(previousMenu);
+
         }
     }
 }

@@ -21,7 +21,8 @@ namespace DiceGame.UI
         private List<TMP_InputField> nameFields = new();
         public int numberOfPlayers { get; private set; } // change to public
         public System.Action onFieldValueChanged;
-
+        //New
+        public bool isMultiplayer;
         private void OnEnable()
         {
             incrementButton.onClick.AddListener(IncrementNumbrOfPlayers);
@@ -64,7 +65,8 @@ namespace DiceGame.UI
         {
             numberOfPlayers = Mathf.Clamp(numberOfPlayers, minPlayers, maxPlayers);
             numOfPlayersTMP.text = $"{numberOfPlayers} Players";
-            ChangePlayerFields(numberOfPlayers);
+            if (!isMultiplayer)
+                ChangePlayerFields(numberOfPlayers);
         }
 
         private void ChangePlayerFields(int numberOfFields)

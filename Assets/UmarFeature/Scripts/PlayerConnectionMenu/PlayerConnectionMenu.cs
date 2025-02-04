@@ -1,12 +1,15 @@
+using DiceGame.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerConnectionMenu : MonoBehaviour
 {
+    [SerializeField] private MainMenuCanvas mainMenu;
     [SerializeField] private Button randomMatchBtn;
     [SerializeField] private Button privateRoomBtn;
-    [SerializeField] private GameObject randomMatchMenu;
+    //[SerializeField] private GameObject randomMatchMenu;
     [SerializeField] private GameObject privateRoomMenu;
+
     private void OnEnable()
     {
         randomMatchBtn.onClick.AddListener(() => EnableMenu(1));
@@ -29,10 +32,12 @@ public class PlayerConnectionMenu : MonoBehaviour
         switch (menu)
         {
             case 1:
-                randomMatchMenu.SetActive(true);
+                //randomMatchMenu.SetActive(true);
+                mainMenu.OpenMenu(mainMenu.MPMenus.randomMatch);
                 break;
             case 2:
                 privateRoomMenu.SetActive(true);
+                mainMenu.OpenMenu(mainMenu.MPMenus.createOrJoinRom);
                 break;
         }
     }

@@ -8,6 +8,11 @@ using UnityEngine.UI;
 
 namespace DiceGame.UI
 {
+    [System.Serializable]
+    public class MultiplayerMenus
+    {
+        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, createOrJoinRom, createRoom, JoinRoom;
+    }
     public class MainMenuCanvas : MonoBehaviour
     {
         [SerializeField] private Button startButton;
@@ -26,8 +31,8 @@ namespace DiceGame.UI
         [SerializeField] private List<GameModeBase> gameModes;
 
         //--- New ---
-        [Header("Multiplayer Modes Menus")]
-        [SerializeField] private Menu bankrollMenuMP, playerConnectionMenu;
+        [Header("Multiplayer Mode Menus")]
+        public MultiplayerMenus MPMenus;
         public int playerCount;
         public bool isMultiplayer;
         string roomKey;
@@ -58,7 +63,6 @@ namespace DiceGame.UI
             knockDownModeButton.onClick.RemoveAllListeners();
             nameInputField.onValueChanged.RemoveListener(OnNameChanged);
         }
-
         private void Start()
         {
             startButton.interactable = false;
@@ -94,13 +98,16 @@ namespace DiceGame.UI
                     {
                         case GameModeName.BankrollBattle:
                             //--- Open bankroll menu multiplayer ---
-                            OpenMenu(bankrollMenuMP);
+                            OpenMenu(MPMenus.bankrollMenuMP);
                             break;
                         case GameModeName.Greed:
+                            OpenMenu(MPMenus.greedMenuMP);
                             break;
                         case GameModeName.Mexico:
+                            OpenMenu(MPMenus.mexicoMenuMP);
                             break;
                         case GameModeName.KnockEmDown:
+                            OpenMenu(MPMenus.knockDownMenuMP);
                             break;
                     }
                     //--- open mode settings instead of starting the game for multiplayer ---
@@ -146,22 +153,22 @@ namespace DiceGame.UI
             playerInfo.value.playerName = nameInputField.text;
             OpenMenu(devicesSelectionMenu);
         }
-
-        private void OpenMenu(Menu menu)
+        //Update current menu on back button
+        public void SetCurrentMenu(Menu menu)
+        {
+            currentMenu = menu;
+        }
+        public void OpenMenu(Menu menu)
         {
             if (currentMenu != null)
             {
-                menu.previousMenu = currentMenu;
                 currentMenu.OpenMenu(false);
+                menu.previousMenu = currentMenu;
             }
             currentMenu = menu;
             currentMenu.OpenMenu(true);
         }
-        //--- New ---
-        public void OpenPlayerConnectionMenu()
-        {
-            OpenMenu(playerConnectionMenu);
-        }
+
         public void StartGame()
         {
             GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;

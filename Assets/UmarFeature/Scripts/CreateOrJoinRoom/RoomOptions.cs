@@ -1,8 +1,10 @@
+using DiceGame.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RoomOptions : MonoBehaviour
 {
+    [SerializeField] private MainMenuCanvas mainMenu;
     [SerializeField] private Button createRoomButton;
     [SerializeField] private Button joinRoomButton;
     [SerializeField] private GameObject createRoomMenu;
@@ -20,12 +22,14 @@ public class RoomOptions : MonoBehaviour
     }
     private void EnableCreateRoomMenu()
     {
-        createRoomMenu.SetActive(true);
+        //createRoomMenu.SetActive(true);
         this.gameObject.SetActive(false);
+        mainMenu.OpenMenu(mainMenu.MPMenus.createRoom);
     }
     private void EnableJoinRoomMenu()
     {
         this.gameObject.SetActive(false);
-        joinRoomMenu.SetActive(true);
+        mainMenu.OpenMenu(mainMenu.MPMenus.JoinRoom);
+        //joinRoomMenu.SetActive(true);
     }
 }
