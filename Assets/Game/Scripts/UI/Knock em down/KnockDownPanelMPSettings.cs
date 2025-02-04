@@ -85,6 +85,7 @@ namespace DiceGame.UI
         private void OnDestroy()
         {
             playerNamesPanel.onFieldValueChanged -= CheckAllFields;
+            dropDown.onValueChanged.RemoveListener(OnTilesValueChange);
         }
     }
 }

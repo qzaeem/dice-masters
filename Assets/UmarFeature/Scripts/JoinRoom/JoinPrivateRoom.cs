@@ -25,7 +25,8 @@ public class JoinPrivateRoom : MonoBehaviour
     }
     private void OnRoomKeyChange(string value)
     {
-        joinRoomButton.interactable = value.Length > 0 && value.Length < 17 && !string.IsNullOrWhiteSpace(value);
+        //joinRoomButton.interactable = value.Length > 0 && value.Length < 17 && !string.IsNullOrWhiteSpace(value);
+        joinRoomButton.interactable = value.Length > 0 && value.Length < 17;
     }
     void JoinRoom()
     {
