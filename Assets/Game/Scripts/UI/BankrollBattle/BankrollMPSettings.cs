@@ -13,7 +13,7 @@ namespace DiceGame.UI
         [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private CheckMark scoresAtEndCheck;
         [SerializeField] private Button nextButton;
-        private int maxRounds;
+        private uint maxRounds;
         private void OnEnable()
         {
             inputField.onValueChanged.AddListener(OnRoundValueChanged);
@@ -35,7 +35,8 @@ namespace DiceGame.UI
 
         private void OnRoundValueChanged(string val)
         {
-            maxRounds = int.Parse(val);
+            maxRounds = uint.Parse(val);
+            //modeBankrollBattleMP.maxRounds = maxRounds; // to do
 
             CheckAllFields();
         }
@@ -52,7 +53,6 @@ namespace DiceGame.UI
             //set number of players count
             mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
             playerNamesPanel.SetNamesSO();
-            //modeBankrollBattleMP.SetSettingsFromJson(maxRounds, scoresAtEndCheck.currentValue);
             mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
         }
         private void OnDestroy()
