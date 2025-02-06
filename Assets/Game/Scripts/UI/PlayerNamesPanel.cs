@@ -22,7 +22,9 @@ namespace DiceGame.UI
         public int numberOfPlayers { get; private set; } // change to public
         public System.Action onFieldValueChanged;
         //New
-        public bool isMultiplayer;
+        [SerializeField] private PlayerInfoVariable playerInfo;
+        //public bool isMultiplayer;
+
         private void OnEnable()
         {
             incrementButton.onClick.AddListener(IncrementNumbrOfPlayers);
@@ -41,9 +43,9 @@ namespace DiceGame.UI
             {
                 var field = Instantiate(nameFieldPrefab, nameFieldsContainer);
                 field.onValueChanged.AddListener(OnValueChanged);
+                field.text = i == 0 ? playerInfo.value.playerName : "";  // first player name
                 nameFields.Add(field);
             }
-
             numberOfPlayers = minPlayers;
             numOfPlayersTMP.text = $"{numberOfPlayers} Players";
             ChangePlayerFields(numberOfPlayers);
@@ -65,8 +67,8 @@ namespace DiceGame.UI
         {
             numberOfPlayers = Mathf.Clamp(numberOfPlayers, minPlayers, maxPlayers);
             numOfPlayersTMP.text = $"{numberOfPlayers} Players";
-            if (!isMultiplayer)
-                ChangePlayerFields(numberOfPlayers);
+            //if (!isMultiplayer)
+            ChangePlayerFields(numberOfPlayers);
         }
 
         private void ChangePlayerFields(int numberOfFields)

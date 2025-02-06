@@ -10,18 +10,18 @@ namespace DiceGame.UI
         [SerializeField] private GameModeGreed gameModeGreedMP;
         [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private Button nextButton;
-        [SerializeField] private TMP_Dropdown dropDown;
+        [SerializeField] private TMP_Dropdown selectScoreDropDown;
 
         private void OnEnable()
         {
             nextButton.onClick.AddListener(NextMenu);
-            dropDown.onValueChanged.AddListener(OnScoreOption);
+            selectScoreDropDown.onValueChanged.AddListener(OnScoreOption);
         }
 
         private void OnDisable()
         {
             nextButton.onClick.RemoveListener(NextMenu);
-            dropDown.onValueChanged.RemoveListener(OnScoreOption);
+            selectScoreDropDown.onValueChanged.RemoveListener(OnScoreOption);
         }
 
         private void Start()
@@ -32,8 +32,8 @@ namespace DiceGame.UI
         }
         private void SetupDropdownOptions()
         {
-            dropDown.value = 0;
-            dropDown.RefreshShownValue();
+            selectScoreDropDown.value = 0;
+            selectScoreDropDown.RefreshShownValue();
         }
 
         private void OnScoreOption(int val)
@@ -66,14 +66,14 @@ namespace DiceGame.UI
             if (!playerNamesPanel.AllFieldsHaveNames())
                 return;
             //set number of players count
-            mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
+            //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
             playerNamesPanel.SetNamesSO();
             mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
         }
         private void OnDestroy()
         {
             playerNamesPanel.onFieldValueChanged -= CheckAllFields;
-            dropDown.onValueChanged.RemoveListener(OnScoreOption);
+            selectScoreDropDown.onValueChanged.RemoveListener(OnScoreOption);
         }
     }
 }

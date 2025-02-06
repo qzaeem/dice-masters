@@ -51,7 +51,7 @@ namespace DiceGame.UI
             if (!playerNamesPanel.AllFieldsHaveNames())
                 return;
             //set number of players count
-            mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
+            //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
             playerNamesPanel.SetNamesSO();
             mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
         }

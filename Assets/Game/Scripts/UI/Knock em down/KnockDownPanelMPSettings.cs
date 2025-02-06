@@ -12,20 +12,20 @@ namespace DiceGame.UI
         [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private Button nextButton;
-        [SerializeField] private TMP_Dropdown dropDown;
+        [SerializeField] private TMP_Dropdown totalTilesDropDown;
         private uint maxRounds;
         private void OnEnable()
         {
             inputField.onValueChanged.AddListener(OnRoundValueChanged);
             nextButton.onClick.AddListener(NextMenu);
-            dropDown.onValueChanged.AddListener(OnTilesValueChange);
+            totalTilesDropDown.onValueChanged.AddListener(OnTilesValueChange);
         }
 
         private void OnDisable()
         {
             inputField.onValueChanged.RemoveListener(OnRoundValueChanged);
             nextButton.onClick.RemoveListener(NextMenu);
-            dropDown.onValueChanged.RemoveListener(OnTilesValueChange);
+            totalTilesDropDown.onValueChanged.RemoveListener(OnTilesValueChange);
         }
 
         private void Start()
@@ -37,8 +37,8 @@ namespace DiceGame.UI
         }
         private void SetupDropdownOptions()
         {
-            dropDown.value = 0;
-            dropDown.RefreshShownValue();
+            totalTilesDropDown.value = 0;
+            totalTilesDropDown.RefreshShownValue();
         }
 
         private void OnTilesValueChange(int val)
@@ -78,14 +78,14 @@ namespace DiceGame.UI
         {
             if (!playerNamesPanel.AllFieldsHaveNames())
                 return;
-            mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
+            //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
             playerNamesPanel.SetNamesSO();
             mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
         }
         private void OnDestroy()
         {
             playerNamesPanel.onFieldValueChanged -= CheckAllFields;
-            dropDown.onValueChanged.RemoveListener(OnTilesValueChange);
+            totalTilesDropDown.onValueChanged.RemoveListener(OnTilesValueChange);
         }
     }
 }
