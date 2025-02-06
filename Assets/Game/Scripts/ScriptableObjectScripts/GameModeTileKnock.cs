@@ -15,6 +15,10 @@ namespace DiceGame.ScriptableObjects
         [SerializeField] private BoolVariable canBankScoreVariable;
         [SerializeField] private PlayerRefVariable changeTurnVariable;
         [SerializeField] public uint maxRounds, totalTiles;
+        //New getter and setter for total tiles and max rounds
+        public uint TotalTiles{get => totalTiles;set => totalTiles = value;}
+        public uint MaxRounds{get => maxRounds;set => maxRounds= value;}
+
         private MP_TileKnockCanvas tileKEDMenu;
         private Dictionary<uint, uint> tilesDictionary = new Dictionary<uint, uint>();
         private string tilesJsonString;

@@ -27,5 +27,6 @@ MonoBehaviour:
   numberOfDice: 2
   gameModeMenuPrefab: {fileID: 5053802370064084290, guid: c550866a1f39e4c988f41e6c4a984580, type: 3}
   isMultiplayer: 1
-  showScoresOnEnd: 0
-  maxRounds: 5
+  networkedDice: 1
+  showScoresOnEnd: 1
+  maxRounds: 9

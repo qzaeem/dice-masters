@@ -1,3 +1,4 @@
+using DiceGame.ScriptableObjects;
 using DiceGame.UI;
 using TMPro;
 using UnityEngine;
@@ -19,10 +20,21 @@ public class CreateRoomController : MonoBehaviour
         createButton.onClick.RemoveListener(CreateRoom);
         playerCountDropDown.onValueChanged.RemoveListener(OnSelectPlayerCount);
     }
+    private void Start()
+    {
+        SetupDropdownOptions();
+    }
     private void CreateRoom()
     {
         mainMenuCanvas.playerCount = playerCount;
         mainMenuCanvas.StartGame();
+    }
+    private void SetupDropdownOptions()
+    {
+        //get the last selected score value
+        playerCount = int.Parse(playerCountDropDown.options[0].text);
+        playerCountDropDown.value = 0;
+        playerCountDropDown.RefreshShownValue();
     }
     private void OnSelectPlayerCount(int index)
     {

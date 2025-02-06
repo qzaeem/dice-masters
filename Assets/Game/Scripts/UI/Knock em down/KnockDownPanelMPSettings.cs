@@ -1,3 +1,5 @@
+using System;
+using System.Net.NetworkInformation;
 using DiceGame.ScriptableObjects;
 using TMPro;
 using UnityEngine;
@@ -14,18 +16,19 @@ namespace DiceGame.UI
         [SerializeField] private Button nextButton;
         [SerializeField] private TMP_Dropdown totalTilesDropDown;
         private uint maxRounds;
+        private uint maxTiles;
         private void OnEnable()
         {
             inputField.onValueChanged.AddListener(OnRoundValueChanged);
             nextButton.onClick.AddListener(NextMenu);
-            totalTilesDropDown.onValueChanged.AddListener(OnTilesValueChange);
+            totalTilesDropDown.onValueChanged.AddListener(UpdateNumberOfTiles);
         }
 
         private void OnDisable()
         {
             inputField.onValueChanged.RemoveListener(OnRoundValueChanged);
             nextButton.onClick.RemoveListener(NextMenu);
-            totalTilesDropDown.onValueChanged.RemoveListener(OnTilesValueChange);
+            totalTilesDropDown.onValueChanged.RemoveListener(UpdateNumberOfTiles);
         }
 
         private void Start()
@@ -37,28 +40,19 @@ namespace DiceGame.UI
         }
         private void SetupDropdownOptions()
         {
-            totalTilesDropDown.value = 0;
+            //get the last selected max tiles
+            maxTiles = modeTileKnockMP.TotalTiles;
+            //check value index in drop down 
+            int index = totalTilesDropDown.options.FindIndex(option => option.text == maxTiles.ToString());
+            if (index != -1) totalTilesDropDown.value = index;
             totalTilesDropDown.RefreshShownValue();
         }
 
-        private void OnTilesValueChange(int val)
+        private void UpdateNumberOfTiles(int index)
         {
-            //TODO
-
-            switch (val)
+            if (index >= 0 && index < totalTilesDropDown.options.Count)
             {
-                case 0:
-                    modeTileKnockMP.totalTiles = 9;
-                    break;
-                case 1:
-                    modeTileKnockMP.totalTiles = 12;
-                    break;
-                case 2:
-                    modeTileKnockMP.totalTiles = 16;
-                    break;
-                case 3:
-                    modeTileKnockMP.totalTiles = 25;
-                    break;
+                maxTiles = uint.Parse(totalTilesDropDown.options[index].text);
             }
         }
 
@@ -71,21 +65,23 @@ namespace DiceGame.UI
 
         public void CheckAllFields()
         {
-            nextButton.interactable = maxRounds > 0 && playerNamesPanel.AllFieldsHaveNames();
+            nextButton.interactable = maxRounds > 0 /* && playerNamesPanel.AllFieldsHaveNames()*/;
         }
 
         public void NextMenu()
         {
-            if (!playerNamesPanel.AllFieldsHaveNames())
-                return;
+            //if (!playerNamesPanel.AllFieldsHaveNames())
+            //    return;
             //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
-            playerNamesPanel.SetNamesSO();
+            //playerNamesPanel.SetNamesSO();
+            modeTileKnockMP.MaxRounds = maxRounds;
+            modeTileKnockMP.TotalTiles = maxTiles;
             mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
         }
         private void OnDestroy()
         {
             playerNamesPanel.onFieldValueChanged -= CheckAllFields;
-            totalTilesDropDown.onValueChanged.RemoveListener(OnTilesValueChange);
+            totalTilesDropDown.onValueChanged.RemoveListener(UpdateNumberOfTiles);
         }
     }
 }

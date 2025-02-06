@@ -11,6 +11,8 @@ namespace DiceGame.ScriptableObjects
     public class GameModeGreed : GameModeBase
     {
         public enum WinningScore { ShortGame = 5000, NormalGame = 10000, LongGame = 20000, SuperLongGame = 40000 }
+        //new getter and setter for winning score
+        public WinningScore MaxWinningScore { get => winningScore; set => winningScore = value; }
 
         [SerializeField] private WinningScore winningScore;
         [SerializeField] private BoolVariable canBankScoreVariable;

@@ -23,26 +23,28 @@ namespace DiceGame.UI
         private void Start()
         {
             nextButton.interactable = false;
-            playerNamesPanel.onFieldValueChanged += CheckAllFields;
+            //playerNamesPanel.onFieldValueChanged += CheckAllFields;
         }
 
-        public void CheckAllFields()
-        {
-            nextButton.interactable = playerNamesPanel.AllFieldsHaveNames();
-        }
+        //public void CheckAllFields()
+        //{
+        //    nextButton.interactable = playerNamesPanel.AllFieldsHaveNames();
+        //}
 
         public void NextMenu()
         {
-            if (!playerNamesPanel.AllFieldsHaveNames())
-                return;
+            // after changes
+            //if (!playerNamesPanel.AllFieldsHaveNames())
+                //return;
             //set number of players count
             //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
-            playerNamesPanel.SetNamesSO();
+            //playerNamesPanel.SetNamesSO();
+
             mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
         }
         private void OnDestroy()
         {
-            playerNamesPanel.onFieldValueChanged -= CheckAllFields;
+            //playerNamesPanel.onFieldValueChanged -= CheckAllFields;
         }
     }
 }

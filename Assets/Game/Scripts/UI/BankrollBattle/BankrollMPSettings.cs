@@ -13,16 +13,17 @@ namespace DiceGame.UI
         [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private CheckMark scoresAtEndCheck;
         [SerializeField] private Button nextButton;
-        private uint maxRounds;
+        private int maxRounds;
         private void OnEnable()
         {
-            inputField.onValueChanged.AddListener(OnRoundValueChanged);
+            inputField.onValueChanged.AddListener(SetMaxRoundsValue);
             nextButton.onClick.AddListener(NextMenu);
+            scoresAtEndCheck.defaultValue = modeBankrollBattleMP.ShowScoreOnEnd;
         }
 
         private void OnDisable()
         {
-            inputField.onValueChanged.RemoveListener(OnRoundValueChanged);
+            inputField.onValueChanged.RemoveListener(SetMaxRoundsValue);
             nextButton.onClick.RemoveListener(NextMenu);
         }
 
@@ -33,26 +34,26 @@ namespace DiceGame.UI
             playerNamesPanel.onFieldValueChanged += CheckAllFields;
         }
 
-        private void OnRoundValueChanged(string val)
+        private void SetMaxRoundsValue(string val)
         {
-            maxRounds = uint.Parse(val);
-            //modeBankrollBattleMP.maxRounds = maxRounds; // to do
-
+            maxRounds = int.Parse(val);
             CheckAllFields();
         }
 
         public void CheckAllFields()
         {
-            nextButton.interactable = maxRounds > 0 && playerNamesPanel.AllFieldsHaveNames();
+            nextButton.interactable = maxRounds > 0 /* && playerNamesPanel.AllFieldsHaveNames()*/;
         }
 
         public void NextMenu()
         {
-            if (!playerNamesPanel.AllFieldsHaveNames())
-                return;
+            //if (!playerNamesPanel.AllFieldsHaveNames())
+            //return;
             //set number of players count
             //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
-            playerNamesPanel.SetNamesSO();
+            //playerNamesPanel.SetNamesSO();
+            modeBankrollBattleMP.MaxRounds = maxRounds;
+            modeBankrollBattleMP.ShowScoreOnEnd = scoresAtEndCheck.currentValue;
             mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
         }
         private void OnDestroy()

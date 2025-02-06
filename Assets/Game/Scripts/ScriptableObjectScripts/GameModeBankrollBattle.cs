@@ -9,6 +9,11 @@ namespace DiceGame.ScriptableObjects
     public class GameModeBankrollBattle : GameModeBase
     {
         [SerializeField] private int maxRounds;
+        // new getter and setter for max rounds
+        public int MaxRounds { get => maxRounds; set => maxRounds = value; }
+        // new getter and setter for show score bool
+        public bool ShowScoreOnEnd { get => showScoresOnEnd; set => showScoresOnEnd = value; }
+
         private int _sevensRolled;
 
         public override void Initialize()
