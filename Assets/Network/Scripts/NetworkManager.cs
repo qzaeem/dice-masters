@@ -25,13 +25,13 @@ namespace DiceGame.Network
         //Arguments added roomkey and player count
         public async void StartGame(string roomKey, int playerCount, GameMode gameMode)
         {
-            _networkRunner = Instantiate(networkRunnerPrefab);
-            NewRoomKey = roomKey;
-            PlayerCount = playerCount;
-            // Add listeners
+            _networkRunner = Instantiate(networkRunnerPrefab); 
             _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
+            // Add listeners
             AddListeners();
 
+            NewRoomKey = roomKey;
+            PlayerCount = playerCount;
             var sceneInfo = new NetworkSceneInfo();
             sceneInfo.AddSceneRef(SceneRef.FromIndex(1));
 
@@ -41,53 +41,32 @@ namespace DiceGame.Network
                 GameMode = gameMode,
                 //SessionName = "dice",
                 SessionName = roomKey,
-                PlayerCount = playerCount,
+                //PlayerCount = playerCount,
                 // We need to specify a session property for matchmaking to decide where the player wants to join.
                 // Otherwise players from Platformer scene could connect to ThirdPersonCharacter game etc.
                 //SessionProperties = new Dictionary<string, SessionProperty> { ["GameMode"] = GameModeIdentifier },
                 Scene = sceneInfo,
             };
-
-            var startTask = _networkRunner.StartGame(startArguments);
-            await startTask;
-        }
-        //Join Room
-        public async void JoinRoom(string roomKey)
-        {
-            if (_networkRunner == null)
+            // Exclude PlayerCount if game mode is Client
+            if (gameMode != GameMode.Client && gameMode!= GameMode.AutoHostOrClient)
             {
-                _networkRunner = Instantiate(networkRunnerPrefab);
-                _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
-                AddListeners();
+                startArguments.PlayerCount = playerCount;
             }
-            var sceneInfo = new NetworkSceneInfo();
-            sceneInfo.AddSceneRef(SceneRef.FromIndex(gameSceneIndex));
-
-            var joinArguments = new StartGameArgs()
+            else
             {
-                GameMode = GameMode.Client, // Set to Client mode for joining rooms
-                SessionName = roomKey,      // Room key to join
-                Scene = sceneInfo,
-            };
-
-            var joinTask = _networkRunner.StartGame(joinArguments);
-
-            try
-            {
-                await joinTask;
-
-                if (joinTask.IsCompletedSuccessfully)
-                {
-                    Debug.Log($"Successfully joined the room: {roomKey}");
-                }
-                else
-                {
-                    Debug.LogError($"Failed to join the room: {roomKey}");
-                }
+                startArguments.Scene = null; // Clients should not override the scene
             }
-            catch (Exception ex)
+
+            //var startTask = _networkRunner.StartGame(startArguments);
+            //await startTask;
+            var startTask = await _networkRunner.StartGame(startArguments);
+            if (startTask.Ok)
             {
-                Debug.LogError($"Error joining the room: {ex.Message}");
+                Debug.Log($"Game Started: ");
+            }
+            else
+            {
+                Debug.LogError($"Failed to start game : {startTask.ShutdownReason}");
             }
         }
 

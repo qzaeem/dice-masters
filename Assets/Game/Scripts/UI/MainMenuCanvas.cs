@@ -189,13 +189,13 @@ namespace DiceGame.UI
         }
 
         //--- New ---
-        public void JoinRoom(string roomKeny, GameMode mode)
+        public void JoinRoom(string roomName, GameMode mode)
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
             gameObject.SetActive(false);
             //NetworkManager.Instance.JoinRoom(roomKey);
-            NetworkManager.Instance.StartGame(roomKey, playerCount, mode);
+            NetworkManager.Instance.StartGame(roomName, playerCount, mode);
         }
     }
 }
