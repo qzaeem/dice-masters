@@ -27,7 +27,7 @@ public class CreateRoomController : MonoBehaviour
     private void CreateRoom()
     {
         mainMenuCanvas.playerCount = playerCount;
-        mainMenuCanvas.StartGame();
+        mainMenuCanvas.CreateGame();
     }
     private void SetupDropdownOptions()
     {

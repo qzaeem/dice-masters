@@ -169,33 +169,33 @@ namespace DiceGame.UI
             currentMenu.OpenMenu(true);
         }
 
-        public void StartGame()
+        public void CreateGame()
         {
             GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             //--- Genreate random room key ---
             roomKey = RoomKeyGenerator.GenerateRoomKey();
-            Debug.Log($"Room Key: {roomKey}");
+            Debug.Log($"<color=yellow>Room Key: {roomKey}</color>");
             loadingMenu.SetActive(true);
             gameObject.SetActive(false);
             //--- New start method arg to get roomkey and player count---
             if (isMultiplayer)
             {
-                NetworkManager.Instance.StartGame(roomKey, playerCount, GameMode.Shared);
+                NetworkManager.Instance.CreateGame(roomKey, playerCount, GameMode.Shared);
             }
             else
             {
-                NetworkManager.Instance.StartGame(roomKey, playerCount, GameMode.Single);
+                NetworkManager.Instance.CreateGame(roomKey, playerCount, GameMode.Single);
             }
         }
 
         //--- New ---
-        public void JoinRoom(string roomName, GameMode mode)
+        public void JoinRoom(string roomName)
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
             gameObject.SetActive(false);
             //NetworkManager.Instance.JoinRoom(roomKey);
-            NetworkManager.Instance.StartGame(roomName, playerCount, mode);
+            NetworkManager.Instance.JoinGame(roomName);
         }
     }
 }

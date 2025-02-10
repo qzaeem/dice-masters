@@ -30,6 +30,6 @@ public class JoinPrivateRoom : MonoBehaviour
     }
     void JoinRoom()
     {
-        mainMenu.JoinRoom(roomKey.text, GameMode.Client);
+        mainMenu.JoinRoom(roomKey.text);
     }
 }
