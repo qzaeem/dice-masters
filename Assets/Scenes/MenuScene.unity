@@ -10209,7 +10209,7 @@ GameObject:
   - component: {fileID: 805872372}
   - component: {fileID: 805872373}
   m_Layer: 5
-  m_Name: Lobby
+  m_Name: Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14811,7 +14811,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1158007161}
   m_Layer: 0
-  m_Name: -----Private Lobby Panel-----
+  m_Name: -----Private Room Panel-----
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
