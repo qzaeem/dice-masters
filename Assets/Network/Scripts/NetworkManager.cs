@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using DiceGame.ScriptableObjects;
 using Fusion;
 using Fusion.Sockets;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -37,7 +36,6 @@ namespace DiceGame.Network
             var customProperties = new Dictionary<string, SessionProperty>();
             customProperties["gameType"] = (int)currentGameMode.value.mode;
             customProperties["roomKey"] = roomKey;
-
 
             NewRoomKey = roomKey;
             PlayerCount = playerCount;
@@ -123,35 +121,54 @@ namespace DiceGame.Network
             {
                 Debug.Log($"Session Started");
             }
-            else {
+            else
+            {
                 Debug.LogError($"Failed to Start");
             }
-            //// Attempt to join the lobby
-            //var lobbyResult = await _networkRunner.JoinSessionLobby(SessionLobby.Shared);
-            //if (!lobbyResult.Ok)
-            //{
-            //    Debug.LogError($"Failed to join lobby: {lobbyResult.ShutdownReason}");
-            //    return;
-            //}
-
-            //// Wait for session list update (replace Task.Delay with an event-driven approach if possible)
-            //await Task.Delay(1000);
-
-            //// Try joining an existing session
-            //var sessionToJoin = _availableSessions?.FirstOrDefault()?.Name;
-
-            //if (sessionToJoin != null)
-            //{
-            //    Debug.Log($"Joining existing session: {sessionToJoin}");
-            //    if (await TryStartGame(sessionToJoin))
-            //        return;
-            //}
-
-            //// No active sessions, create a new one
-            //string newSessionKey = RoomKeyGenerator.GenerateRoomKey();
-            //Debug.Log($"No active sessions found. Creating a new session: {newSessionKey}");
-            //await TryStartGame(newSessionKey, true);
         }
+
+        public async Task EnterLobby()
+        {
+            _networkRunner = Instantiate(networkRunnerPrefab);
+            _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
+            AddListeners();
+
+            var result = await _networkRunner.JoinSessionLobby(SessionLobby.Shared);
+            if (result.Ok)
+            {
+                Debug.Log($"Lobby Joined successfully!!!!");
+            }
+            else
+            {
+                Debug.LogError($"Failed to Start: {result.ShutdownReason}");
+            }
+        }
+        //// Attempt to join the lobby
+        //var lobbyResult = await _networkRunner.JoinSessionLobby(SessionLobby.Shared);
+        //if (!lobbyResult.Ok)
+        //{
+        //    Debug.LogError($"Failed to join lobby: {lobbyResult.ShutdownReason}");
+        //    return;
+        //}
+
+        //// Wait for session list update (replace Task.Delay with an event-driven approach if possible)
+        //await Task.Delay(1000);
+
+        //// Try joining an existing session
+        //var sessionToJoin = _availableSessions?.FirstOrDefault()?.Name;
+
+        //if (sessionToJoin != null)
+        //{
+        //    Debug.Log($"Joining existing session: {sessionToJoin}");
+        //    if (await TryStartGame(sessionToJoin))
+        //        return;
+        //}
+
+        //// No active sessions, create a new one
+        //string newSessionKey = RoomKeyGenerator.GenerateRoomKey();
+        //Debug.Log($"No active sessions found. Creating a new session: {newSessionKey}");
+        //await TryStartGame(newSessionKey, true);
+        //}
 
         //private async Task<bool> TryStartGame(string sessionName, bool isNewSession = false)
         //{
@@ -345,6 +362,7 @@ namespace DiceGame.Network
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
             //_availableSessions = sessionList;
+            SessionsListLobby.Instance.UpdateSessionUIEntry(sessionList);
             Debug.Log($"Session List Updated. Found {sessionList.Count} sessions.");
         }
 
