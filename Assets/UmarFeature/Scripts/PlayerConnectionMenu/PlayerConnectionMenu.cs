@@ -33,7 +33,8 @@ public class PlayerConnectionMenu : MonoBehaviour
         {
             case 1:
                 //randomMatchMenu.SetActive(true);
-                mainMenu.OpenMenu(mainMenu.MPMenus.randomMatch);
+                //mainMenu.OpenMenu(mainMenu.MPMenus.randomMatch);
+                mainMenu.OpenModeSelectionMenu(true);
                 break;
             case 2:
                 privateRoomMenu.SetActive(true);

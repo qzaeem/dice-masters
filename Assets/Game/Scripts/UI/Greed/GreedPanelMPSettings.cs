@@ -9,7 +9,6 @@ namespace DiceGame.UI
     {
         [SerializeField] private MainMenuCanvas mainMenu;
         [SerializeField] private GameModeGreed gameModeGreedMP;
-        [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private Button nextButton;
         [SerializeField] private TMP_Dropdown selectScoreDropDown;
         int scoreValue;
@@ -27,8 +26,6 @@ namespace DiceGame.UI
 
         private void Start()
         {
-            //nextButton.interactable = false;
-            //playerNamesPanel.onFieldValueChanged += CheckAllFields;
             SetupDropdownOptions();
         }
         private void SetupDropdownOptions()
@@ -48,25 +45,15 @@ namespace DiceGame.UI
                 scoreValue = int.Parse(selectScoreDropDown.options[index].text);
             }
         }
-        //public void CheckAllFields()
-        //{
-        //    nextButton.interactable = playerNamesPanel.AllFieldsHaveNames();
-        //}
 
         public void NextMenu()
         {
-            //after changes
-            //if (!playerNamesPanel.AllFieldsHaveNames())
-            //    return;
-            //set number of players count
-            //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
-            //playerNamesPanel.SetNamesSO();
             CheckWinningScoreVal(scoreValue);
-            mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            //mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            mainMenu.OpenSelectedModeMenu();
         }
         private void OnDestroy()
         {
-            //playerNamesPanel.onFieldValueChanged -= CheckAllFields;
             selectScoreDropDown.onValueChanged.RemoveListener(UpdateWinningScoreOption);
         }
         private void CheckWinningScoreVal(int val)

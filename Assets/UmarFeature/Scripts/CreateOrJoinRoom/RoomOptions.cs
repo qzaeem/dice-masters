@@ -24,7 +24,8 @@ public class RoomOptions : MonoBehaviour
     {
         //createRoomMenu.SetActive(true);
         this.gameObject.SetActive(false);
-        mainMenu.OpenMenu(mainMenu.MPMenus.createRoom);
+        //mainMenu.OpenMenu(mainMenu.MPMenus.createRoom);
+        mainMenu.OpenModeSelectionMenu(false);
     }
     private void EnableJoinRoomMenu()
     {

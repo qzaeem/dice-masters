@@ -11,7 +11,6 @@ namespace DiceGame.UI
     {
         [SerializeField] private MainMenuCanvas mainMenu;
         [SerializeField] private GameModeTileKnock modeTileKnockMP;
-        [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private TMP_InputField inputField;
         [SerializeField] private Button nextButton;
         [SerializeField] private TMP_Dropdown totalTilesDropDown;
@@ -19,6 +18,8 @@ namespace DiceGame.UI
         private uint maxTiles;
         private void OnEnable()
         {
+            inputField.text = "";
+            nextButton.interactable = false;
             inputField.onValueChanged.AddListener(OnRoundValueChanged);
             nextButton.onClick.AddListener(NextMenu);
             totalTilesDropDown.onValueChanged.AddListener(UpdateNumberOfTiles);
@@ -33,9 +34,6 @@ namespace DiceGame.UI
 
         private void Start()
         {
-            nextButton.interactable = false;
-            inputField.text = "";
-            playerNamesPanel.onFieldValueChanged += CheckAllFields;
             SetupDropdownOptions();
         }
         private void SetupDropdownOptions()
@@ -70,17 +68,13 @@ namespace DiceGame.UI
 
         public void NextMenu()
         {
-            //if (!playerNamesPanel.AllFieldsHaveNames())
-            //    return;
-            //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
-            //playerNamesPanel.SetNamesSO();
             modeTileKnockMP.MaxRounds = maxRounds;
             modeTileKnockMP.TotalTiles = maxTiles;
-            mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            //mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            mainMenu.OpenSelectedModeMenu();
         }
         private void OnDestroy()
         {
-            playerNamesPanel.onFieldValueChanged -= CheckAllFields;
             totalTilesDropDown.onValueChanged.RemoveListener(UpdateNumberOfTiles);
         }
     }

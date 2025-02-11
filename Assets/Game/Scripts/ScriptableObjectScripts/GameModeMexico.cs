@@ -20,6 +20,9 @@ namespace DiceGame.ScriptableObjects
 
         public uint MaxLives { get { return maxLives; } }
 
+        //New set max lives 
+        public uint SetMaxLives { set =>  maxLives = value; }
+
         public override void Initialize()
         {
             base.Initialize();

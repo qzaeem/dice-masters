@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using DiceGame.ScriptableObjects;
 using Fusion;
 using Fusion.Sockets;
@@ -17,6 +19,7 @@ namespace DiceGame.Network
         private NetworkEvents _networkEvents;
         public string NewRoomKey;
         public int PlayerCount;
+        private List<SessionInfo> _availableSessions = new ();
 
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined;
@@ -85,6 +88,61 @@ namespace DiceGame.Network
             {
                 Debug.LogError($"Failed to join game: {startTask.ShutdownReason}");
             }
+        }
+        public async void RandomMatchmaking()
+        {
+            _networkRunner = Instantiate(networkRunnerPrefab);
+            _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
+            AddListeners();
+
+            // Attempt to join the lobby
+            var lobbyResult = await _networkRunner.JoinSessionLobby(SessionLobby.Shared);
+            if (!lobbyResult.Ok)
+            {
+                Debug.LogError($"Failed to join lobby: {lobbyResult.ShutdownReason}");
+                return;
+            }
+
+            // Wait for session list update (replace Task.Delay with an event-driven approach if possible)
+            await Task.Delay(1000);
+
+            // Try joining an existing session
+            var sessionToJoin = _availableSessions?.FirstOrDefault()?.Name;
+
+            if (sessionToJoin != null)
+            {
+                Debug.Log($"Joining existing session: {sessionToJoin}");
+                if (await TryStartGame(sessionToJoin))
+                    return;
+            }
+
+            // No active sessions, create a new one
+            string newSessionKey = RoomKeyGenerator.GenerateRoomKey();
+            Debug.Log($"No active sessions found. Creating a new session: {newSessionKey}");
+            await TryStartGame(newSessionKey, true);
+        }
+
+        private async Task<bool> TryStartGame(string sessionName, bool isNewSession = false)
+        {
+            var sceneInfo = new NetworkSceneInfo();
+            sceneInfo.AddSceneRef(SceneRef.FromIndex(1));
+
+            var startGameArgs = new StartGameArgs
+            {
+                GameMode = GameMode.Shared,
+                SessionName = sessionName,
+                Scene = isNewSession ? sceneInfo : null // Only set scene info for new sessions
+            };
+
+            var result = await _networkRunner.StartGame(startGameArgs);
+            if (result.Ok)
+            {
+                Debug.Log($"{(isNewSession ? "Created" : "Joined")} session: {sessionName}");
+                return true;
+            }
+
+            Debug.LogError($"Failed to {(isNewSession ? "create" : "join")} session: {result.ShutdownReason}");
+            return false;
         }
 
         private void AddListeners()
@@ -256,7 +314,8 @@ namespace DiceGame.Network
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
-
+            _availableSessions = sessionList;
+            Debug.Log($"Session List Updated. Found {sessionList.Count} sessions.");
         }
 
         public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)

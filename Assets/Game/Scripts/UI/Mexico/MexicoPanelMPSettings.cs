@@ -1,4 +1,5 @@
 using DiceGame.ScriptableObjects;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 namespace DiceGame.UI
@@ -7,44 +8,52 @@ namespace DiceGame.UI
     {
         [SerializeField] private MainMenuCanvas mainMenu;
         [SerializeField] private GameModeMexico modeMexicoMP;
-        [SerializeField] private PlayerNamesPanel playerNamesPanel;
-        [SerializeField] private CheckMark reviveMexicoOption;
         [SerializeField] private Button nextButton;
+        [SerializeField] private TMP_Dropdown maxLiveDropdown;
+        uint maxLive;
+
         private void OnEnable()
         {
             nextButton.onClick.AddListener(NextMenu);
+            maxLiveDropdown.onValueChanged.AddListener(UpdateMaxLives);
         }
 
         private void OnDisable()
         {
             nextButton.onClick.RemoveListener(NextMenu);
+            maxLiveDropdown.onValueChanged.RemoveListener(UpdateMaxLives);
         }
 
         private void Start()
         {
-            nextButton.interactable = false;
-            //playerNamesPanel.onFieldValueChanged += CheckAllFields;
+            SetupDropdownOptions();
+        }
+        private void SetupDropdownOptions()
+        {
+            //get the last selected max tiles
+            maxLive = modeMexicoMP.MaxLives;
+            //check value index in drop down 
+            int index = maxLiveDropdown.options.FindIndex(option => option.text == maxLive.ToString());
+            if (index != -1) maxLiveDropdown.value = index;
+            maxLiveDropdown.RefreshShownValue();
         }
 
-        //public void CheckAllFields()
-        //{
-        //    nextButton.interactable = playerNamesPanel.AllFieldsHaveNames();
-        //}
-
+        private void UpdateMaxLives(int index)
+        {
+            if (index >= 0 && index < maxLiveDropdown.options.Count)
+            {
+                maxLive = uint.Parse(maxLiveDropdown.options[index].text);
+            }
+        }
         public void NextMenu()
         {
-            // after changes
-            //if (!playerNamesPanel.AllFieldsHaveNames())
-                //return;
-            //set number of players count
-            //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
-            //playerNamesPanel.SetNamesSO();
-
-            mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            modeMexicoMP.SetMaxLives= maxLive;
+            //mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            mainMenu.OpenSelectedModeMenu();
         }
         private void OnDestroy()
         {
-            //playerNamesPanel.onFieldValueChanged -= CheckAllFields;
+            maxLiveDropdown.onValueChanged.RemoveListener(UpdateMaxLives);
         }
     }
 }

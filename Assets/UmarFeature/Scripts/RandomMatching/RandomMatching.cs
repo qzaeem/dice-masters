@@ -24,5 +24,6 @@ public class RandomMatching : MonoBehaviour
     private void StartRandomMatch()
     {
         //mainMenu.JoinRoom(string.Empty, GameMode.AutoHostOrClient); TODO Create a separate method in Network Manager for Random matchmaking
+        mainMenu.RandomRoom();
     }
 }

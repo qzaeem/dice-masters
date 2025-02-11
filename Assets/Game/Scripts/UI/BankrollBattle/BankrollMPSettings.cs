@@ -10,12 +10,13 @@ namespace DiceGame.UI
         [SerializeField] private MainMenuCanvas mainMenu;
         [SerializeField] private GameModeBankrollBattle modeBankrollBattleMP;
         [SerializeField] private TMP_InputField inputField;
-        [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private CheckMark scoresAtEndCheck;
         [SerializeField] private Button nextButton;
         private int maxRounds;
         private void OnEnable()
         {
+            nextButton.interactable = false;
+            inputField.text = "";
             inputField.onValueChanged.AddListener(SetMaxRoundsValue);
             nextButton.onClick.AddListener(NextMenu);
             scoresAtEndCheck.defaultValue = modeBankrollBattleMP.ShowScoreOnEnd;
@@ -29,9 +30,6 @@ namespace DiceGame.UI
 
         private void Start()
         {
-            nextButton.interactable = false;
-            inputField.text = "";
-            playerNamesPanel.onFieldValueChanged += CheckAllFields;
         }
 
         private void SetMaxRoundsValue(string val)
@@ -47,18 +45,14 @@ namespace DiceGame.UI
 
         public void NextMenu()
         {
-            //if (!playerNamesPanel.AllFieldsHaveNames())
-            //return;
-            //set number of players count
-            //mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
-            //playerNamesPanel.SetNamesSO();
             modeBankrollBattleMP.MaxRounds = maxRounds;
             modeBankrollBattleMP.ShowScoreOnEnd = scoresAtEndCheck.currentValue;
-            mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            //mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            mainMenu.OpenSelectedModeMenu();
         }
         private void OnDestroy()
         {
-            playerNamesPanel.onFieldValueChanged -= CheckAllFields;
+            inputField.onValueChanged.RemoveListener(SetMaxRoundsValue);
         }
     }
 }

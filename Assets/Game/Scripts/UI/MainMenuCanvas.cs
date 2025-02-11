@@ -11,7 +11,7 @@ namespace DiceGame.UI
     [System.Serializable]
     public class MultiplayerMenus
     {
-        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, createOrJoinRom, createRoom, JoinRoom;
+        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, createOrJoinRom, createRoom, JoinRoom, LobbyMenu;
     }
     public class MainMenuCanvas : MonoBehaviour
     {
@@ -35,6 +35,7 @@ namespace DiceGame.UI
         public MultiplayerMenus MPMenus;
         public int playerCount;
         public bool isMultiplayer;
+        bool isRandomMatchSelected;
         string roomKey;
 
         private Menu currentMenu;
@@ -136,16 +137,35 @@ namespace DiceGame.UI
         private void SetScene()
         {
             int sceneIndex;
-            if (isMultiDevice) sceneIndex = 1;
-            else sceneIndex = 2;
+            if (isMultiDevice)
+                sceneIndex = 0;
+            else
+                sceneIndex = 1;
             NetworkManager.Instance.SetGameSceneIndex(sceneIndex);
         }
         private void SelectIsMultiplayer(bool isMultiDevice)
         {
             this.isMultiDevice = isMultiDevice;
-            OpenMenu(modeSelectionMenu);
+            //New change
+            if (!isMultiDevice) 
+                OpenMenu(modeSelectionMenu);
+            else 
+                OpenMenu(MPMenus.playerConnectionMenu);
             //--- Set scene index ---
             SetScene();
+        }
+        //New
+        public void OpenModeSelectionMenu(bool isRandomMatch)
+        {
+            isRandomMatchSelected = isRandomMatch;
+            OpenMenu(modeSelectionMenu);
+        }
+        public void OpenSelectedModeMenu()
+        {
+            if (isRandomMatchSelected)
+                OpenMenu(MPMenus.randomMatch);
+            else
+                OpenMenu(MPMenus.createRoom);
         }
 
         private void OpenDeviceSelectionPanel()
@@ -196,6 +216,13 @@ namespace DiceGame.UI
             gameObject.SetActive(false);
             //NetworkManager.Instance.JoinRoom(roomKey);
             NetworkManager.Instance.JoinGame(roomName);
+        }
+        public void RandomRoom()
+        {
+            //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
+            loadingMenu.SetActive(true);
+            gameObject.SetActive(false);
+            NetworkManager.Instance.RandomMatchmaking();
         }
     }
 }
