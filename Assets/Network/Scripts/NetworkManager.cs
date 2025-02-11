@@ -75,7 +75,6 @@ namespace DiceGame.Network
             _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
             // Add listeners
             AddListeners();
-
             var startArguments = new StartGameArgs
             {
                 GameMode = GameMode.Shared, 
