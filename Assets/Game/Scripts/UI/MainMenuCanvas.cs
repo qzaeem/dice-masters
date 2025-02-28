@@ -11,7 +11,7 @@ namespace DiceGame.UI
     [System.Serializable]
     public class MultiplayerMenus
     {
-        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, createOrJoinRom, createRoom, JoinRoom, LobbyMenu;
+        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, createOrJoinRom, createRoom, JoinRoom, LobbyMenu, RoomMenu;
     }
     public class MainMenuCanvas : MonoBehaviour
     {
@@ -147,9 +147,9 @@ namespace DiceGame.UI
         {
             this.isMultiDevice = isMultiDevice;
             //New change
-            if (!isMultiDevice) 
+            if (!isMultiDevice)
                 OpenMenu(modeSelectionMenu);
-            else 
+            else
                 OpenMenu(MPMenus.playerConnectionMenu);
             //--- Set scene index ---
             SetScene();
@@ -196,10 +196,11 @@ namespace DiceGame.UI
             roomKey = RoomKeyGenerator.GenerateRoomKey();
             Debug.Log($"<color=yellow>Room Key: {roomKey}</color>");
             loadingMenu.SetActive(true);
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
             //--- New start method arg to get roomkey and player count---
             if (isMultiplayer)
             {
+                OpenMenu(MPMenus.RoomMenu);
                 NetworkManager.Instance.CreateGame(roomKey, playerCount, GameMode.Shared);
             }
             else
@@ -213,15 +214,16 @@ namespace DiceGame.UI
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
-            gameObject.SetActive(false);
-            //NetworkManager.Instance.JoinRoom(roomKey);
+            OpenMenu(MPMenus.RoomMenu);
             NetworkManager.Instance.JoinGame(roomName);
+            //gameObject.SetActive(false);
+            //NetworkManager.Instance.JoinRoom(roomKey);
         }
         public void RandomRoom()
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
             NetworkManager.Instance.RandomMatchmaking();
         }
     }

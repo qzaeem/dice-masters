@@ -1,3 +1,4 @@
+using DiceGame.Network;
 using DiceGame.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,12 +21,15 @@ public class RoomOptions : MonoBehaviour
         createRoomButton.onClick.RemoveListener(EnableCreateRoomMenu);
         joinRoomButton.onClick.RemoveListener(EnableJoinRoomMenu);
     }
-    private void EnableCreateRoomMenu()
+    //Enter lobby session to join random match
+    private async void EnableCreateRoomMenu()
     {
         //createRoomMenu.SetActive(true);
         this.gameObject.SetActive(false);
         //mainMenu.OpenMenu(mainMenu.MPMenus.createRoom);
-        mainMenu.OpenModeSelectionMenu(false);
+        //mainMenu.OpenModeSelectionMenu(false);
+        await NetworkManager.Instance.EnterLobby();
+        mainMenu.OpenMenu(mainMenu.MPMenus.LobbyMenu);
     }
     private void EnableJoinRoomMenu()
     {

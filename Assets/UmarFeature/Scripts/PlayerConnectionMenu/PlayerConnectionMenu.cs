@@ -7,7 +7,7 @@ public class PlayerConnectionMenu : MonoBehaviour
 {
     [SerializeField] private MainMenuCanvas mainMenu;
     [SerializeField] private Button randomMatchBtn;
-    [SerializeField] private Button privateRoomBtn;
+    [SerializeField] private Button privateRoomBtn, publicGameBtn;
     [SerializeField] private Button enterLobbyBtn;
     //[SerializeField] private GameObject randomMatchMenu;
     [SerializeField] private GameObject privateRoomMenu;
@@ -17,11 +17,13 @@ public class PlayerConnectionMenu : MonoBehaviour
         randomMatchBtn.onClick.AddListener(() => EnableMenu(1));
         privateRoomBtn.onClick.AddListener(() => EnableMenu(2));
         enterLobbyBtn.onClick.AddListener(() => EnableMenu(3));
+        publicGameBtn.onClick.AddListener(() => EnableMenu(4));
     }
     private void OnDisable()
     {
         randomMatchBtn.onClick.RemoveAllListeners();
         privateRoomBtn.onClick.RemoveAllListeners();
+        publicGameBtn.onClick.RemoveAllListeners();
         enterLobbyBtn.onClick.RemoveAllListeners();
     }
     private void OnDestroy()
@@ -43,11 +45,16 @@ public class PlayerConnectionMenu : MonoBehaviour
                 break;
             case 2:
                 privateRoomMenu.SetActive(true);
-                mainMenu.OpenMenu(mainMenu.MPMenus.createOrJoinRom);
+                mainMenu.OpenModeSelectionMenu(false);
+                //mainMenu.OpenMenu(mainMenu.MPMenus.createRoom);
                 break;
             case 3:
-               await NetworkManager.Instance.EnterLobby();
+                await NetworkManager.Instance.EnterLobby();
                 mainMenu.OpenMenu(mainMenu.MPMenus.LobbyMenu);
+                break;
+            case 4:
+                privateRoomMenu.SetActive(true);
+                mainMenu.OpenMenu(mainMenu.MPMenus.createOrJoinRom);
                 break;
         }
     }

@@ -30,17 +30,21 @@ namespace DiceGame.UI
         }
         private void SetupDropdownOptions()
         {
-            //get the last selected score value
-            scoreValue = (int)gameModeGreedMP.MaxWinningScore;
-            //check value index in drop down 
-            int index = selectScoreDropDown.options.FindIndex(option => option.text == scoreValue.ToString());
-            if (index != -1) selectScoreDropDown.value = index;
-            selectScoreDropDown.RefreshShownValue();
+            //default 
+            selectScoreDropDown.value = 1;
+            scoreValue = 10000; // normal game 
+
+            ////get the last selected score value
+            //scoreValue = (int)gameModeGreedMP.MaxWinningScore;
+            ////check value index in drop down 
+            //int index = selectScoreDropDown.options.FindIndex(option => option.text == scoreValue.ToString());
+            //if (index != -1) selectScoreDropDown.value = index;
+            //selectScoreDropDown.RefreshShownValue();
         }
 
         private void UpdateWinningScoreOption(int index)
         {
-           if(index >= 0 && index < selectScoreDropDown.options.Count)
+            if (index >= 0 && index < selectScoreDropDown.options.Count)
             {
                 scoreValue = int.Parse(selectScoreDropDown.options[index].text);
             }
@@ -58,7 +62,7 @@ namespace DiceGame.UI
         }
         private void CheckWinningScoreVal(int val)
         {
-            if(System.Enum.IsDefined(typeof(WinningScore), val))
+            if (System.Enum.IsDefined(typeof(WinningScore), val))
             {
                 gameModeGreedMP.MaxWinningScore = (WinningScore)val;
             }

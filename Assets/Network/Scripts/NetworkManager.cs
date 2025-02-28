@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DiceGame.ScriptableObjects;
 using Fusion;
@@ -12,23 +11,24 @@ namespace DiceGame.Network
 {
     public class NetworkManager : Models.MonoBehaviourSingleton<NetworkManager>, INetworkRunnerCallbacks
     {
+        [SerializeField] private NetworkPrefabRef roomPlayerInfoPrefab;
         [SerializeField] private NetworkRunner networkRunnerPrefab;
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private int gameSceneIndex;
-        private NetworkRunner _networkRunner;
+        [HideInInspector] public NetworkRunner _networkRunner;
         private NetworkEvents _networkEvents;
         public string NewRoomKey;
         public int PlayerCount;
         //private List<SessionInfo> _availableSessions = new ();
 
         #region Callback Actions
-        public Action<PlayerRef> onPlayerJoined;
+        public Action<PlayerRef> onPlayerJoined, onPlayerLeft;
         #endregion
 
         //Arguments added roomkey and player count
         public async void CreateGame(string roomKey, int playerCount, GameMode gameMode)
         {
-            _networkRunner = Instantiate(networkRunnerPrefab); 
+            _networkRunner = Instantiate(networkRunnerPrefab);
             _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
             // Add listeners
             AddListeners();
@@ -40,7 +40,7 @@ namespace DiceGame.Network
             NewRoomKey = roomKey;
             PlayerCount = playerCount;
             var sceneInfo = new NetworkSceneInfo();
-            sceneInfo.AddSceneRef(SceneRef.FromIndex(1));
+            sceneInfo.AddSceneRef(SceneRef.FromIndex(0)); // load main menu scene
 
             var startArguments = new StartGameArgs()
             {
@@ -77,7 +77,7 @@ namespace DiceGame.Network
             AddListeners();
             var startArguments = new StartGameArgs
             {
-                GameMode = GameMode.Shared, 
+                GameMode = GameMode.Shared,
                 SessionName = roomKey,
                 Scene = null // Clients should not override the scene
             };
@@ -142,55 +142,6 @@ namespace DiceGame.Network
                 Debug.LogError($"Failed to Start: {result.ShutdownReason}");
             }
         }
-        //// Attempt to join the lobby
-        //var lobbyResult = await _networkRunner.JoinSessionLobby(SessionLobby.Shared);
-        //if (!lobbyResult.Ok)
-        //{
-        //    Debug.LogError($"Failed to join lobby: {lobbyResult.ShutdownReason}");
-        //    return;
-        //}
-
-        //// Wait for session list update (replace Task.Delay with an event-driven approach if possible)
-        //await Task.Delay(1000);
-
-        //// Try joining an existing session
-        //var sessionToJoin = _availableSessions?.FirstOrDefault()?.Name;
-
-        //if (sessionToJoin != null)
-        //{
-        //    Debug.Log($"Joining existing session: {sessionToJoin}");
-        //    if (await TryStartGame(sessionToJoin))
-        //        return;
-        //}
-
-        //// No active sessions, create a new one
-        //string newSessionKey = RoomKeyGenerator.GenerateRoomKey();
-        //Debug.Log($"No active sessions found. Creating a new session: {newSessionKey}");
-        //await TryStartGame(newSessionKey, true);
-        //}
-
-        //private async Task<bool> TryStartGame(string sessionName, bool isNewSession = false)
-        //{
-        //    var sceneInfo = new NetworkSceneInfo();
-        //    sceneInfo.AddSceneRef(SceneRef.FromIndex(1));
-
-        //    var startGameArgs = new StartGameArgs
-        //    {
-        //        GameMode = GameMode.Shared,
-        //        SessionName = sessionName,
-        //        Scene = isNewSession ? sceneInfo : null // Only set scene info for new sessions
-        //    };
-
-        //    var result = await _networkRunner.StartGame(startGameArgs);
-        //    if (result.Ok)
-        //    {
-        //        Debug.Log($"{(isNewSession ? "Created" : "Joined")} session: {sessionName}");
-        //        return true;
-        //    }
-
-        //    Debug.LogError($"Failed to {(isNewSession ? "create" : "join")} session: {result.ShutdownReason}");
-        //    return false;
-        //}
 
         private void AddListeners()
         {
@@ -311,11 +262,15 @@ namespace DiceGame.Network
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
             onPlayerJoined?.Invoke(player);
+            //if (networkRunnerPrefab.IsServer)
+            //{
+            //NetworkObject networkPlayerObject = networkRunnerPrefab.Spawn(roomPlayerInfoPrefab, Vector3.zero, Quaternion.identity, player);
+            //}
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
-
+            onPlayerLeft?.Invoke(player);
         }
 
         public void OnInput(NetworkRunner runner, NetworkInput input)

@@ -1,4 +1,3 @@
-using DiceGame.ScriptableObjects;
 using DiceGame.UI;
 using TMPro;
 using UnityEngine;
@@ -26,6 +25,7 @@ public class CreateRoomController : MonoBehaviour
     }
     private void CreateRoom()
     {
+        gameObject.SetActive(false);
         mainMenuCanvas.playerCount = playerCount;
         mainMenuCanvas.CreateGame();
     }
