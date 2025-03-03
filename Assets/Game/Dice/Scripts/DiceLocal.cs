@@ -15,6 +15,7 @@ namespace DiceGame.Game
         [SerializeField] private DiceRollManager diceRollManager;
         [SerializeField] private float upwardForce, maxTorque;
         [SerializeField] private ActionSO onRollComplete;
+        [SerializeField] private DiceSkinVariable skinVariable;
         [SerializeField] private List<ValueDirection> valueDirections;
         private int _currentValue;
         private Rigidbody _rBody;
@@ -28,6 +29,7 @@ namespace DiceGame.Game
         private void Awake()
         {
             _rBody = GetComponent<Rigidbody>();
+            GetComponent<MeshRenderer>().material = skinVariable.value;
         }
 
         private void Start()
