@@ -30,6 +30,12 @@ namespace DiceGame.ScriptableObjects
             //gameManager.ChangePlayerTurn(PlayerManager.LocalPlayer.playerRef);
         }
 
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            changeTurnVariable.onValueChange -= OnPlayerTurnChange;
+        }
+
         public override void RollDice()
         {
             diceRollManager.Execute();

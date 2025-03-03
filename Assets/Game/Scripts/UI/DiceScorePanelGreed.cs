@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using DiceGame.Game;
 using Newtonsoft.Json;
+using System.Collections;
 
 namespace DiceGame.UI
 {
@@ -72,12 +73,19 @@ namespace DiceGame.UI
             }
 
             heldDiceButtons.Clear();
+            StartCoroutine(RefreshUI());
         }
 
         private void OnDisable()
         {
             submitButton.onClick.RemoveListener(OnSubmit);
             heldDiceButtons.Clear();
+        }
+
+        private IEnumerator RefreshUI()
+        {
+            yield return new WaitForEndOfFrame();
+            LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform.GetChild(0));
         }
 
         private void OnTappedDie(int dieId)
