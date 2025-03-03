@@ -142,6 +142,7 @@ public class PrivateRoomHandler : NetworkBehaviour
     //}
     private async void ShutdownSession()
     {
+        loadingMenu.SetActive(false);
         if (NetworkManager.Instance._networkRunner != null)
         {
             Debug.Log("🔴 Shutting down session...");

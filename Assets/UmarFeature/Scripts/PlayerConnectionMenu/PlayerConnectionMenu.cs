@@ -54,7 +54,7 @@ public class PlayerConnectionMenu : MonoBehaviour
                 break;
             case 4:
                 privateRoomMenu.SetActive(true);
-                mainMenu.OpenMenu(mainMenu.MPMenus.createOrJoinRom);
+                mainMenu.OpenMenu(mainMenu.MPMenus.RandomOrPrivateMatch);
                 break;
         }
     }

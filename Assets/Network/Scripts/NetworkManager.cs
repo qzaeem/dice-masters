@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiceGame.ScriptableObjects;
@@ -24,6 +24,7 @@ namespace DiceGame.Network
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined, onPlayerLeft;
         public Action<int> onJoinedGame;
+        public Action<string> OnJoinFailed;
         #endregion
 
         //Arguments added roomkey and player count
@@ -102,7 +103,11 @@ namespace DiceGame.Network
             }
             else
             {
-                Debug.LogError($"Failed to join game: {startTask.ShutdownReason}");
+                string error = $"Failed to join game: {startTask.ShutdownReason}";
+                Debug.LogError(error);
+                OnJoinFailed?.Invoke(error);
+                await _networkRunner.Shutdown();
+                Destroy(_networkRunner.gameObject);
             }
         }
         public async void RandomMatchmaking()

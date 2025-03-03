@@ -12,7 +12,7 @@ namespace DiceGame.UI
     [System.Serializable]
     public class MultiplayerMenus
     {
-        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, createOrJoinRom, createRoom, JoinRoom, LobbyMenu, RoomMenu;
+        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, RandomOrPrivateMatch, createRoom, JoinRoom, LobbyMenu, RoomMenu;
     }
     public class MainMenuCanvas : MonoBehaviour
     {
@@ -31,6 +31,8 @@ namespace DiceGame.UI
         [SerializeField] private PlayerInfoVariable playerInfo;
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private List<GameModeBase> gameModes;
+        [SerializeField] private List<GameModeBase> mpGameModes;
+        [SerializeField] private TextMeshProUGUI alertText;
 
         //--- New ---
         [Header("Multiplayer Mode Menus")]
@@ -72,10 +74,14 @@ namespace DiceGame.UI
             knockDownModeButton.onClick.RemoveAllListeners();
             nameInputField.onValueChanged.RemoveListener(OnNameChanged);
             NetworkManager.Instance.onJoinedGame -= OnJoinedGame;
+            NetworkManager.Instance.OnJoinFailed -= onJoinFailed;
         }
         private void Start()
         {
+            alertText.text = "";
+            alertText.gameObject.SetActive(false);
             NetworkManager.Instance.onJoinedGame += OnJoinedGame;
+            NetworkManager.Instance.OnJoinFailed += onJoinFailed;
             startButton.interactable = false;
             OpenMenu(nameMenu);
         }
@@ -190,6 +196,7 @@ namespace DiceGame.UI
         }
         public void OpenMenu(Menu menu)
         {
+            alertText.gameObject.SetActive(false);
             if (currentMenu != null)
             {
                 currentMenu.OpenMenu(false);
@@ -232,7 +239,7 @@ namespace DiceGame.UI
         public void OnJoinedGame(int gameMode)
         {
             // Find the matching game mode from the list
-            GameModeBase selectedGameMode = gameModes.FirstOrDefault(mode => (int)mode.mode == gameMode);
+            GameModeBase selectedGameMode = mpGameModes.FirstOrDefault(mode => (int)mode.mode == gameMode);
             if (selectedGameMode != null)
             {
                 currentGameMode.value = selectedGameMode;
@@ -243,6 +250,14 @@ namespace DiceGame.UI
                 Debug.LogError($"❌ No matching game mode found for index: {gameMode}");
             }
         }
+        public void onJoinFailed(string msg)
+        {
+            OpenMenu(MPMenus.RandomOrPrivateMatch);
+            loadingMenu.SetActive(false);
+            alertText.gameObject.SetActive(true);
+            alertText.text = msg;
+        }
+
         public void RandomRoom()
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
