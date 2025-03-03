@@ -1,5 +1,4 @@
-using DiceGame.Network;
-using Fusion;
+using DiceGame.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +8,7 @@ public class SessionEntity : MonoBehaviour
     public TextMeshProUGUI sessionKeyText;
     public TextMeshProUGUI sessionGameTypeText;
     public TextMeshProUGUI sessionPlayerCountText;
-     
+
     public Button joinBtn;
     private void Start()
     {
@@ -25,7 +24,8 @@ public class SessionEntity : MonoBehaviour
 
     public void JoinSession()
     {
-        NetworkManager.Instance.JoinGame(sessionKeyText.text);
+        //NetworkManager.Instance.JoinGame(sessionKeyText.text);
+        MainMenuCanvas.instance.JoinRoom(sessionKeyText.text);
         //SessionNameUI.instance.sessionNameUI.SetActive(false);
         //SessionNameUI.instance.lobbyUiPanel.SetActive(true);
     }

@@ -2436,6 +2436,7 @@ MonoBehaviour:
   sessionNameText: {fileID: 2043870434}
   localPlayerNameText: {fileID: 1972383610}
   startGameButton: {fileID: 543451773}
+  backButton: {fileID: 1347894920}
 --- !u!114 &155455506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3831,7 +3832,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Join Private Game
+  m_text: Join With Private Code
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -9750,7 +9751,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Random Game
+  m_text: Join Random Match
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -12233,6 +12234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sessionEntityPrefab: {fileID: 3911516618165011935, guid: 0419031b12cbcd74ca210647de5dcb2f, type: 3}
   sessionEntitySpawnParent: {fileID: 1005722472}
+  backButton: {fileID: 1068311830}
 --- !u!1 &806933905
 GameObject:
   m_ObjectHideFlags: 0

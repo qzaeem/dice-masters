@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DiceGame.Network;
 using DiceGame.ScriptableObjects;
 using Fusion;
@@ -15,6 +16,7 @@ namespace DiceGame.UI
     }
     public class MainMenuCanvas : MonoBehaviour
     {
+        public static MainMenuCanvas instance;
         [SerializeField] private Button startButton;
         [SerializeField] private Button singleDeviceButton;
         [SerializeField] private Button multiDeviceButton;
@@ -43,6 +45,7 @@ namespace DiceGame.UI
 
         private void Awake()
         {
+            instance = this;
             Application.runInBackground = true;
         }
 
@@ -68,9 +71,11 @@ namespace DiceGame.UI
             mexicoModeButton.onClick.RemoveAllListeners();
             knockDownModeButton.onClick.RemoveAllListeners();
             nameInputField.onValueChanged.RemoveListener(OnNameChanged);
+            NetworkManager.Instance.onJoinedGame -= OnJoinedGame;
         }
         private void Start()
         {
+            NetworkManager.Instance.onJoinedGame += OnJoinedGame;
             startButton.interactable = false;
             OpenMenu(nameMenu);
         }
@@ -223,6 +228,20 @@ namespace DiceGame.UI
             NetworkManager.Instance.JoinGame(roomName);
             //gameObject.SetActive(false);
             //NetworkManager.Instance.JoinRoom(roomKey);
+        }
+        public void OnJoinedGame(int gameMode)
+        {
+            // Find the matching game mode from the list
+            GameModeBase selectedGameMode = gameModes.FirstOrDefault(mode => (int)mode.mode == gameMode);
+            if (selectedGameMode != null)
+            {
+                currentGameMode.value = selectedGameMode;
+                Debug.Log($"✅ Game mode set to: {selectedGameMode.mode}");
+            }
+            else
+            {
+                Debug.LogError($"❌ No matching game mode found for index: {gameMode}");
+            }
         }
         public void RandomRoom()
         {

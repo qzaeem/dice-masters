@@ -23,6 +23,7 @@ namespace DiceGame.Network
 
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined, onPlayerLeft;
+        public Action<int> onJoinedGame;
         #endregion
 
         //Arguments added roomkey and player count
@@ -75,6 +76,7 @@ namespace DiceGame.Network
             _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
             // Add listeners
             AddListeners();
+
             var startArguments = new StartGameArgs
             {
                 GameMode = GameMode.Shared,
@@ -87,6 +89,16 @@ namespace DiceGame.Network
             if (startTask.Ok)
             {
                 Debug.Log($"Successfully joined the game! Room Key: {roomKey}");
+                //Set the game mode for the client same as host
+                if (_networkRunner.SessionInfo.IsValid)
+                {
+                    if (_networkRunner.SessionInfo.Properties.TryGetValue("gameType", out var gameTypeProperty))
+                    {
+                        int gameType = (int)gameTypeProperty;
+                        Debug.Log($"Game mode set to: {gameType}");
+                        onJoinedGame?.Invoke(gameType);
+                    }
+                }
             }
             else
             {

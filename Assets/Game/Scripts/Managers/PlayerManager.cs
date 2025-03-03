@@ -1,7 +1,7 @@
-using UnityEngine;
-using Fusion;
-using DiceGame.ScriptableObjects;
 using System.Collections.Generic;
+using DiceGame.ScriptableObjects;
+using Fusion;
+using UnityEngine;
 
 namespace DiceGame.Game
 {
@@ -32,23 +32,38 @@ namespace DiceGame.Game
 
         public static PlayerManager LocalPlayer { get; set; }
 
+        private bool IsSpawnedInRoom()
+        {
+            if (PrivateRoomHandler.Instance != null)
+            {
+                if (PrivateRoomHandler.Instance.IsRoom)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public override void Spawned()
         {
             players.Add(this);
             players.changeMasterAction += OnMasterLeft;
 
-            if (gameModeVariable.value.mode == GameModeName.Mexico)
+            if (!IsSpawnedInRoom())
             {
-                lives = (gameModeVariable.value as GameModeMexico).MaxLives;
-            }
+                if (gameModeVariable.value.mode == GameModeName.Mexico)
+                {
+                    lives = (gameModeVariable.value as GameModeMexico).MaxLives;
+                }
 
-            if (Object.HasStateAuthority)
-            {
-                totalScore = 0;
-                hasBankedScore = false;
-                hasFinishedRoll = false;
-                resurrect = false;
-                roundComplete = false;
+
+                if (Object.HasStateAuthority)
+                {
+                    totalScore = 0;
+                    hasBankedScore = false;
+                    hasFinishedRoll = false;
+                    resurrect = false;
+                    roundComplete = false;
+                }
             }
 
             if (!Runner.IsNetworkObjectOfMasterClient(Object))
@@ -120,7 +135,7 @@ namespace DiceGame.Game
             this.resurrect = resurrect;
             this.totalScore = totalScore;
 
-            if(hasFinishedRoll)
+            if (hasFinishedRoll)
             {
                 OnPlayerFinishedRoll();
             }
