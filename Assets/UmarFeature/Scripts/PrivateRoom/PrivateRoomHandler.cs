@@ -1,12 +1,13 @@
+using System.Linq;
+using System.Threading.Tasks;
 using DiceGame.Game;
-using DiceGame.Network;
 using DiceGame.ScriptableObjects;
 using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PrivateRoomHandler : NetworkBehaviour
+public class PrivateRoomHandler : NetworkBehaviour, IPlayerLeft
 {
     public static PrivateRoomHandler Instance;
 
@@ -67,12 +68,16 @@ public class PrivateRoomHandler : NetworkBehaviour
             var obj = playerNamesObj.GetComponent<PlayerUIEntry>();
             obj.playerNameText.text = p.playerName;
         }
-        playerCountText.text = $"Players: {playersList.value.Count}";
+        //playerCountText.text = $"Players: {playersList.value.Count}";
+        playerCountText.text = $"Players: {Runner.SessionInfo.PlayerCount.ToString()}";
     }
 
     private void SetSessionNameText()
     {
-        sessionNameText.text = NetworkManager.Instance.NewRoomKey;
+        if (Runner != null && Runner.SessionInfo.IsValid)
+        {
+            sessionNameText.text = Runner.SessionInfo.Name;
+        }
     }
 
     private void AddPlayer(PlayerManager player)
@@ -81,5 +86,42 @@ public class PrivateRoomHandler : NetworkBehaviour
     }
     void StartGame()
     {
+    }
+    //public override void Despawned(NetworkRunner runner, bool hasState)
+    //{
+    //    startGameButton.onClick.RemoveListener(StartGame);
+    //    playersList.onListValueChange -= AddPlayer;
+    //    if (Runner.IsMasterClient())
+    //    {
+    //        AssignNewHost();
+    //    }
+    //}
+    public void PlayerLeft(PlayerRef player)
+    {
+        if (Runner.IsMasterClient() && player == Runner.LocalPlayer)
+        {
+            AssignNewHost();
+        }
+    }
+    private async void AssignNewHost()
+    {
+        await Task.Delay(500); // 0.5s delay
+        if (!Runner.IsRunning || !Runner.ActivePlayers.Any())
+            return;
+
+        PlayerRef newHost = Runner.ActivePlayers.FirstOrDefault(); // Get first active player
+        if (newHost == default) return; // No players available
+        Debug.Log($"New host assigned: {newHost}");
+        RPC_SetNewHost(newHost);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetNewHost(PlayerRef newHost)
+    {
+        if (Runner.LocalPlayer == newHost)
+        {
+            Debug.Log("I am now the new Host!");
+            // Perform host-specific actions here
+        }
     }
 }

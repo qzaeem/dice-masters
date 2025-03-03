@@ -41,6 +41,11 @@ namespace DiceGame.UI
         private Menu currentMenu;
         private bool isMultiDevice;
 
+        private void Awake()
+        {
+            Application.runInBackground = true;
+        }
+
         private void OnEnable()
         {
             startButton.onClick.AddListener(OpenDeviceSelectionPanel);
