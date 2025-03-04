@@ -45,7 +45,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1864510663541604425}
-  m_Mesh: {fileID: -4049464754269572826, guid: f3fd4e122c83c4908aa5794cf0b77448, type: 3}
+  m_Mesh: {fileID: 4583906166117238574, guid: bfa82feea414e489382ee539a0ee671c, type: 3}
 --- !u!23 &6446048026504150401
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -69,8 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 934762814e4ce415da34a10499cff83b, type: 2}
-  - {fileID: 2100000, guid: c19ee06703dcf48b3b91c07da132621a, type: 2}
+  - {fileID: 2100000, guid: f01053aa989f9487484bb8e6893e00a6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -131,6 +130,7 @@ MonoBehaviour:
   upwardForce: 3000
   maxTorque: 1000
   onRollComplete: {fileID: 11400000, guid: 6ddfc67f18f5143feb96fd0d04d799bc, type: 2}
+  skinVariable: {fileID: 11400000, guid: d9c9d05fb74bb4f3b982a2fa742d41de, type: 2}
   valueDirections:
   - direction: 0
     value: 3
@@ -144,7 +144,7 @@ MonoBehaviour:
     value: 1
   - direction: 5
     value: 6
-  currentValue: 0
+  _currentValue: 0
 --- !u!114 &2802807212687920255
 MonoBehaviour:
   m_ObjectHideFlags: 0
