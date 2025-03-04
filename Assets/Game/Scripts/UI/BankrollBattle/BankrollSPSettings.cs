@@ -33,10 +33,8 @@ namespace DiceGame.UI
         private void Start()
         {
             startButton.interactable = false;
-            //inputField.text = "";
-            //default value
-            maxRoundsDropDown.value = 1;
             playerNamesPanel.onFieldValueChanged += CheckAllFields;
+            DefaultDropdownValue();
         }
         private void DefaultDropdownValue()
         {
@@ -52,17 +50,7 @@ namespace DiceGame.UI
 
         public void CheckAllFields()
         {
-            startButton.interactable = maxRounds > 0 && playerNamesPanel.AllFieldsHaveNames();
-        }
-
-        public void StartGame()
-        {
-            if (!playerNamesPanel.AllFieldsHaveNames())
-                return;
-
-            playerNamesPanel.SetNamesSO();
-            modeBankrollBattleSP.SetSettings(maxRounds, scoresAtEndCheck.currentValue);
-            mainMenu.CreateGame();
+            startButton.interactable = playerNamesPanel.AllFieldsHaveNames();
         }
         private void UpdateMaxRounds(int index)
         {
@@ -70,6 +58,16 @@ namespace DiceGame.UI
             {
                 maxRounds = int.Parse(maxRoundsDropDown.options[index].text);
             }
+        }
+        public void StartGame()
+        {
+            if (!playerNamesPanel.AllFieldsHaveNames())
+                return;
+            gameObject.SetActive(false);
+            mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
+            playerNamesPanel.SetNamesSO();
+            modeBankrollBattleSP.SetSettings(maxRounds, scoresAtEndCheck.currentValue);
+            mainMenu.CreateGame();
         }
         private void OnDestroy()
         {

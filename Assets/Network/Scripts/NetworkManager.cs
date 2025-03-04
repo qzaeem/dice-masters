@@ -28,7 +28,7 @@ namespace DiceGame.Network
         #endregion
 
         //Arguments added roomkey and player count
-        public async void CreateGame(string roomKey, int playerCount, GameMode gameMode)
+        public async void CreateGame(string roomKey, int playerCount, GameMode gameMode, int sceneIndex)
         {
             _networkRunner = Instantiate(networkRunnerPrefab);
             _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
@@ -42,7 +42,7 @@ namespace DiceGame.Network
             NewRoomKey = roomKey;
             PlayerCount = playerCount;
             var sceneInfo = new NetworkSceneInfo();
-            sceneInfo.AddSceneRef(SceneRef.FromIndex(0)); // load main menu scene
+            sceneInfo.AddSceneRef(SceneRef.FromIndex(sceneIndex)); // load main menu scene
 
             var startArguments = new StartGameArgs()
             {
