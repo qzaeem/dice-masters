@@ -47,8 +47,7 @@ namespace DiceGame.UI
         }
         public void NextMenu()
         {
-            modeMexicoMP.SetMaxLives= maxLive;
-            //mainMenu.OpenMenu(mainMenu.MPMenus.playerConnectionMenu);
+            modeMexicoMP.SetMaxLives = maxLive;
             mainMenu.OpenSelectedModeMenu();
         }
         private void OnDestroy()

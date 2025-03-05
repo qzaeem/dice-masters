@@ -2,13 +2,12 @@ using DiceGame.ScriptableObjects;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static DiceGame.ScriptableObjects.GameModeGreed;
 namespace DiceGame.UI
 {
-    public class GreedPanelMPSettings : MonoBehaviour
+    public class GreedPanelSPSetting : MonoBehaviour
     {
         [SerializeField] private MainMenuCanvas mainMenu;
-        [SerializeField] private GameModeGreed gameModeGreedMP;
+        [SerializeField] private GameModeGreedSP gameModeGreedSP;
         [SerializeField] private Button nextButton;
         [SerializeField] private TMP_Dropdown selectScoreDropDown;
         int scoreValue;
@@ -46,7 +45,8 @@ namespace DiceGame.UI
         public void NextMenu()
         {
             CheckWinningScoreVal(scoreValue);
-            mainMenu.OpenSelectedModeMenu();
+            gameObject.SetActive(false);
+            mainMenu.CreateGame();
         }
         private void OnDestroy()
         {
@@ -54,9 +54,9 @@ namespace DiceGame.UI
         }
         private void CheckWinningScoreVal(int val)
         {
-            if (System.Enum.IsDefined(typeof(WinningScore), val))
+            if (System.Enum.IsDefined(typeof(GameModeGreedSP.WinningScore), val))
             {
-                gameModeGreedMP.MaxWinningScore = (WinningScore)val;
+                gameModeGreedSP.MaxWinningScore = (GameModeGreedSP.WinningScore)val;
             }
         }
     }
