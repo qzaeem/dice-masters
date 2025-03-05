@@ -160,6 +160,16 @@ namespace DiceGame.Network
             }
         }
 
+        public async void LeaveGame()
+        {
+            if (_networkRunner == null)
+                return;
+
+            await _networkRunner.Shutdown();
+
+            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        }
+
         private void AddListeners()
         {
             _networkRunner.AddCallbacks(this);

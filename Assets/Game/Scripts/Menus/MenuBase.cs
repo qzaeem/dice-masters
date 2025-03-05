@@ -12,11 +12,15 @@ namespace DiceGame.UI
         [HideInInspector] public PlayerManager localPlayerManager;
 
         public GameObject gameResultPanel;
+        public GameObject pauseMenuPanel;
         public TMP_Text gameScoreTMP;
 
         [Header("Buttons")]
         public Button rollDiceButton;
         public Button bankScoreButton;
+        public Button pauseButton;
+        public Button resumeGameButton;
+        public Button leaveGameButton;
 
         [Header("Scriptable Objects")]
         public GameModeBase gameMode;
@@ -39,6 +43,9 @@ namespace DiceGame.UI
         {
             if(bankScoreButton) bankScoreButton.onClick.AddListener(BankScore);
             rollDiceButton.onClick.AddListener(RollDice);
+            pauseButton.onClick.AddListener(OnPauseButtonClicked);
+            resumeGameButton.onClick.AddListener(OnResumeGameButtonClicked);
+            leaveGameButton.onClick.AddListener(OnLeaveGameButtonClicked);
             updateScoresUI.executeAction += OnUpdateScoresUI;
             gameScore.onValueChange += OnUpdateGameScore;
             diceRollingVariable.onValueChange += OnDiceRollChanged;
@@ -48,6 +55,9 @@ namespace DiceGame.UI
         {
             if (bankScoreButton) bankScoreButton.onClick.RemoveListener(BankScore);
             rollDiceButton.onClick.RemoveListener(RollDice);
+            pauseButton.onClick.RemoveListener(OnPauseButtonClicked);
+            resumeGameButton.onClick.RemoveListener(OnResumeGameButtonClicked);
+            leaveGameButton.onClick.RemoveListener(OnLeaveGameButtonClicked);
             updateScoresUI.executeAction -= OnUpdateScoresUI;
             gameScore.onValueChange -= OnUpdateGameScore;
             diceRollingVariable.onValueChange -= OnDiceRollChanged;
@@ -58,6 +68,7 @@ namespace DiceGame.UI
             popupManager = PopupManagerCanvas.Instance;
             gameScoreTMP.text = gameMode.gameScore.value.ToString();
             gameResultPanel.SetActive(false);
+            pauseMenuPanel.SetActive(false);
             if (bankScoreButton) bankScoreButton.interactable = false;
         }
 
@@ -131,6 +142,21 @@ namespace DiceGame.UI
         {
             if(val)
                 rollDiceButton.gameObject.SetActive(false);
+        }
+
+        public virtual void OnPauseButtonClicked()
+        {
+            pauseMenuPanel.SetActive(true);
+        }
+
+        public virtual void OnLeaveGameButtonClicked()
+        {
+            DiceGame.Network.NetworkManager.Instance.LeaveGame();
+        }
+
+        public virtual void OnResumeGameButtonClicked()
+        {
+            pauseMenuPanel.SetActive(false);
         }
 
         public abstract void EndGame();

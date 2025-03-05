@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8291320896334193241}
   - component: {fileID: 1217588766079301648}
   - component: {fileID: 7695789955661697050}
-  - component: {fileID: 8111236689011718641}
   - component: {fileID: 3199948841851414995}
   m_Layer: 0
   m_Name: Dice - Local
@@ -138,20 +137,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8111236689011718641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8509798301215459908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1541381998, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Guid:
-    RawGuidValue: 0026e63a840d94e849b5f28321e48592
 --- !u!114 &3199948841851414995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,14 +156,14 @@ MonoBehaviour:
   skinVariable: {fileID: 11400000, guid: d9c9d05fb74bb4f3b982a2fa742d41de, type: 2}
   valueDirections:
   - direction: 0
-    value: 3
-  - direction: 1
-    value: 5
-  - direction: 2
     value: 4
-  - direction: 3
+  - direction: 1
+    value: 3
+  - direction: 2
     value: 2
+  - direction: 3
+    value: 5
   - direction: 4
-    value: 1
-  - direction: 5
     value: 6
+  - direction: 5
+    value: 1

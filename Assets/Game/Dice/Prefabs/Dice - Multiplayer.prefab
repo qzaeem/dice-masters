@@ -133,17 +133,17 @@ MonoBehaviour:
   skinVariable: {fileID: 11400000, guid: d9c9d05fb74bb4f3b982a2fa742d41de, type: 2}
   valueDirections:
   - direction: 0
-    value: 3
-  - direction: 1
-    value: 5
-  - direction: 2
     value: 4
-  - direction: 3
+  - direction: 1
+    value: 3
+  - direction: 2
     value: 2
+  - direction: 3
+    value: 5
   - direction: 4
-    value: 1
-  - direction: 5
     value: 6
+  - direction: 5
+    value: 1
   _currentValue: 0
 --- !u!114 &2802807212687920255
 MonoBehaviour:
