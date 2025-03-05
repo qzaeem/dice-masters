@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DiceGame.ScriptableObjects;
 using Fusion;
@@ -12,17 +13,21 @@ namespace DiceGame.Network
     public class NetworkManager : Models.MonoBehaviourSingleton<NetworkManager>, INetworkRunnerCallbacks
     {
         [SerializeField] private NetworkRunner networkRunnerPrefab;
+        [Header("Game Types Variables")]
         [SerializeField] private GameModeVariable currentGameMode;
-        [SerializeField] private int gameSceneIndex;
-        [HideInInspector] public NetworkRunner _networkRunner;
-        private NetworkEvents _networkEvents;
+        [SerializeField] private List<GameModeBase> mpGameModes;
+        [Header("Session Properties")]
         public string NewRoomKey;
         public int PlayerCount;
+
+        [HideInInspector] public NetworkRunner _networkRunner;
+        private NetworkEvents _networkEvents;
+
         //private List<SessionInfo> _availableSessions = new ();
 
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined;
-        public Action<int> onJoinedGame;
+        //public Action<int> onJoinedGame;
         public Action<string> OnJoinFailed;
         #endregion
 
@@ -37,6 +42,7 @@ namespace DiceGame.Network
             var customProperties = new Dictionary<string, SessionProperty>();
             customProperties["gameType"] = (int)currentGameMode.value.mode;
             customProperties["roomKey"] = roomKey;
+            customProperties["maxPlayers"] = playerCount;
 
             NewRoomKey = roomKey;
             PlayerCount = playerCount;
@@ -92,12 +98,7 @@ namespace DiceGame.Network
                 //Set the game mode for the client same as host
                 if (_networkRunner.SessionInfo.IsValid)
                 {
-                    if (_networkRunner.SessionInfo.Properties.TryGetValue("gameType", out var gameTypeProperty))
-                    {
-                        int gameType = (int)gameTypeProperty;
-                        Debug.Log($"Game mode set to: {gameType}");
-                        onJoinedGame?.Invoke(gameType);
-                    }
+                    UpdateGameType();
                 }
             }
             else
@@ -176,11 +177,6 @@ namespace DiceGame.Network
             AddConnectedToServerListener(OnConnectedToServer);
             AddDisconnectedFromServerListener(OnDisconnectedFromServer);
             AddFailedToConnectListener(OnConnectionFailed);
-        }
-        //Set Scene Index
-        public void SetGameSceneIndex(int index)
-        {
-            gameSceneIndex = index;
         }
         #region NetworkEventCallbacks
         private void OnShutdown(NetworkRunner runner, ShutdownReason reason)
@@ -371,5 +367,24 @@ namespace DiceGame.Network
 
         }
         #endregion
+        private void UpdateGameType()
+        {
+            if (_networkRunner.SessionInfo.Properties.TryGetValue("gameType", out var gameTypeProperty))
+            {
+                int gameType = (int)gameTypeProperty;
+                GameModeBase selectedGameMode = mpGameModes.FirstOrDefault(mode => (int)mode.mode == gameType);
+                if (selectedGameMode != null)
+                {
+                    currentGameMode.value = selectedGameMode;
+                    Debug.Log($"✅ Game mode set to: {selectedGameMode.mode}");
+                }
+                else
+                {
+                    Debug.LogError($"❌ No matching game mode found for index: {gameType}");
+                }
+                Debug.Log($"Game mode set to: {gameType}");
+                //onJoinedGame?.Invoke(gameType);
+            }
+        }
     }
 }

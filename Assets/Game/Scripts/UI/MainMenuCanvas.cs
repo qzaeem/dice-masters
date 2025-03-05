@@ -32,7 +32,6 @@ namespace DiceGame.UI
         [SerializeField] private PlayerInfoVariable playerInfo;
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private List<GameModeBase> gameModes;
-        [SerializeField] private List<GameModeBase> mpGameModes;
         [SerializeField] private TextMeshProUGUI alertText;
 
         //--- New ---
@@ -50,7 +49,6 @@ namespace DiceGame.UI
             instance = this;
             Application.runInBackground = true;
         }
-
         private void OnEnable()
         {
             startButton.onClick.AddListener(OpenDeviceSelectionPanel);
@@ -75,14 +73,12 @@ namespace DiceGame.UI
             knockDownModeButton.onClick.RemoveAllListeners();
             diceSelectionButton.onClick.RemoveAllListeners();
             nameInputField.onValueChanged.RemoveListener(OnNameChanged);
-            NetworkManager.Instance.onJoinedGame -= OnJoinedGame;
             NetworkManager.Instance.OnJoinFailed -= onJoinFailed;
         }
         private void Start()
         {
             alertText.text = "";
             alertText.gameObject.SetActive(false);
-            NetworkManager.Instance.onJoinedGame += OnJoinedGame;
             NetworkManager.Instance.OnJoinFailed += onJoinFailed;
             startButton.interactable = false;
             OpenMenu(nameMenu);
@@ -150,16 +146,7 @@ namespace DiceGame.UI
             }
         }
 
-        //--- Set scene info index in network manager to load game scene for single player or private room scene for multiplayer---
-        private void SetScene()
-        {
-            int sceneIndex;
-            if (isMultiDevice)
-                sceneIndex = 0;
-            else
-                sceneIndex = 1;
-            NetworkManager.Instance.SetGameSceneIndex(sceneIndex);
-        }
+     
         private void SelectIsMultiplayer(bool isMultiDevice)
         {
             this.isMultiDevice = isMultiDevice;
@@ -169,7 +156,6 @@ namespace DiceGame.UI
             else
                 OpenMenu(MPMenus.playerConnectionMenu);
             //--- Set scene index ---
-            SetScene();
         }
         //New
         public void OpenModeSelectionMenu(bool isRandomMatch)
@@ -210,12 +196,13 @@ namespace DiceGame.UI
         public void CreateGame()
         {
             GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
+
             //--- Genreate random room key ---
             roomKey = RoomKeyGenerator.GenerateRoomKey();
             Debug.Log($"<color=yellow>Room Key: {roomKey}</color>");
             loadingMenu.SetActive(true);
             diceSelectionButton.gameObject.SetActive(false);
-            //gameObject.SetActive(false);
+
             //--- New start method arg to get roomkey and player count---
             if (isMultiDevice)
             {
@@ -234,22 +221,6 @@ namespace DiceGame.UI
             loadingMenu.SetActive(true);
             diceSelectionButton.gameObject.SetActive(false);
             NetworkManager.Instance.JoinGame(roomName);
-            //gameObject.SetActive(false);
-            //NetworkManager.Instance.JoinRoom(roomKey);
-        }
-        public void OnJoinedGame(int gameMode)
-        {
-            // Find the matching game mode from the list
-            GameModeBase selectedGameMode = mpGameModes.FirstOrDefault(mode => (int)mode.mode == gameMode);
-            if (selectedGameMode != null)
-            {
-                currentGameMode.value = selectedGameMode;
-                Debug.Log($"✅ Game mode set to: {selectedGameMode.mode}");
-            }
-            else
-            {
-                Debug.LogError($"❌ No matching game mode found for index: {gameMode}");
-            }
         }
         public void onJoinFailed(string msg)
         {
@@ -264,7 +235,6 @@ namespace DiceGame.UI
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
             diceSelectionButton.gameObject.SetActive(false);
-            //gameObject.SetActive(false);
             NetworkManager.Instance.RandomMatchmaking();
         }
     }

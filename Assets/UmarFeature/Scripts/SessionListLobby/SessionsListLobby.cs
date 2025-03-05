@@ -1,13 +1,23 @@
+﻿using System.Collections.Generic;
+using DiceGame.Network;
 using Fusion;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SessionsListLobby : MonoBehaviour
 {
     public static SessionsListLobby Instance;
     public GameObject sessionEntityPrefab;
     public GameObject sessionEntitySpawnParent;
-
+    [SerializeField] private Button backButton;
+    private void OnEnable()
+    {
+        backButton.onClick.AddListener(LeaveLobby);
+    }
+    private void OnDisable()
+    {
+        backButton.onClick.RemoveListener(LeaveLobby);
+    }
     private void Awake()
     {
         Instance = this;
@@ -18,21 +28,23 @@ public class SessionsListLobby : MonoBehaviour
         RemoveAllEntries();
         CreateEntries(sessionInfoList);
     }
-
     public void CreateEntries(List<SessionInfo> sessionInfoList)
     {
         foreach (SessionInfo item in sessionInfoList)
         {
             GameObject obj = Instantiate(sessionEntityPrefab, sessionEntitySpawnParent.transform);
-            obj.GetComponent<SessionEntity>().sessionKeyText.text = item.Name;
-            obj.GetComponent<SessionEntity>().sessionPlayerCountText.text = $"Players: {item.PlayerCount}";
+            int maxPlayers = 0;
+            if (item.Properties.TryGetValue("maxPlayers", out var maxPlayerProperty))
+            {
+                maxPlayers = maxPlayerProperty;
+            }
             string gameTypeText = "Unknown";
             if (item.Properties.TryGetValue("gameType", out var gameTypeValue))
             {
-                switch((int)gameTypeValue)
+                switch ((int)gameTypeValue)
                 {
                     case 0:
-                    gameTypeText = "Game Type: Bankroll";
+                        gameTypeText = "Game Type: Bankroll";
                         break;
                     case 1:
                         gameTypeText = "Game Type: Greed";
@@ -40,12 +52,14 @@ public class SessionsListLobby : MonoBehaviour
                     case 2:
                         gameTypeText = "Game Type: Mexico";
                         break;
-                    case 3: 
+                    case 3:
                         gameTypeText = "Game Type: Knock em down";
                         break;
                 }
             }
             obj.GetComponent<SessionEntity>().sessionGameTypeText.text = gameTypeText;
+            obj.GetComponent<SessionEntity>().sessionKeyText.text = item.Name;
+            obj.GetComponent<SessionEntity>().sessionPlayerCountText.text = $"Players: {item.PlayerCount} / {maxPlayers}";
         }
     }
     public void RemoveAllEntries()
@@ -53,6 +67,16 @@ public class SessionsListLobby : MonoBehaviour
         foreach (Transform obj in sessionEntitySpawnParent.transform)
         {
             Destroy(obj.gameObject);
+        }
+    }
+    private async void LeaveLobby()
+    {
+        if (NetworkManager.Instance._networkRunner != null)
+        {
+            Debug.Log("🔴 Leaving the lobby...");
+            // Shutdown the NetworkRunner to leave the lobby
+            await NetworkManager.Instance._networkRunner.Shutdown();
+            Debug.Log("✅ Successfully left the lobby.");
         }
     }
 }
