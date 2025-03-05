@@ -1,6 +1,7 @@
 using DiceGame.ScriptableObjects;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace DiceGame.UI
@@ -16,54 +17,55 @@ namespace DiceGame.UI
 
         private void OnEnable()
         {
-            DisableAll();
-            index = PlayerPrefs.GetInt(p_SelectedDice, 0);
-            diceSkins[index].gameObject.SetActive(true);
-            diceSkins[index].SelectedText.gameObject.SetActive(true);
-
-            leftArrow.onClick.AddListener(() => ChangeDice(-1));
-            rightArrow.onClick.AddListener(() => ChangeDice(1));
-            selectButton.onClick.AddListener(SelectDice);
-            unlockButton.onClick.AddListener(UnlockDice);
-
-            // Initialize the first dice
-            UpdateDiceSelection();
+            AddListeners();
+            DeselectAll();
+            Init();
         }
         private void OnDisable()
         {
-            leftArrow.onClick.RemoveAllListeners();
-            rightArrow.onClick.RemoveAllListeners();
-            selectButton.onClick.RemoveAllListeners();
-            unlockButton.onClick.RemoveAllListeners();
+            RemoveListeners();
         }
 
         private void OnDestroy()
         {
+            RemoveListeners();
+        }
+        private void AddListeners()
+        {
+            leftArrow.onClick.AddListener(() => ChangeDice(-1));
+            rightArrow.onClick.AddListener(() => ChangeDice(1));
+            selectButton.onClick.AddListener(SelectDice);
+            unlockButton.onClick.AddListener(UnlockDice);
+        }
+        private void RemoveListeners()
+        {
             leftArrow.onClick.RemoveAllListeners();
             rightArrow.onClick.RemoveAllListeners();
             selectButton.onClick.RemoveAllListeners();
             unlockButton.onClick.RemoveAllListeners();
         }
-
+        private void Init()
+        {
+            DisableAll();
+            // start with selected dice skin
+            index = PlayerPrefs.GetInt(p_SelectedDice, 0);
+            diceSkins[index].isSelected = true;
+            diceSkinVariable.value = diceSkins[index].Material;
+            // Initialize the first dice
+            UpdateDiceSelection();
+        }
         private void ChangeDice(int direction)
         {
             DisableAll();
             diceSkins[index].gameObject.SetActive(false); // Deactivate current dice
             index = (int)Mathf.Repeat(index + direction, diceSkins.Length); // Circular index handling
 
+            DeselectAll();
             UpdateDiceSelection();
         }
 
         private void UpdateDiceSelection()
         {
-            // Deselect all dice first
-            foreach (var d in diceSkins)
-            {
-                //d.DiceSkin.isSelected = false;
-                d.isSelected = false;
-                d.SelectedText.gameObject.SetActive(false);
-            }
-
             // Activate current dice and update UI
             DiceSkin currentDice = diceSkins[index];
             currentDice.gameObject.SetActive(true);
@@ -97,6 +99,17 @@ namespace DiceGame.UI
             {
                 d.gameObject.SetActive(false);
             }
+        }
+        private void DeselectAll()
+        {
+            // Deselect all dice first
+            foreach (var d in diceSkins)
+            {
+                //d.DiceSkin.isSelected = false;
+                d.isSelected = false;
+                d.SelectedText.gameObject.SetActive(false);
+            }
+
         }
     }
 }

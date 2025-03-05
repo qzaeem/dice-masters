@@ -43,7 +43,7 @@ public class PlayerConnectionMenu : MonoBehaviour
                 break;
             case 2:
                 privateRoomMenu.SetActive(true);
-                mainMenu.OpenMenu(mainMenu.MPMenus.createOrJoinRom);
+                mainMenu.OpenMenu(mainMenu.MPMenus.createOrJoinRoom);
                 break;
             case 3:
                await NetworkManager.Instance.EnterLobby();

@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DiceGame.Network;
 using DiceGame.ScriptableObjects;
 using Fusion;
@@ -11,10 +12,11 @@ namespace DiceGame.UI
     [System.Serializable]
     public class MultiplayerMenus
     {
-        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, createOrJoinRom, createRoom, JoinRoom, LobbyMenu;
+        public Menu bankrollMenuMP, greedMenuMP, mexicoMenuMP, knockDownMenuMP, playerConnectionMenu, randomMatch, createOrJoinRoom, createRoom, JoinRoom, LobbyMenu;
     }
     public class MainMenuCanvas : MonoBehaviour
     {
+        public static MainMenuCanvas instance;
         [SerializeField] private Button startButton;
         [SerializeField] private Button singleDeviceButton;
         [SerializeField] private Button multiDeviceButton;
@@ -22,24 +24,32 @@ namespace DiceGame.UI
         [SerializeField] private Button battleModeButton;
         [SerializeField] private Button mexicoModeButton;
         [SerializeField] private Button knockDownModeButton;
+        [SerializeField] private Button diceSelectionButton;
 
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private GameObject loadingMenu;
-        [SerializeField] private Menu nameMenu, modeSelectionMenu, devicesSelectionMenu, bankrollMenuSP;
+        [SerializeField] private Menu nameMenu, diceSelectionMenu, modeSelectionMenu, devicesSelectionMenu, bankrollMenuSP, greedModeMenuSP;
         [SerializeField] private PlayerInfoVariable playerInfo;
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private List<GameModeBase> gameModes;
+        [SerializeField] private List<GameModeBase> mpGameModes;
+        [SerializeField] private TextMeshProUGUI alertText;
 
         //--- New ---
         [Header("Multiplayer Mode Menus")]
         public MultiplayerMenus MPMenus;
         public int playerCount;
-        public bool isMultiplayer;
         bool isRandomMatchSelected;
         string roomKey;
 
         private Menu currentMenu;
         private bool isMultiDevice;
+
+        private void Awake()
+        {
+            instance = this;
+            Application.runInBackground = true;
+        }
 
         private void OnEnable()
         {
@@ -50,6 +60,7 @@ namespace DiceGame.UI
             greedModeButton.onClick.AddListener(() => SelectGameModeType(GameModeName.Greed));
             mexicoModeButton.onClick.AddListener(() => SelectGameModeType(GameModeName.Mexico));
             knockDownModeButton.onClick.AddListener(() => SelectGameModeType(GameModeName.KnockEmDown));
+            diceSelectionButton.onClick.AddListener(() => OpenMenu(diceSelectionMenu));
             nameInputField.onValueChanged.AddListener(OnNameChanged);
         }
 
@@ -62,10 +73,17 @@ namespace DiceGame.UI
             greedModeButton.onClick.RemoveAllListeners();
             mexicoModeButton.onClick.RemoveAllListeners();
             knockDownModeButton.onClick.RemoveAllListeners();
+            diceSelectionButton.onClick.RemoveAllListeners();
             nameInputField.onValueChanged.RemoveListener(OnNameChanged);
+            NetworkManager.Instance.onJoinedGame -= OnJoinedGame;
+            NetworkManager.Instance.OnJoinFailed -= onJoinFailed;
         }
         private void Start()
         {
+            alertText.text = "";
+            alertText.gameObject.SetActive(false);
+            NetworkManager.Instance.onJoinedGame += OnJoinedGame;
+            NetworkManager.Instance.OnJoinFailed += onJoinFailed;
             startButton.interactable = false;
             OpenMenu(nameMenu);
         }
@@ -94,7 +112,6 @@ namespace DiceGame.UI
             {
                 if (currentGameMode.value.isMultiplayer)
                 {
-                    isMultiplayer = true;
                     switch (currentGameMode.value.mode)
                     {
                         case GameModeName.BankrollBattle:
@@ -116,13 +133,13 @@ namespace DiceGame.UI
                 }
                 else
                 {
-                    isMultiplayer = false;
                     switch (currentGameMode.value.mode)
                     {
                         case GameModeName.BankrollBattle:
                             OpenMenu(bankrollMenuSP);
                             break;
                         case GameModeName.Greed:
+                            OpenMenu(greedModeMenuSP);
                             break;
                         case GameModeName.Mexico:
                             break;
@@ -147,9 +164,9 @@ namespace DiceGame.UI
         {
             this.isMultiDevice = isMultiDevice;
             //New change
-            if (!isMultiDevice) 
+            if (!isMultiDevice)
                 OpenMenu(modeSelectionMenu);
-            else 
+            else
                 OpenMenu(MPMenus.playerConnectionMenu);
             //--- Set scene index ---
             SetScene();
@@ -180,6 +197,7 @@ namespace DiceGame.UI
         }
         public void OpenMenu(Menu menu)
         {
+            alertText.gameObject.SetActive(false);
             if (currentMenu != null)
             {
                 currentMenu.OpenMenu(false);
@@ -196,9 +214,10 @@ namespace DiceGame.UI
             roomKey = RoomKeyGenerator.GenerateRoomKey();
             Debug.Log($"<color=yellow>Room Key: {roomKey}</color>");
             loadingMenu.SetActive(true);
-            gameObject.SetActive(false);
+            diceSelectionButton.gameObject.SetActive(false);
+            //gameObject.SetActive(false);
             //--- New start method arg to get roomkey and player count---
-            if (isMultiplayer)
+            if (isMultiDevice)
             {
                 NetworkManager.Instance.CreateGame(roomKey, playerCount, GameMode.Shared);
             }
@@ -213,15 +232,39 @@ namespace DiceGame.UI
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
-            gameObject.SetActive(false);
-            //NetworkManager.Instance.JoinRoom(roomKey);
+            diceSelectionButton.gameObject.SetActive(false);
             NetworkManager.Instance.JoinGame(roomName);
+            //gameObject.SetActive(false);
+            //NetworkManager.Instance.JoinRoom(roomKey);
         }
+        public void OnJoinedGame(int gameMode)
+        {
+            // Find the matching game mode from the list
+            GameModeBase selectedGameMode = mpGameModes.FirstOrDefault(mode => (int)mode.mode == gameMode);
+            if (selectedGameMode != null)
+            {
+                currentGameMode.value = selectedGameMode;
+                Debug.Log($"✅ Game mode set to: {selectedGameMode.mode}");
+            }
+            else
+            {
+                Debug.LogError($"❌ No matching game mode found for index: {gameMode}");
+            }
+        }
+        public void onJoinFailed(string msg)
+        {
+            OpenMenu(MPMenus.createOrJoinRoom);
+            loadingMenu.SetActive(false);
+            alertText.gameObject.SetActive(true);
+            alertText.text = msg;
+        }
+
         public void RandomRoom()
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
-            gameObject.SetActive(false);
+            diceSelectionButton.gameObject.SetActive(false);
+            //gameObject.SetActive(false);
             NetworkManager.Instance.RandomMatchmaking();
         }
     }

@@ -1046,7 +1046,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: LOADING
+  m_text: LOADING...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1469,20 +1469,30 @@ MonoBehaviour:
   battleModeButton: {fileID: 1620893263}
   mexicoModeButton: {fileID: 224427127}
   knockDownModeButton: {fileID: 1139643943}
+  diceSelectionButton: {fileID: 927234007}
   nameInputField: {fileID: 1333667813}
   loadingMenu: {fileID: 1829086825}
   nameMenu: {fileID: 227098672}
+  diceSelectionMenu: {fileID: 1683406618}
   modeSelectionMenu: {fileID: 374758681}
   devicesSelectionMenu: {fileID: 1280289196}
   bankrollMenuSP: {fileID: 1066775320}
+  greedModeMenuSP: {fileID: 869660145}
   playerInfo: {fileID: 11400000, guid: dbf87bbad57bd467f81383641cc79f7f, type: 2}
   currentGameMode: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
   gameModes:
   - {fileID: 11400000, guid: 6e03d6235c28547ecbeb83b2f6bf6210, type: 2}
   - {fileID: 11400000, guid: 9c0d04d2290b14bf58e6590fd7bf925b, type: 2}
+  - {fileID: 11400000, guid: 07741e91ba304439282b751b938a9c11, type: 2}
   - {fileID: 11400000, guid: 5b358a6bbeb0b4541ac03b33675f076f, type: 2}
   - {fileID: 11400000, guid: 9ec97bf561ab94e20a916b0e80779dfa, type: 2}
   - {fileID: 11400000, guid: 893a89e68891049b59aae51fb613c033, type: 2}
+  mpGameModes:
+  - {fileID: 11400000, guid: 9c0d04d2290b14bf58e6590fd7bf925b, type: 2}
+  - {fileID: 11400000, guid: 5b358a6bbeb0b4541ac03b33675f076f, type: 2}
+  - {fileID: 11400000, guid: 9ec97bf561ab94e20a916b0e80779dfa, type: 2}
+  - {fileID: 11400000, guid: 893a89e68891049b59aae51fb613c033, type: 2}
+  alertText: {fileID: 1648743135}
   MPMenus:
     bankrollMenuMP: {fileID: 1854862}
     greedMenuMP: {fileID: 960969373}
@@ -1490,12 +1500,11 @@ MonoBehaviour:
     knockDownMenuMP: {fileID: 925662298}
     playerConnectionMenu: {fileID: 1159969713}
     randomMatch: {fileID: 1199241286}
-    createOrJoinRom: {fileID: 1477940629}
+    createOrJoinRoom: {fileID: 1477940629}
     createRoom: {fileID: 837008051}
     JoinRoom: {fileID: 632666787}
     LobbyMenu: {fileID: 805872373}
   playerCount: 0
-  isMultiplayer: 0
 --- !u!1 &111568746
 GameObject:
   m_ObjectHideFlags: 0
@@ -13870,7 +13879,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &927234006
 RectTransform:
   m_ObjectHideFlags: 0
@@ -24973,6 +24982,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1710162309}
+  - component: {fileID: 1710162311}
+  - component: {fileID: 1710162310}
   m_Layer: 5
   m_Name: LoadingPanel
   m_TagString: Untagged
@@ -25000,6 +25011,44 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1710162310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710162308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.09433961, g: 0.09433961, b: 0.09433961, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1710162311
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710162308}
+  m_CullTransparentMesh: 1
 --- !u!1 &1721112331
 GameObject:
   m_ObjectHideFlags: 0
@@ -26241,6 +26290,7 @@ MonoBehaviour:
   networkRunnerPrefab: {fileID: 6775256915119555292, guid: 2ab4a182399214e72938ce4b94ace956, type: 3}
   currentGameMode: {fileID: 11400000, guid: c5aa88679d0b5460aaafc7ad99642367, type: 2}
   gameSceneIndex: 1
+  _networkRunner: {fileID: 0}
   NewRoomKey: 
   PlayerCount: 0
 --- !u!1 &1863457705
