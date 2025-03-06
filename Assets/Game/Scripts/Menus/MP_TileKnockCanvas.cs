@@ -121,6 +121,11 @@ namespace DiceGame.UI
                 roundPanel.GetComponentInChildren<TMP_Text>().text = $"{winner.playerName} won the game with score {winner.roundScores.Sum()}";
             }
 
+            foreach (var entry in otherPlayersEntries)
+            {
+                entry.Value.ShowScore();
+            }
+
             StartCoroutine(RefreshUI());
         }
 
@@ -138,7 +143,7 @@ namespace DiceGame.UI
 
                 if (player)
                 {
-                    entry.Value.UpdateEntry(player.playerName, player.totalScore);
+                    entry.Value.UpdateEntry(player.playerName, player.totalScore, !gameMode.showScoresOnEnd);
                 }
             }
         }
@@ -160,7 +165,7 @@ namespace DiceGame.UI
 
                 var entry = Instantiate(playerInfoEntryUIPrefab, playerInfoEntryContainer);
                 otherPlayersEntries.Add(playerRef, entry);
-                entry.UpdateEntry(player.playerName, player.totalScore);
+                entry.UpdateEntry(player.playerName, player.totalScore, !gameMode.showScoresOnEnd);
             }
 
             OnUpdateScoresUI();

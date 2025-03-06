@@ -133,6 +133,7 @@ namespace DiceGame.UI
             {
                 infoEntry.BankButtonInteractable(false);
                 infoEntry.SetHighlight(false);
+                infoEntry.ShowScore();
             }
         }
 

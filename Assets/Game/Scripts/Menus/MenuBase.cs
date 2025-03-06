@@ -11,12 +11,18 @@ namespace DiceGame.UI
     {
         [HideInInspector] public PlayerManager localPlayerManager;
 
+        public GameObject gameStartBlocker;
         public GameObject gameResultPanel;
+        public GameObject pauseMenuPanel;
         public TMP_Text gameScoreTMP;
 
         [Header("Buttons")]
         public Button rollDiceButton;
         public Button bankScoreButton;
+        public Button pauseButton;
+        public Button resumeGameButton;
+        public Button leaveGameButton;
+        public Button startGameButton;
 
         [Header("Scriptable Objects")]
         public GameModeBase gameMode;
@@ -37,8 +43,12 @@ namespace DiceGame.UI
 
         public virtual void OnEnable()
         {
-            if(bankScoreButton) bankScoreButton.onClick.AddListener(BankScore);
+            if (bankScoreButton) bankScoreButton.onClick.AddListener(BankScore);
+            startGameButton.onClick.AddListener(StartGame);
             rollDiceButton.onClick.AddListener(RollDice);
+            pauseButton.onClick.AddListener(OnPauseButtonClicked);
+            resumeGameButton.onClick.AddListener(OnResumeGameButtonClicked);
+            leaveGameButton.onClick.AddListener(OnLeaveGameButtonClicked);
             updateScoresUI.executeAction += OnUpdateScoresUI;
             gameScore.onValueChange += OnUpdateGameScore;
             diceRollingVariable.onValueChange += OnDiceRollChanged;
@@ -47,7 +57,11 @@ namespace DiceGame.UI
         public virtual void OnDisable()
         {
             if (bankScoreButton) bankScoreButton.onClick.RemoveListener(BankScore);
+            startGameButton.onClick.RemoveListener(StartGame);
             rollDiceButton.onClick.RemoveListener(RollDice);
+            pauseButton.onClick.RemoveListener(OnPauseButtonClicked);
+            resumeGameButton.onClick.RemoveListener(OnResumeGameButtonClicked);
+            leaveGameButton.onClick.RemoveListener(OnLeaveGameButtonClicked);
             updateScoresUI.executeAction -= OnUpdateScoresUI;
             gameScore.onValueChange -= OnUpdateGameScore;
             diceRollingVariable.onValueChange -= OnDiceRollChanged;
@@ -58,6 +72,7 @@ namespace DiceGame.UI
             popupManager = PopupManagerCanvas.Instance;
             gameScoreTMP.text = gameMode.gameScore.value.ToString();
             gameResultPanel.SetActive(false);
+            pauseMenuPanel.SetActive(false);
             if (bankScoreButton) bankScoreButton.interactable = false;
         }
 
@@ -85,6 +100,21 @@ namespace DiceGame.UI
         public virtual void BankScore()
         {
             gameMode.BankScore();
+        }
+
+        public virtual void ShowStartGameButton(bool show)
+        {
+            startGameButton.gameObject.SetActive(show);
+        }
+
+        public virtual void DisableStartBlocker()
+        {
+            gameStartBlocker.SetActive(false);
+        }
+
+        public virtual void StartGame()
+        {
+            gameMode.StartGame();
         }
 
         public virtual void UpdateDiceRecord(List<IPlayableDice> dice)
@@ -129,8 +159,23 @@ namespace DiceGame.UI
 
         public virtual void OnDiceRollChanged(bool val)
         {
-            if(val)
+            if (val)
                 rollDiceButton.gameObject.SetActive(false);
+        }
+
+        public virtual void OnPauseButtonClicked()
+        {
+            pauseMenuPanel.SetActive(true);
+        }
+
+        public virtual void OnLeaveGameButtonClicked()
+        {
+            DiceGame.Network.NetworkManager.Instance.LeaveGame();
+        }
+
+        public virtual void OnResumeGameButtonClicked()
+        {
+            pauseMenuPanel.SetActive(false);
         }
 
         public abstract void EndGame();

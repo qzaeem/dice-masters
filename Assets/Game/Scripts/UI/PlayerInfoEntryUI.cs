@@ -154,6 +154,11 @@ namespace DiceGame.UI
             dropdownArrowGO.SetActive(dropdownPanelGO.transform.childCount > 1);
         }
 
+        public void ShowScore()
+        {
+            bankedScoreTMP.gameObject.SetActive(true);
+        }
+
         public void AddDropdownEntry(PlayerRollRecord playerRollRecord)
         {
             if (diceRollRecords.Count >= 5)

@@ -24,18 +24,20 @@ namespace DiceGame.UI
 
         public override void OnEnable()
         {
-            rollDiceButton.onClick.AddListener(RollDice);
+            base.OnEnable();
+            //rollDiceButton.onClick.AddListener(RollDice);
             canBankScoreVariable.onValueChange += OnChangeBankable;
             gameScore.onValueChange += OnUpdateGameScore;
-            diceRollingVariable.onValueChange += OnDiceRollChanged;
+            //diceRollingVariable.onValueChange += OnDiceRollChanged;
         }
 
         public override void OnDisable()
         {
-            rollDiceButton.onClick.RemoveListener(RollDice);
+            base.OnDisable();
+            //rollDiceButton.onClick.RemoveListener(RollDice);
             canBankScoreVariable.onValueChange -= OnChangeBankable;
             gameScore.onValueChange -= OnUpdateGameScore;
-            diceRollingVariable.onValueChange -= OnDiceRollChanged;
+            //diceRollingVariable.onValueChange -= OnDiceRollChanged;
         }
 
         public override void Start()
@@ -101,7 +103,10 @@ namespace DiceGame.UI
             gameResultPanel.SetActive(true);
 
             foreach (var entry in playerEntries.Values)
+            {
                 entry.BankButtonVisible(false);
+                entry.ShowScore();
+            }
         }
 
         public override void OnUpdateScoresUI()

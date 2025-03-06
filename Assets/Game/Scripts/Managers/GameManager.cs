@@ -14,28 +14,35 @@ public class GameManager : NetworkBehaviour
     [Networked, OnChangedRender(nameof(OnRoundChanged))] private int _round { get; set; }
     [Networked, OnChangedRender(nameof(OnRollChanged))] private int _roll { get; set; }
     [Networked, OnChangedRender(nameof(OnGameScoreChanged))] private int _gameScore { get; set; }
+    [Networked, OnChangedRender(nameof(CheckForGameStart))] private bool _hasGameStarted { get; set; }
     [Networked] private PlayerRef _activePlayerTurn { get; set; }
     #endregion
 
     [SerializeField] private GameModeVariable currentGameMode;
     [SerializeField] private DiceRollManager diceRollManager;
     [SerializeField] private ActionSO onDiceRollComplete;
+    [SerializeField] private ActionSO masterUpdatedAction;
     [SerializeField] private PlayerRefVariable changePlayerTurnVariable;
     [SerializeField] private IntVariable gameScoreVariable;
     [SerializeField] private IntVariable roundVariable;
     [SerializeField] private IntVariable rollVariable;
     [SerializeField] private BoolVariable canBankScoreVariable;
     [SerializeField] private BoolVariable diceRollingVariable;
- 
+    [SerializeField] private PlayersListVariable players;
+
     public bool IsRolling { get { return _isRolling; } }
     public bool CanBankScore { get { return _canBankScore; } }
     public int GameScore { get { return _gameScore; } }
     public PlayerRef ActivePlayerTurn { get { return _activePlayerTurn; } }
 
+    private bool _gameStartSet;
+
     public override void Spawned()
     {
         NetworkManager.Instance.onPlayerJoined += OnPlayerJoined;
         onDiceRollComplete.executeAction += OnDiceRollComplete;
+        players.onListValueChange += OnPlayersUpdated;
+        masterUpdatedAction.executeAction += () => OnPlayersUpdated(null);
 
         if (!Runner.IsMasterClient())
         {
@@ -84,6 +91,32 @@ public class GameManager : NetworkBehaviour
     private void OnGameScoreChanged()
     {
         gameScoreVariable.Set(_gameScore);
+    }
+
+    public void OnPlayersUpdated(PlayerManager player)
+    {
+        if (!Runner.IsMasterClient())
+        {
+            return;
+        }
+
+        currentGameMode.value.ShowStartGameButton(players.value.Count >= currentGameMode.value.minimumPlayersToStart && !_hasGameStarted);
+    }
+
+    private void CheckForGameStart()
+    {
+        if(_hasGameStarted && !_gameStartSet)
+        {
+            _gameStartSet = true;
+            currentGameMode.value.DisableStartBlocker();
+        }
+    }
+
+    public void StartGame()
+    {
+        _hasGameStarted = true;
+        if(currentGameMode.value.isMultiplayer)
+            NetworkManager.Instance.CloseGameForNewPlayers();
     }
 
     public void IncreaseRound()
@@ -149,6 +182,8 @@ public class GameManager : NetworkBehaviour
     {
         NetworkManager.Instance.onPlayerJoined -= OnPlayerJoined;
         onDiceRollComplete.executeAction -= OnDiceRollComplete;
+        players.onListValueChange -= OnPlayersUpdated;
+        masterUpdatedAction.executeAction = null;
     }
 
     #region RPCs

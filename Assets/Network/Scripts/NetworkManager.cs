@@ -23,7 +23,7 @@ namespace DiceGame.Network
         [HideInInspector] public NetworkRunner _networkRunner;
         private NetworkEvents _networkEvents;
 
-        //private List<SessionInfo> _availableSessions = new ();
+        private List<SessionInfo> _availableSessions = null;
 
         #region Callback Actions
         public Action<PlayerRef> onPlayerJoined;
@@ -43,6 +43,7 @@ namespace DiceGame.Network
             customProperties["gameType"] = (int)currentGameMode.value.mode;
             customProperties["roomKey"] = roomKey;
             customProperties["maxPlayers"] = playerCount;
+            customProperties["isOpen"] = true;
 
             NewRoomKey = roomKey;
             PlayerCount = playerCount;
@@ -78,10 +79,45 @@ namespace DiceGame.Network
                 return;
             }
 
+            _availableSessions = null;
             _networkRunner = Instantiate(networkRunnerPrefab);
             _networkEvents = _networkRunner.GetComponent<NetworkEvents>();
             // Add listeners
             AddListeners();
+
+            // Fetch session list before trying to join
+            var sessionListTask = await _networkRunner.JoinSessionLobby(SessionLobby.Shared);
+
+            if (!sessionListTask.Ok)
+            {
+                Debug.LogError($"Failed to retrieve session list: {sessionListTask.ShutdownReason}");
+                Disconnect($"Failed to retrieve session list: {sessionListTask.ShutdownReason}");
+                return;
+            }
+
+            while(_availableSessions == null)
+            {
+                Debug.Log("Available sessions is null");
+                await Task.Yield();
+            }
+
+            // Step 2: Find the session with the matching roomKey
+            var session = _availableSessions.FirstOrDefault(s => s.Name == roomKey);
+
+            if (session == null)
+            {
+                Debug.LogError($"Session '{roomKey}' not found.");
+                Disconnect($"Session '{roomKey}' not found.");
+                return;
+            }
+
+            // Step 3: Check if the session is open before joining
+            if (session.Properties.TryGetValue("isOpen", out var isOpen) && (bool)isOpen == false)
+            {
+                Debug.LogError($"Session '{roomKey}' is closed. Cannot join.");
+                Disconnect($"Session '{roomKey}' is closed. Cannot join.");
+                return;
+            }
 
             var startArguments = new StartGameArgs
             {
@@ -105,11 +141,17 @@ namespace DiceGame.Network
             {
                 string error = $"Failed to join game: {startTask.ShutdownReason}";
                 Debug.LogError(error);
-                OnJoinFailed?.Invoke(error);
-                await _networkRunner.Shutdown();
-                Destroy(_networkRunner.gameObject);
+                Disconnect(error);
             }
         }
+
+        private async void Disconnect(string error)
+        {
+            OnJoinFailed?.Invoke(error);
+            await _networkRunner.Shutdown();
+            Destroy(_networkRunner.gameObject);
+        }
+
         public async void RandomMatchmaking()
         {
             _networkRunner = Instantiate(networkRunnerPrefab);
@@ -119,7 +161,8 @@ namespace DiceGame.Network
             //custom properties
             var customProperties = new Dictionary<string, SessionProperty>()
             {
-                { "gameType",  (int)currentGameMode.value.mode }
+                { "gameType",  (int)currentGameMode.value.mode },
+                { "isOpen", true }
             };
 
             var sceneInfo = new NetworkSceneInfo();
@@ -168,6 +211,20 @@ namespace DiceGame.Network
             await _networkRunner.Shutdown();
 
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        }
+
+        public void CloseGameForNewPlayers()
+        {
+            if (_networkRunner == null)
+                return;
+
+            var properties = new Dictionary<string, SessionProperty>();
+            foreach(var kvp in _networkRunner.SessionInfo.Properties)
+            {
+                properties[kvp.Key] = kvp.Value;
+            }
+            properties["isOpen"] = false;
+            _networkRunner.SessionInfo.UpdateCustomProperties(properties);
         }
 
         private void AddListeners()
@@ -332,7 +389,7 @@ namespace DiceGame.Network
 
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
         {
-            //_availableSessions = sessionList;
+            _availableSessions = sessionList;
             SessionsListLobby.Instance.UpdateSessionUIEntry(sessionList);
             Debug.Log($"Session List Updated. Found {sessionList.Count} sessions.");
         }

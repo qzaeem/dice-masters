@@ -25,10 +25,11 @@ MonoBehaviour:
   rollVariable: {fileID: 11400000, guid: 2183a4f7df58b4ba7ada4dbcb4177f31, type: 2}
   players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
   numberOfDice: 2
+  minimumPlayersToStart: 2
   gameModeMenuPrefab: {fileID: 3451699295278824656, guid: 23336679ad64a400f8d54a5b83af91ce, type: 3}
   isMultiplayer: 1
   networkedDice: 0
-  showScoresOnEnd: 1
+  showScoresOnEnd: 0
   canBankScoreVariable: {fileID: 11400000, guid: 1909bd9013a174f848a60a81098bf9b8, type: 2}
   changeTurnVariable: {fileID: 11400000, guid: b6e799f5a2eb24f6893ff4c82eddd00e, type: 2}
   playerFinishedRollAction: {fileID: 11400000, guid: 3455b2f6a81a34d7c931d0590894cc31, type: 2}

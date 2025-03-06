@@ -21,6 +21,7 @@ namespace DiceGame.ScriptableObjects
         public IntVariable rollVariable;
         public PlayersListVariable players;
         public int numberOfDice;
+        public int minimumPlayersToStart;
 
         [Header("Prefabs")]
         public MenuBase gameModeMenuPrefab;
@@ -106,6 +107,21 @@ namespace DiceGame.ScriptableObjects
         public virtual void OnGameEnded()
         {
             _hasGameEnded = true;
+        }
+
+        public virtual void ShowStartGameButton(bool show)
+        {
+            gameMenu.ShowStartGameButton(show);
+        }
+
+        public virtual void DisableStartBlocker()
+        {
+            gameMenu.DisableStartBlocker();
+        }
+
+        public virtual void StartGame()
+        {
+            gameManager.StartGame();
         }
 
         public virtual void TooLateToBank()

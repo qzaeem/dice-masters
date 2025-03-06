@@ -76,6 +76,11 @@ namespace DiceGame.UI
             winnerScoreTMP.text = winner.totalScore.ToString();
             rollDiceButton.gameObject.SetActive(false);
             gameResultPanel.SetActive(true);
+
+            foreach (var entry in otherPlayersEntries)
+            {
+                entry.Value.ShowScore();
+            }
         }
 
         public override void OnRoundChanged(int value)
@@ -109,7 +114,7 @@ namespace DiceGame.UI
 
                 if (player)
                 {
-                    entry.Value.UpdateEntry(player.playerName, player.totalScore, true, player.lives > 0);
+                    entry.Value.UpdateEntry(player.playerName, player.totalScore, !gameMode.showScoresOnEnd, player.lives > 0);
                     entry.Value.ShowLives(player.lives, gameModeMexico.MaxLives);
                     entry.Value.SetHighlight(player.totalScore == 21);
                 }
@@ -157,7 +162,7 @@ namespace DiceGame.UI
                 var entry = Instantiate(playerInfoEntryUIPrefab, playerInfoEntryContainer);
                 otherPlayersEntries.Add(playerRef, entry);
                 if(gameModeMexico == null) gameModeMexico = (GameModeMexico)gameMode;
-                entry.UpdateEntry(player.playerName, player.totalScore);
+                entry.UpdateEntry(player.playerName, player.totalScore, !gameMode.showScoresOnEnd);
                 entry.ShowLives(gameModeMexico.MaxLives, gameModeMexico.MaxLives);
             }
 

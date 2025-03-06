@@ -62,6 +62,7 @@ namespace DiceGame.Game
             currentGameMode.value.gameManager = gameManager;
             currentGameMode.value.SpawnGameModeMenu();
             currentGameMode.value.Initialize();
+            gameManager.OnPlayersUpdated(null);
         }
 
         private void SpawnDice(int rows, int columns)

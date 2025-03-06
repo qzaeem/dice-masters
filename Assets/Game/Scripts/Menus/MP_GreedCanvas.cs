@@ -116,6 +116,11 @@ namespace DiceGame.UI
             rollDiceButton.gameObject.SetActive(false);
             gameResultPanel.SetActive(true);
             bankScoreButton.gameObject.SetActive(false);
+
+            foreach (var entry in otherPlayersEntries)
+            {
+                entry.Value.ShowScore();
+            }
         }
 
         public override void OnUpdateScoresUI()
@@ -128,7 +133,7 @@ namespace DiceGame.UI
 
                 if (player)
                 {
-                    entry.Value.UpdateEntry(player.playerName, player.totalScore);
+                    entry.Value.UpdateEntry(player.playerName, player.totalScore, !gameMode.showScoresOnEnd);
                 }
             }
         }

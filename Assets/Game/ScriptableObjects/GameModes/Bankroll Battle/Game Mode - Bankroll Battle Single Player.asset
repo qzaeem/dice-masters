@@ -25,9 +25,12 @@ MonoBehaviour:
   rollVariable: {fileID: 11400000, guid: 2183a4f7df58b4ba7ada4dbcb4177f31, type: 2}
   players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
   numberOfDice: 2
+  minimumPlayersToStart: 1
   gameModeMenuPrefab: {fileID: 7471425362745574928, guid: 4e28efde150ed46a0a0fd327e2c9c2bc, type: 3}
   isMultiplayer: 0
   networkedDice: 0
   showScoresOnEnd: 0
   maxRounds: 5
+  minPlayers: 0
+  maxPlayers: 0
   playerNames: {fileID: 11400000, guid: 35147188cd122475880dd03e0289dc27, type: 2}
