@@ -3,9 +3,12 @@ using UnityEngine;
 
 public class DiceSkin : MonoBehaviour
 {
+    public enum DiceType
+    {
+        SimpleDice, NumberedDice, RedDice
+    }
+    [SerializeField] private DiceType diceType;
     public int DiceNumber;
-    [Tooltip("Name of the dice skin. Must be unique to save unlock state.")]
-    [SerializeField] private string DiceName;
     public int DiceCost;
     public bool isUnlocked;
     public bool isSelected;
@@ -14,11 +17,22 @@ public class DiceSkin : MonoBehaviour
     public TextMeshProUGUI CostText;
     public GameObject DiceLock;
 
+    private const string numberedDice = "NumberedDiceUnlocked";
+    private const string redDice = "RedDiceUnlocked";
+
     private void OnEnable()
     {
         if (DiceNumber > 1) // first dice is always unlock
         {
-            isUnlocked = (PlayerPrefs.GetString($"UnlockDice{DiceNumber}") == DiceName) ? true : false;
+            switch (diceType)
+            {
+                case DiceType.NumberedDice:
+                    isUnlocked = (PlayerPrefs.GetString($"UnlockDice{DiceNumber}") == numberedDice) ? true : false;
+                    break;
+                case DiceType.RedDice:
+                    isUnlocked = (PlayerPrefs.GetString($"UnlockDice{DiceNumber}") == redDice) ? true : false;
+                    break;
+            }
         }
         if (!isUnlocked)
         {
@@ -32,6 +46,14 @@ public class DiceSkin : MonoBehaviour
     }
     public void SaveUnlockedDice()
     {
-        PlayerPrefs.SetString($"UnlockDice{DiceNumber}", DiceName);
+        switch (diceType)
+        {
+            case DiceType.NumberedDice:
+                PlayerPrefs.SetString($"UnlockDice{DiceNumber}", numberedDice);
+                break;
+            case DiceType.RedDice:
+                PlayerPrefs.SetString($"UnlockDice{DiceNumber}", redDice);
+                break;
+        }
     }
 }
