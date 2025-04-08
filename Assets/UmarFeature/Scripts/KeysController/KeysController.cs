@@ -5,7 +5,7 @@ public class KeysController : MonoBehaviour
 {
     public static KeysController Instance { get; private set; }
     [SerializeField] private TextMeshProUGUI keysTexts;
-    [SerializeField] private int keys;
+    private int keys;
     private const string p_KeysValue = "KeysValue";
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class KeysController : MonoBehaviour
     }
     private void LoadKeys()
     {
-        keys = PlayerPrefs.GetInt(p_KeysValue, keys);
+        keys = PlayerPrefs.GetInt(p_KeysValue, 0);
         keysTexts.text = $"Keys : {keys.ToString()} ";
     }
 
