@@ -14,6 +14,7 @@ namespace DiceGame.UI
         [SerializeField] private Image backgroundImage;
         [SerializeField] private Color normalColor;
         [SerializeField] private Color highlightColor;
+        [SerializeField] private Color mexicoHighlightColor;
 
         [Header("Roll Record Dropdown")]
         [SerializeField] private Button dropDownButton;
@@ -106,6 +107,12 @@ namespace DiceGame.UI
         {
             _isHighlighted = highlight;
             backgroundImage.color = highlight ? highlightColor : normalColor;
+        }
+
+        public void SetMexicoColor(bool highlight)
+        {
+            _isHighlighted = highlight;
+            backgroundImage.color = highlight ? mexicoHighlightColor : normalColor;
         }
 
         public void ShowLives(uint currentLives, uint maxLives)

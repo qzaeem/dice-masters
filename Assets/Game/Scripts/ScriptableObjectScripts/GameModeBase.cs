@@ -43,7 +43,7 @@ namespace DiceGame.ScriptableObjects
         {
             gameScore.Set(gameManager.GameScore);
             _hasGameEnded = false;
-            players.playerRemovedAction += OnPlayerRemoved; players.playerRemovedAction += OnPlayerRemoved;
+            players.playerRemovedAction += OnPlayerRemoved;
             onDiceRollComplete.executeAction += OnDiceRollComplete;
             masterUpdatedAction.executeAction += OnMasterChanged;
             playerBankedScoreAction.executeAction += OnPlayerBankedScore;
@@ -112,6 +112,11 @@ namespace DiceGame.ScriptableObjects
         public virtual void ShowStartGameButton(bool show)
         {
             gameMenu.ShowStartGameButton(show);
+        }
+
+        public virtual void SetMultiplayerCanvas()
+        {
+            gameMenu.SetMultiplayerCanvas(isMultiplayer);
         }
 
         public virtual void DisableStartBlocker()

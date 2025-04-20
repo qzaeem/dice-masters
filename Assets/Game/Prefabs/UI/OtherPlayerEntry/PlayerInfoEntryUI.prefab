@@ -869,6 +869,7 @@ MonoBehaviour:
   backgroundImage: {fileID: 83417993776340029}
   normalColor: {r: 1, g: 1, b: 1, a: 0.03529412}
   highlightColor: {r: 1, g: 0.7332488, b: 0, a: 0.19607843}
+  mexicoHighlightColor: {r: 0, g: 1, b: 0.84313726, a: 0.19607843}
   dropDownButton: {fileID: 4260948368354115769}
   dropdownArrowGO: {fileID: 1415868357662689683}
   dropdownPanelGO: {fileID: 1530470784363788755}

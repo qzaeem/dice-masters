@@ -37,7 +37,7 @@ namespace DiceGame.Game
             players.Add(this);
             players.changeMasterAction += OnMasterLeft;
 
-            if (gameModeVariable.value.mode == GameModeName.Mexico)
+            if (gameModeVariable.value.mode == GameModeName.Mexico && gameModeVariable.value.isMultiplayer)
             {
                 lives = (gameModeVariable.value as GameModeMexico).MaxLives;
             }

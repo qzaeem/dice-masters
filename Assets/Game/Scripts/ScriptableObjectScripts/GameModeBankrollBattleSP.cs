@@ -25,6 +25,8 @@ namespace DiceGame.ScriptableObjects
 
         private void SpawnPlayers()
         {
+            _playersData.Clear();
+
             for (int i = 0; i < playerNames.value.Count(); i++)
             {
                 var playerData = new PlayerGameData()

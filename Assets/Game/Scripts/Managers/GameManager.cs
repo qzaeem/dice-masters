@@ -101,6 +101,7 @@ public class GameManager : NetworkBehaviour
         }
 
         currentGameMode.value.ShowStartGameButton(players.value.Count >= currentGameMode.value.minimumPlayersToStart && !_hasGameStarted);
+        currentGameMode.value.SetMultiplayerCanvas();
     }
 
     private void CheckForGameStart()

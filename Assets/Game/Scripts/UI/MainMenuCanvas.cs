@@ -138,6 +138,7 @@ namespace DiceGame.UI
                             OpenMenu(greedModeMenuSP);
                             break;
                         case GameModeName.Mexico:
+                            CreateGame();
                             break;
                         case GameModeName.KnockEmDown:
                             break;

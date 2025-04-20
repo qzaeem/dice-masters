@@ -15,6 +15,7 @@ namespace DiceGame.UI
         public GameObject gameResultPanel;
         public GameObject pauseMenuPanel;
         public TMP_Text gameScoreTMP;
+        public TMP_Text roomKeyTMP;
 
         [Header("Buttons")]
         public Button rollDiceButton;
@@ -74,6 +75,12 @@ namespace DiceGame.UI
             gameResultPanel.SetActive(false);
             pauseMenuPanel.SetActive(false);
             if (bankScoreButton) bankScoreButton.interactable = false;
+        }
+
+        public virtual void SetMultiplayerCanvas(bool isMultiplayer)
+        {
+            roomKeyTMP.text = isMultiplayer ? $"Join Key: <color=yellow>{DiceGame.Network.NetworkManager.Instance.NewRoomKey}</color>" : "";
+            gameStartBlocker.SetActive(isMultiplayer);
         }
 
         public virtual void OnUpdateGameScore(int score)

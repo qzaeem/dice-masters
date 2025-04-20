@@ -1487,6 +1487,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5b358a6bbeb0b4541ac03b33675f076f, type: 2}
   - {fileID: 11400000, guid: 9ec97bf561ab94e20a916b0e80779dfa, type: 2}
   - {fileID: 11400000, guid: 893a89e68891049b59aae51fb613c033, type: 2}
+  - {fileID: 11400000, guid: 289b48ae9a26740b88093877c6f9dc37, type: 2}
   alertText: {fileID: 1648743135}
   MPMenus:
     bankrollMenuMP: {fileID: 1854862}
@@ -12532,7 +12533,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1829086830}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &864308319
@@ -24964,6 +24966,7 @@ MonoBehaviour:
   rightArrow: {fileID: 1508084139}
   selectButton: {fileID: 566084681}
   unlockButton: {fileID: 1211998454}
+  backButton: {fileID: 1292739844}
   diceSkins:
   - {fileID: 4777215322979123625}
   - {fileID: 1109250557}
@@ -25102,7 +25105,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Private Room
+  m_text: 'Create Room
 
 '
   m_isRightToLeft: 0
@@ -25907,13 +25910,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1829086825}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1710162309}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 858271295}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -29596,7 +29599,6 @@ SceneRoots:
   - {fileID: 961739753}
   - {fileID: 203844589}
   - {fileID: 85601606}
-  - {fileID: 1829086830}
   - {fileID: 858271295}
   - {fileID: 476577981}
   - {fileID: 1863164859}
