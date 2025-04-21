@@ -32,7 +32,18 @@ public class TilePanel : MonoBehaviour
         TileID = id;
         TileValue = val;
         numberTMP.text = TileValue.ToString();
-        this.tileClickedAction = tileClickedAction;
+        this.tileClickedAction = val > 0 ? tileClickedAction : null;
+
+        if(val == 0)
+        {
+            IsSelected = false;
+            isKnockedDown = true;
+            numberTMP.gameObject.SetActive(false);
+            button.interactable = false;
+            var color = bgImage.color;
+            color.a = 0;
+            bgImage.color = color;
+        }
     }
 
     private void Start()

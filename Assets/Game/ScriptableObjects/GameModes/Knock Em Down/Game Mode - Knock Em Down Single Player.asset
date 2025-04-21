@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea89dd6a5fb354ee5bea99bab5be57d8, type: 3}
-  m_Name: Game Mode - Knock Em Down
+  m_Script: {fileID: 11500000, guid: cf73c156070d242038ad44c232406a98, type: 3}
+  m_Name: Game Mode - Knock Em Down Single Player
   m_EditorClassIdentifier: 
   debug: 0
   developerDescription: 
@@ -26,11 +26,12 @@ MonoBehaviour:
   players: {fileID: 11400000, guid: 3e0cd71f5ab2b4d6b9127757bcc01495, type: 2}
   numberOfDice: 2
   minimumPlayersToStart: 2
-  gameModeMenuPrefab: {fileID: 2120296152266967477, guid: 8ee18090242de4e8e93760f771de60ca, type: 3}
-  isMultiplayer: 1
+  gameModeMenuPrefab: {fileID: 7234510674144430608, guid: 8051c347a8d7b445aaf704f02d9d1c19, type: 3}
+  isMultiplayer: 0
   networkedDice: 0
   showScoresOnEnd: 0
   canBankScoreVariable: {fileID: 11400000, guid: 1909bd9013a174f848a60a81098bf9b8, type: 2}
   changeTurnVariable: {fileID: 11400000, guid: b6e799f5a2eb24f6893ff4c82eddd00e, type: 2}
   maxRounds: 2
   totalTiles: 9
+  playerNames: {fileID: 11400000, guid: 35147188cd122475880dd03e0289dc27, type: 2}

@@ -39,14 +39,15 @@ public class PlayerConnectionMenu : MonoBehaviour
             case 1:
                 //randomMatchMenu.SetActive(true);
                 //mainMenu.OpenMenu(mainMenu.MPMenus.randomMatch);
-                mainMenu.OpenModeSelectionMenu(true);
+                //mainMenu.OpenModeSelectionMenu(true);
                 break;
             case 2:
                 privateRoomMenu.SetActive(true);
-                mainMenu.OpenMenu(mainMenu.MPMenus.createOrJoinRoom);
+                //mainMenu.OpenMenu(mainMenu.MPMenus.createOrJoinRoom);
+                mainMenu.OpenMenu(mainMenu.MPMenus.JoinRoom);
                 break;
             case 3:
-               await NetworkManager.Instance.EnterLobby();
+                await NetworkManager.Instance.EnterLobby();
                 mainMenu.OpenMenu(mainMenu.MPMenus.LobbyMenu);
                 break;
         }

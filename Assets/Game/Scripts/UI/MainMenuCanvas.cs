@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DiceGame.Network;
 using DiceGame.ScriptableObjects;
 using Fusion;
@@ -18,12 +17,14 @@ namespace DiceGame.UI
     {
         public static MainMenuCanvas instance;
         [SerializeField] private Button startButton;
+        [SerializeField] private Button changeNameButton;
         [SerializeField] private Button singleDeviceButton;
         [SerializeField] private Button multiDeviceButton;
         [SerializeField] private Button greedModeButton;
         [SerializeField] private Button battleModeButton;
         [SerializeField] private Button mexicoModeButton;
         [SerializeField] private Button knockDownModeButton;
+        [SerializeField] private Button joinOnlineButton;
         [SerializeField] private Button diceSelectionButton;
 
         [SerializeField] private TMP_InputField nameInputField;
@@ -43,7 +44,7 @@ namespace DiceGame.UI
 
         private Menu currentMenu;
         private bool isMultiDevice;
-
+        private GameModeName _selectedGameMode;
         private void Awake()
         {
             instance = this;
@@ -51,36 +52,47 @@ namespace DiceGame.UI
         }
         private void OnEnable()
         {
-            startButton.onClick.AddListener(OpenDeviceSelectionPanel);
-            singleDeviceButton.onClick.AddListener(() => SelectIsMultiplayer(false));
-            multiDeviceButton.onClick.AddListener(() => SelectIsMultiplayer(true));
-            battleModeButton.onClick.AddListener(() => SelectGameModeType(GameModeName.BankrollBattle));
-            greedModeButton.onClick.AddListener(() => SelectGameModeType(GameModeName.Greed));
-            mexicoModeButton.onClick.AddListener(() => SelectGameModeType(GameModeName.Mexico));
-            knockDownModeButton.onClick.AddListener(() => SelectGameModeType(GameModeName.KnockEmDown));
+            startButton.onClick.AddListener(OpenModeSelectionPanel);
+            changeNameButton.onClick.AddListener(ChangePlayerName);
+            singleDeviceButton.onClick.AddListener(() => SelectIsMultiplayer(false, _selectedGameMode));
+            multiDeviceButton.onClick.AddListener(() => SelectIsMultiplayer(true, _selectedGameMode));
+            battleModeButton.onClick.AddListener(() => OpenDeviceSelectionMenu(GameModeName.BankrollBattle));
+            greedModeButton.onClick.AddListener(() => OpenDeviceSelectionMenu(GameModeName.Greed));
+            mexicoModeButton.onClick.AddListener(() => OpenDeviceSelectionMenu(GameModeName.Mexico));
+            knockDownModeButton.onClick.AddListener(() => OpenDeviceSelectionMenu(GameModeName.KnockEmDown));
+            joinOnlineButton.onClick.AddListener(() => OpenMenu(MPMenus.playerConnectionMenu));
             diceSelectionButton.onClick.AddListener(() => OpenMenu(diceSelectionMenu));
             nameInputField.onValueChanged.AddListener(OnNameChanged);
         }
 
         private void OnDisable()
         {
-            startButton.onClick.RemoveListener(OpenDeviceSelectionPanel);
+            startButton.onClick.RemoveAllListeners();
+            changeNameButton.onClick.RemoveAllListeners();
             singleDeviceButton.onClick.RemoveAllListeners();
             multiDeviceButton.onClick.RemoveAllListeners();
             battleModeButton.onClick.RemoveAllListeners();
             greedModeButton.onClick.RemoveAllListeners();
             mexicoModeButton.onClick.RemoveAllListeners();
             knockDownModeButton.onClick.RemoveAllListeners();
+            joinOnlineButton.onClick.RemoveAllListeners();
             diceSelectionButton.onClick.RemoveAllListeners();
             nameInputField.onValueChanged.RemoveListener(OnNameChanged);
             NetworkManager.Instance.OnJoinFailed -= onJoinFailed;
         }
         private void Start()
         {
+            if (PlayerPrefs.HasKey("PlayerName"))
+            {
+                nameInputField.text = PlayerPrefs.GetString("PlayerName");
+                nameInputField.interactable = false;
+            }
             alertText.text = "";
             alertText.gameObject.SetActive(false);
             NetworkManager.Instance.OnJoinFailed += onJoinFailed;
-            startButton.interactable = false;
+            //startButton.interactable = false;
+            startButton.interactable = PlayerPrefs.HasKey("PlayerName");
+            diceSelectionMenu.gameObject.SetActive(false);
             OpenMenu(nameMenu);
         }
 
@@ -88,7 +100,12 @@ namespace DiceGame.UI
         {
             startButton.interactable = value.Length > 0 && value.Length < 17 && !string.IsNullOrWhiteSpace(value);
         }
-
+        private void ChangePlayerName()
+        {
+            nameInputField.text = "";
+            nameInputField.interactable = true;
+            startButton.interactable = false;
+        }
         private void SelectGameModeType(GameModeName gameMode)
         {
             GameModeBase selectedGameMode = null;
@@ -141,29 +158,26 @@ namespace DiceGame.UI
                             CreateGame();
                             break;
                         case GameModeName.KnockEmDown:
+                            CreateGame();
                             break;
                     }
                 }
+                diceSelectionMenu.gameObject.SetActive(true);
             }
         }
 
-     
-        private void SelectIsMultiplayer(bool isMultiDevice)
+
+        private void SelectIsMultiplayer(bool isMultiDevice, GameModeName gameMode)
         {
             this.isMultiDevice = isMultiDevice;
             //New change
             if (!isMultiDevice)
-                OpenMenu(modeSelectionMenu);
+                SelectGameModeType(gameMode);
             else
-                OpenMenu(MPMenus.playerConnectionMenu);
+                SelectGameModeType(gameMode);
             //--- Set scene index ---
         }
-        //New
-        public void OpenModeSelectionMenu(bool isRandomMatch)
-        {
-            isRandomMatchSelected = isRandomMatch;
-            OpenMenu(modeSelectionMenu);
-        }
+
         public void OpenSelectedModeMenu()
         {
             if (isRandomMatchSelected)
@@ -172,15 +186,28 @@ namespace DiceGame.UI
                 OpenMenu(MPMenus.createRoom);
         }
 
-        private void OpenDeviceSelectionPanel()
+        private void OpenModeSelectionPanel()
         {
+            PlayerPrefs.SetString("PlayerName", nameInputField.text);
             playerInfo.value.playerName = nameInputField.text;
-            OpenMenu(devicesSelectionMenu);
+            OpenMenu(modeSelectionMenu);
         }
+        private void OpenDeviceSelectionMenu(GameModeName gameMode)
+        {
+            OpenMenu(devicesSelectionMenu);
+            _selectedGameMode = gameMode;
+        }
+        //public void OpenModeSelectionMenu(bool isRandomMatch)
+        //{
+        //    isRandomMatchSelected = isRandomMatch;
+        //    OpenMenu(modeSelectionMenu);
+        //}
+
         //Update current menu on back button
         public void SetCurrentMenu(Menu menu)
         {
             currentMenu = menu;
+            diceSelectionMenu.gameObject.SetActive(false);
         }
         public void OpenMenu(Menu menu)
         {

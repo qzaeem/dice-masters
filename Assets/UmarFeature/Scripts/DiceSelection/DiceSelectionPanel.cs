@@ -1,18 +1,18 @@
 using DiceGame.ScriptableObjects;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace DiceGame.UI
 {
     public class DiceSelectionPanel : MonoBehaviour
     {
-        [SerializeField] private Button leftArrow, rightArrow, selectButton, unlockButton, backButton;
+        [SerializeField] private Button leftArrow, rightArrow, selectButton, unlockButton;
+        [SerializeField] private TextMeshProUGUI alertText;
         [SerializeField] private DiceSkin[] diceSkins;
         [SerializeField] private DiceSkinVariable diceSkinVariable;
         private const string p_SelectedDice = "SelectedDice";
-        private const string p_UnlockedDice = "UnlockedDice";
+
         private int index;
 
         private void OnEnable()
@@ -34,13 +34,11 @@ namespace DiceGame.UI
         {
             leftArrow.onClick.AddListener(() => ChangeDice(-1));
             rightArrow.onClick.AddListener(() => ChangeDice(1));
-            backButton.onClick.AddListener(ClosePanel);
             selectButton.onClick.AddListener(SelectDice);
             unlockButton.onClick.AddListener(UnlockDice);
         }
         private void RemoveListeners()
         {
-            backButton.onClick.RemoveListener(ClosePanel);
             leftArrow.onClick.RemoveAllListeners();
             rightArrow.onClick.RemoveAllListeners();
             selectButton.onClick.RemoveAllListeners();
@@ -49,6 +47,7 @@ namespace DiceGame.UI
         private void Init()
         {
             DisableAll();
+            alertText.gameObject.SetActive(false);
             // start with selected dice skin
             index = PlayerPrefs.GetInt(p_SelectedDice, 0);
             diceSkins[index].isSelected = true;
@@ -59,9 +58,9 @@ namespace DiceGame.UI
         private void ChangeDice(int direction)
         {
             DisableAll();
+            alertText.gameObject.SetActive(false);
             diceSkins[index].gameObject.SetActive(false); // Deactivate current dice
             index = (int)Mathf.Repeat(index + direction, diceSkins.Length); // Circular index handling
-
             DeselectAll();
             UpdateDiceSelection();
         }
@@ -87,13 +86,22 @@ namespace DiceGame.UI
         }
         private void UnlockDice()
         {
+            int keys = KeysController.Instance.GetKeys();
+            if (diceSkins[index].DiceCost > keys)
+            {
+                alertText.gameObject.SetActive(true);
+                alertText.text = "Not Enough Keys To Unlock The Dice!";
+                return;
+            }
             Debug.Log("Dice Unlocked");
             diceSkins[index].isUnlocked = true;
-            diceSkins[index].DiceLock.SetActive(true);
+            diceSkins[index].DiceLock.SetActive(false);
+            diceSkins[index].CostText.gameObject.SetActive(false);
             unlockButton.gameObject.SetActive(false);
             selectButton.gameObject.SetActive(true);
             int dice = diceSkins[index].DiceNumber;
-            PlayerPrefs.SetInt(p_UnlockedDice, dice);
+            diceSkins[index].SaveUnlockedDice();
+            KeysController.Instance.SubtractKeys(diceSkins[index].DiceCost);
         }
         private void DisableAll()
         {
@@ -112,11 +120,6 @@ namespace DiceGame.UI
                 d.SelectedText.gameObject.SetActive(false);
             }
 
-        }
-
-        private void ClosePanel()
-        {
-            gameObject.SetActive(false);
         }
     }
 }
