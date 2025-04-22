@@ -2,27 +2,27 @@ using DiceGame.ScriptableObjects;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
 namespace DiceGame.UI
 {
-    public class KnockDownPanelMPSettings : MonoBehaviour
+    public class KncokDownPanelSPSettings : MonoBehaviour
     {
         [SerializeField] private MainMenuCanvas mainMenu;
-        [SerializeField] private GameModeTileKnock modeTileKnockMP;
-        [SerializeField] private Button nextButton;
+        [SerializeField] private GameModeTileKnockSP modeTileKnockSP;
+        [SerializeField] private PlayerNamesPanel playerNamesPanel;
         [SerializeField] private TMP_Dropdown totalTilesDropDown, roundsDropdown;
+        [SerializeField] private Button startButton;
         private uint maxRounds;
         private uint maxTiles;
         private void OnEnable()
         {
-            nextButton.onClick.AddListener(NextMenu);
+            startButton.onClick.AddListener(StartGame);
             totalTilesDropDown.onValueChanged.AddListener(UpdateNumberOfTiles);
             roundsDropdown.onValueChanged.AddListener(UpdateRoundValue);
         }
 
         private void OnDisable()
         {
-            nextButton.onClick.RemoveListener(NextMenu);
+            startButton.onClick.RemoveListener(StartGame);
             totalTilesDropDown.onValueChanged.RemoveListener(UpdateNumberOfTiles);
             roundsDropdown.onValueChanged.RemoveListener(UpdateRoundValue);
         }
@@ -34,8 +34,8 @@ namespace DiceGame.UI
         private void SetupDropdownOptions()
         {
             //get the last selected max tiles
-            maxTiles = modeTileKnockMP.TotalTiles;
-            maxRounds = modeTileKnockMP.MaxRounds;
+            maxTiles = modeTileKnockSP.TotalTiles;
+            maxRounds = modeTileKnockSP.MaxRounds;
             SetDropDownOption(roundsDropdown, maxRounds);
             SetTilesDropDownOption();
         }
@@ -74,15 +74,21 @@ namespace DiceGame.UI
             }
         }
 
-        public void NextMenu()
+        public void StartGame()
         {
-            modeTileKnockMP.MaxRounds = maxRounds;
-            modeTileKnockMP.TotalTiles = maxTiles;
-            mainMenu.OpenSelectedModeMenu();
+            if (!playerNamesPanel.AllFieldsHaveNames())
+                return;
+            modeTileKnockSP.MaxRounds = maxRounds;
+            modeTileKnockSP.TotalTiles = maxTiles;
+            mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
+            playerNamesPanel.SetNamesSO();
+            mainMenu.CreateGame();
+            gameObject.SetActive(false);
         }
         private void OnDestroy()
         {
-            totalTilesDropDown.onValueChanged.RemoveListener(UpdateNumberOfTiles);
+            if (totalTilesDropDown != null)
+                totalTilesDropDown.onValueChanged.RemoveListener(UpdateNumberOfTiles);
         }
     }
 }

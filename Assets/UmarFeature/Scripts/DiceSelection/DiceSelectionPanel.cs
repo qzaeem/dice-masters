@@ -7,7 +7,7 @@ namespace DiceGame.UI
 {
     public class DiceSelectionPanel : MonoBehaviour
     {
-        [SerializeField] private Button leftArrow, rightArrow, selectButton, unlockButton;
+        [SerializeField] private Button leftArrow, rightArrow, selectButton, unlockButton, closeButton;
         [SerializeField] private TextMeshProUGUI alertText;
         [SerializeField] private DiceSkin[] diceSkins;
         [SerializeField] private DiceSkinVariable diceSkinVariable;
@@ -36,6 +36,7 @@ namespace DiceGame.UI
             rightArrow.onClick.AddListener(() => ChangeDice(1));
             selectButton.onClick.AddListener(SelectDice);
             unlockButton.onClick.AddListener(UnlockDice);
+            closeButton.onClick.AddListener(CloseDiceSelection);
         }
         private void RemoveListeners()
         {
@@ -43,6 +44,7 @@ namespace DiceGame.UI
             rightArrow.onClick.RemoveAllListeners();
             selectButton.onClick.RemoveAllListeners();
             unlockButton.onClick.RemoveAllListeners();
+            closeButton.onClick.RemoveAllListeners();
         }
         private void Init()
         {
@@ -119,7 +121,10 @@ namespace DiceGame.UI
                 d.isSelected = false;
                 d.SelectedText.gameObject.SetActive(false);
             }
-
+        }
+        private void CloseDiceSelection()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

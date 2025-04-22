@@ -1,5 +1,4 @@
 using DiceGame.UI;
-using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +13,7 @@ public class JoinPrivateRoom : MonoBehaviour
     {
         joinRoomButton.onClick.AddListener(JoinRoom);
         roomKey.onValueChanged.AddListener(OnRoomKeyChange);
+        roomKey.onEndEdit.AddListener(OnRoomKeyEndEdit);
     }
     private void Start()
     {
@@ -22,11 +22,17 @@ public class JoinPrivateRoom : MonoBehaviour
     private void OnDisable()
     {
         joinRoomButton.onClick.RemoveListener(JoinRoom);
+        roomKey.onValueChanged.RemoveListener(OnRoomKeyChange);
+        roomKey.onEndEdit.RemoveListener(OnRoomKeyEndEdit);
     }
     private void OnRoomKeyChange(string value)
     {
         //joinRoomButton.interactable = value.Length > 0 && value.Length < 17 && !string.IsNullOrWhiteSpace(value);
         joinRoomButton.interactable = value.Length > 0 && value.Length < 17;
+    }
+    private void OnRoomKeyEndEdit(string value)
+    {
+        roomKey.text = value.ToUpper();
     }
     void JoinRoom()
     {

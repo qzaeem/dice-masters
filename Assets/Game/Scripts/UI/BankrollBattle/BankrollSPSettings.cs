@@ -53,16 +53,18 @@ namespace DiceGame.UI
         {
             if (!playerNamesPanel.AllFieldsHaveNames())
                 return;
-            gameObject.SetActive(false);
             mainMenu.playerCount = playerNamesPanel.numberOfPlayers;
             playerNamesPanel.SetNamesSO();
             modeBankrollBattleSP.SetSettings(maxRounds, scoresAtEndCheck.currentValue);
             mainMenu.CreateGame();
+            gameObject.SetActive(false);
         }
         private void OnDestroy()
         {
-            playerNamesPanel.onFieldValueChanged -= CheckAllFields;
-            maxRoundsDropDown.onValueChanged.RemoveListener(UpdateMaxRounds);
+            if (playerNamesPanel != null)
+                playerNamesPanel.onFieldValueChanged -= CheckAllFields;
+            if (maxRoundsDropDown != null)
+                maxRoundsDropDown.onValueChanged.RemoveListener(UpdateMaxRounds);
         }
     }
 }

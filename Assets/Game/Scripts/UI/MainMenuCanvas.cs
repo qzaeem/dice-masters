@@ -25,15 +25,15 @@ namespace DiceGame.UI
         [SerializeField] private Button mexicoModeButton;
         [SerializeField] private Button knockDownModeButton;
         [SerializeField] private Button joinOnlineButton;
-        [SerializeField] private Button diceSelectionButton;
 
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private GameObject loadingMenu;
-        [SerializeField] private Menu nameMenu, diceSelectionMenu, modeSelectionMenu, devicesSelectionMenu, bankrollMenuSP, greedModeMenuSP;
+        [SerializeField] private Menu nameMenu, modeSelectionMenu, devicesSelectionMenu, bankrollMenuSP, greedModeMenuSP, mexicoModeMenuSP, knockDownModeMenuSP;
         [SerializeField] private PlayerInfoVariable playerInfo;
         [SerializeField] private GameModeVariable currentGameMode;
         [SerializeField] private List<GameModeBase> gameModes;
         [SerializeField] private TextMeshProUGUI alertText;
+        [SerializeField] private GameObject diceSelectionMenu;
 
         //--- New ---
         [Header("Multiplayer Mode Menus")]
@@ -61,7 +61,6 @@ namespace DiceGame.UI
             mexicoModeButton.onClick.AddListener(() => OpenDeviceSelectionMenu(GameModeName.Mexico));
             knockDownModeButton.onClick.AddListener(() => OpenDeviceSelectionMenu(GameModeName.KnockEmDown));
             joinOnlineButton.onClick.AddListener(() => OpenMenu(MPMenus.playerConnectionMenu));
-            diceSelectionButton.onClick.AddListener(() => OpenMenu(diceSelectionMenu));
             nameInputField.onValueChanged.AddListener(OnNameChanged);
         }
 
@@ -76,7 +75,6 @@ namespace DiceGame.UI
             mexicoModeButton.onClick.RemoveAllListeners();
             knockDownModeButton.onClick.RemoveAllListeners();
             joinOnlineButton.onClick.RemoveAllListeners();
-            diceSelectionButton.onClick.RemoveAllListeners();
             nameInputField.onValueChanged.RemoveListener(OnNameChanged);
             NetworkManager.Instance.OnJoinFailed -= onJoinFailed;
         }
@@ -92,7 +90,7 @@ namespace DiceGame.UI
             NetworkManager.Instance.OnJoinFailed += onJoinFailed;
             //startButton.interactable = false;
             startButton.interactable = PlayerPrefs.HasKey("PlayerName");
-            diceSelectionMenu.gameObject.SetActive(false);
+            diceSelectionMenu.SetActive(false);
             OpenMenu(nameMenu);
         }
 
@@ -155,14 +153,13 @@ namespace DiceGame.UI
                             OpenMenu(greedModeMenuSP);
                             break;
                         case GameModeName.Mexico:
-                            CreateGame();
+                            OpenMenu(mexicoModeMenuSP);
                             break;
                         case GameModeName.KnockEmDown:
-                            CreateGame();
+                            OpenMenu(knockDownModeMenuSP);
                             break;
                     }
                 }
-                diceSelectionMenu.gameObject.SetActive(true);
             }
         }
 
@@ -207,7 +204,7 @@ namespace DiceGame.UI
         public void SetCurrentMenu(Menu menu)
         {
             currentMenu = menu;
-            diceSelectionMenu.gameObject.SetActive(false);
+            diceSelectionMenu.SetActive(false);
         }
         public void OpenMenu(Menu menu)
         {
@@ -229,7 +226,6 @@ namespace DiceGame.UI
             roomKey = RoomKeyGenerator.GenerateRoomKey();
             Debug.Log($"<color=yellow>Room Key: {roomKey}</color>");
             loadingMenu.SetActive(true);
-            diceSelectionButton.gameObject.SetActive(false);
 
             //--- New start method arg to get roomkey and player count---
             if (isMultiDevice)
@@ -247,7 +243,6 @@ namespace DiceGame.UI
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
-            diceSelectionButton.gameObject.SetActive(false);
             NetworkManager.Instance.JoinGame(roomName);
         }
         public void onJoinFailed(string msg)
@@ -262,7 +257,6 @@ namespace DiceGame.UI
         {
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
-            diceSelectionButton.gameObject.SetActive(false);
             NetworkManager.Instance.RandomMatchmaking();
         }
     }
