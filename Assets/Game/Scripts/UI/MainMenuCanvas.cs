@@ -80,6 +80,7 @@ namespace DiceGame.UI
         }
         private void Start()
         {
+            RemoveDiceSavePlayerPrefs();
             if (PlayerPrefs.HasKey("PlayerName"))
             {
                 nameInputField.text = PlayerPrefs.GetString("PlayerName");
@@ -93,7 +94,6 @@ namespace DiceGame.UI
             diceSelectionMenu.SetActive(false);
             OpenMenu(nameMenu);
         }
-
         public void OnNameChanged(string value)
         {
             startButton.interactable = value.Length > 0 && value.Length < 17 && !string.IsNullOrWhiteSpace(value);
@@ -258,6 +258,20 @@ namespace DiceGame.UI
             //GameManager.isSinglePlayerMode = !currentGameMode.value.isMultiplayer;
             loadingMenu.SetActive(true);
             NetworkManager.Instance.RandomMatchmaking();
+        }
+        private void RemoveDiceSavePlayerPrefs()
+        {
+            if (PlayerPrefs.HasKey("SelectedDice"))
+                PlayerPrefs.DeleteKey("SelectedDice");
+
+            if (PlayerPrefs.HasKey("UnlockDice1"))
+                PlayerPrefs.DeleteKey("UnlockDice1");
+
+            if (PlayerPrefs.HasKey("UnlockDice2"))
+                PlayerPrefs.DeleteKey("UnlockDice2");
+
+            if (PlayerPrefs.HasKey("UnlockDice3"))
+                PlayerPrefs.DeleteKey("UnlockDice3");
         }
     }
 }
