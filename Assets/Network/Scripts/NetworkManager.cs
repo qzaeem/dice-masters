@@ -31,6 +31,14 @@ namespace DiceGame.Network
         public Action<string> OnJoinFailed;
         #endregion
 
+        private bool isOpenGame;
+        private bool isPrivateGame;
+        public void SetGame(bool isOpenGame, bool isPrivateGame)
+        {
+            this.isOpenGame = isOpenGame;
+            this.isPrivateGame = isPrivateGame;
+        }
+
         //Arguments added roomkey and player count
         public async void CreateGame(string roomKey, int playerCount, GameMode gameMode)
         {
@@ -43,6 +51,8 @@ namespace DiceGame.Network
             customProperties["gameType"] = (int)currentGameMode.value.mode;
             customProperties["roomKey"] = roomKey;
             customProperties["maxPlayers"] = playerCount;
+            customProperties["isOpenGame"] = isOpenGame;
+            customProperties["isPrivateGame"] = isPrivateGame;
             customProperties["isOpen"] = true;
 
             NewRoomKey = roomKey;
@@ -95,7 +105,7 @@ namespace DiceGame.Network
                 return;
             }
 
-            while(_availableSessions == null)
+            while (_availableSessions == null)
             {
                 Debug.Log("Available sessions is null");
                 await Task.Yield();
@@ -219,7 +229,7 @@ namespace DiceGame.Network
                 return;
 
             var properties = new Dictionary<string, SessionProperty>();
-            foreach(var kvp in _networkRunner.SessionInfo.Properties)
+            foreach (var kvp in _networkRunner.SessionInfo.Properties)
             {
                 properties[kvp.Key] = kvp.Value;
             }

@@ -32,6 +32,13 @@ public class SessionsListLobby : MonoBehaviour
     {
         foreach (SessionInfo item in sessionInfoList)
         {
+            if (item.Properties.TryGetValue("isPrivateGame", out var isPrivateGameValue))
+            {
+                if ((bool)isPrivateGameValue)
+                {
+                    continue; // Skip private games
+                }
+            }
             GameObject obj = Instantiate(sessionEntityPrefab, sessionEntitySpawnParent.transform);
             int maxPlayers = 0;
             if (item.Properties.TryGetValue("maxPlayers", out var maxPlayerProperty))
