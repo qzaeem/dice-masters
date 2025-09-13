@@ -70,6 +70,9 @@ namespace DiceGame.Game
 
         private void OnPlayerBankedScore()
         {
+            if (!hasBankedScore)
+                return;
+
             playerBankedScoreAction.Execute();
         }
 

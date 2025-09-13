@@ -14,6 +14,7 @@ namespace DiceGame.UI
         public GameObject gameStartBlocker;
         public GameObject gameResultPanel;
         public GameObject pauseMenuPanel;
+        public GameObject instructionsPanel;
         public TMP_Text gameScoreTMP;
         public TMP_Text roomKeyTMP;
 
@@ -21,8 +22,11 @@ namespace DiceGame.UI
         public Button rollDiceButton;
         public Button bankScoreButton;
         public Button pauseButton;
+        public Button instructionsButton;
         public Button resumeGameButton;
+        public Button returnToGameButton;
         public Button leaveGameButton;
+        public Button leaveGameButton2;
         public Button startGameButton;
 
         [Header("Scriptable Objects")]
@@ -48,8 +52,11 @@ namespace DiceGame.UI
             startGameButton.onClick.AddListener(StartGame);
             rollDiceButton.onClick.AddListener(RollDice);
             pauseButton.onClick.AddListener(OnPauseButtonClicked);
+            instructionsButton.onClick.AddListener(OnInstructionsButtonClicked);
             resumeGameButton.onClick.AddListener(OnResumeGameButtonClicked);
+            returnToGameButton.onClick.AddListener(OnResumeGameButtonClicked);
             leaveGameButton.onClick.AddListener(OnLeaveGameButtonClicked);
+            leaveGameButton2.onClick.AddListener(OnLeaveGameButtonClicked);
             updateScoresUI.executeAction += OnUpdateScoresUI;
             gameScore.onValueChange += OnUpdateGameScore;
             diceRollingVariable.onValueChange += OnDiceRollChanged;
@@ -61,8 +68,11 @@ namespace DiceGame.UI
             startGameButton.onClick.RemoveListener(StartGame);
             rollDiceButton.onClick.RemoveListener(RollDice);
             pauseButton.onClick.RemoveListener(OnPauseButtonClicked);
+            instructionsButton.onClick.RemoveListener(OnInstructionsButtonClicked);
             resumeGameButton.onClick.RemoveListener(OnResumeGameButtonClicked);
+            returnToGameButton.onClick.RemoveListener(OnResumeGameButtonClicked);
             leaveGameButton.onClick.RemoveListener(OnLeaveGameButtonClicked);
+            leaveGameButton2.onClick.RemoveListener(OnLeaveGameButtonClicked);
             updateScoresUI.executeAction -= OnUpdateScoresUI;
             gameScore.onValueChange -= OnUpdateGameScore;
             diceRollingVariable.onValueChange -= OnDiceRollChanged;
@@ -175,6 +185,11 @@ namespace DiceGame.UI
             pauseMenuPanel.SetActive(true);
         }
 
+        public virtual void OnInstructionsButtonClicked()
+        {
+            instructionsPanel.SetActive(true);
+        }
+
         public virtual void OnLeaveGameButtonClicked()
         {
             DiceGame.Network.NetworkManager.Instance.LeaveGame();
@@ -183,6 +198,7 @@ namespace DiceGame.UI
         public virtual void OnResumeGameButtonClicked()
         {
             pauseMenuPanel.SetActive(false);
+            instructionsPanel.SetActive(false);
         }
 
         public abstract void EndGame();

@@ -116,6 +116,11 @@ namespace DiceGame.ScriptableObjects
 
         public virtual void SetMultiplayerCanvas()
         {
+            if (_hasGameEnded)
+            {
+                return;
+            }
+
             gameMenu.SetMultiplayerCanvas(isMultiplayer);
         }
 
@@ -153,7 +158,7 @@ namespace DiceGame.ScriptableObjects
 
             var index = players.value.IndexOf(activePlayer);
             int nextIndex = index >= players.value.Count() - 1 ? 0 : index + 1;
-            for(int i = nextIndex; i < players.value.Count(); i++)
+            for (int i = nextIndex; i < players.value.Count(); i++)
             {
                 if (!players.value[i].hasBankedScore)
                 {

@@ -16,6 +16,8 @@ namespace DiceGame.Game
 
         [SerializeField] private DiceRollManager diceRollManager;
         [SerializeField] private float upwardForce, maxTorque;
+        [SerializeField] private float cubeSize;
+        [SerializeField] private float boardSize;
         [SerializeField] private ActionSO onRollComplete;
         [SerializeField] private DiceSkinVariable skinVariable;
         [SerializeField] private List<ValueDirection> valueDirections;
@@ -51,11 +53,22 @@ namespace DiceGame.Game
         {
             if (!(_rollingStarted && Runner.IsMasterClient()))
                 return;
-            
-            if(_rBody.angularVelocity == Vector3.zero && _rBody.linearVelocity == Vector3.zero)
+
+            ClampPosition();
+            //Debug.Log($"AV: {_rBody.angularVelocity}, LV: {_rBody.linearVelocity }");
+            if (_rBody.angularVelocity.sqrMagnitude < 0.005f && _rBody.linearVelocity.sqrMagnitude < 0.005f)
             {
                 CompleteRollRpc();
             }
+        }
+
+        private void ClampPosition()
+        {
+            Vector3 pos = transform.position;
+            pos.x = Mathf.Clamp(pos.x, (-boardSize / 2) + (cubeSize / 2), (boardSize / 2) - (cubeSize / 2));
+            pos.z = Mathf.Clamp(pos.z, (-boardSize / 2) + (cubeSize / 2), (boardSize / 2) - (cubeSize / 2));
+            pos.y = pos.y < cubeSize / 2 ? cubeSize / 2 : pos.y;
+            transform.position = pos;
         }
 
         private void Roll()

@@ -129,6 +129,8 @@ MonoBehaviour:
   diceRollManager: {fileID: 11400000, guid: 80d59675ce8914458a4fb16da9d9dd67, type: 2}
   upwardForce: 3000
   maxTorque: 1000
+  cubeSize: 1
+  boardSize: 10
   onRollComplete: {fileID: 11400000, guid: 6ddfc67f18f5143feb96fd0d04d799bc, type: 2}
   skinVariable: {fileID: 11400000, guid: d9c9d05fb74bb4f3b982a2fa742d41de, type: 2}
   valueDirections:

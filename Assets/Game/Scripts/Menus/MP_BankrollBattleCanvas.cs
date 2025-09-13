@@ -115,6 +115,11 @@ namespace DiceGame.UI
 
         public override void OnDiceRollComplete(List<IPlayableDice> dice)
         {
+            if (gameMode.HasGameEnded)
+            {
+                return;
+            }
+
             base.OnDiceRollComplete(dice);
             var diceValues = dice.Select(d => d.CurrentValue).ToList();
             var sum = diceValues.Sum();

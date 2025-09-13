@@ -16,7 +16,6 @@ public class KeysController : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
         LoadKeys();
     }

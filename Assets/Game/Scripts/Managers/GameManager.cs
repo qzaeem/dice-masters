@@ -3,6 +3,7 @@ using Fusion;
 using DiceGame.ScriptableObjects;
 using DiceGame.Network;
 using DiceGame.Game;
+using System.Linq;
 
 public class GameManager : NetworkBehaviour
 {
@@ -101,7 +102,11 @@ public class GameManager : NetworkBehaviour
         }
 
         currentGameMode.value.ShowStartGameButton(players.value.Count >= currentGameMode.value.minimumPlayersToStart && !_hasGameStarted);
-        currentGameMode.value.SetMultiplayerCanvas();
+
+        if (!_hasGameStarted)
+        {
+            currentGameMode.value.SetMultiplayerCanvas();
+        }
     }
 
     private void CheckForGameStart()
@@ -174,7 +179,8 @@ public class GameManager : NetworkBehaviour
     {
         if (!Runner.IsMasterClient())
             return;
-
+        var plr = players.value.FirstOrDefault(p => p.playerRef == playerRef);
+        if (plr != null) Debug.Log($"Player move index {players.value.IndexOf(plr)}");
         _activePlayerTurn = playerRef;
         ChangePlayerTurnRpc(playerRef);
     }
@@ -197,7 +203,7 @@ public class GameManager : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All)]
     private void ChangePlayerTurnRpc(PlayerRef playerRef)
     {
-        changePlayerTurnVariable.Set(ActivePlayerTurn);
+        changePlayerTurnVariable.Set(playerRef);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]

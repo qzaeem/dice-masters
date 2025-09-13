@@ -37,10 +37,32 @@ namespace DiceGame.ScriptableObjects
 
         public override void OnPlayerBankedScore()
         {
-            var activePlayer = players.value.FirstOrDefault(p => p.playerRef == gameManager.ActivePlayerTurn);
+            if(players.value.All(p => p.hasBankedScore))
+            {
+                Debug.Log("Here 1");
+                IncrementRound();
+                return;
+            }
 
-            if(players.value.All(p => p.hasBankedScore) || activePlayer.hasBankedScore)
-                ChangePlayerTurn();
+            Debug.Log("Here 2");
+            var activePlayer = players.value.FirstOrDefault(p => p.playerRef == gameManager.ActivePlayerTurn);
+            if (activePlayer != null && activePlayer.hasBankedScore)
+            {
+                var index = players.value.IndexOf(activePlayer);
+                int nextIndex = index >= players.value.Count() - 1 ? 0 : index + 1;
+                for (int i = nextIndex; i < players.value.Count(); i++)
+                {
+                    if (!players.value[i].hasBankedScore)
+                    {
+                        nextIndex = i;
+                        break;
+                    }
+                    if (i >= players.value.Count() - 1)
+                        i = -1;
+                }
+
+                gameManager.ChangePlayerTurn(players.value[nextIndex].playerRef);
+            }
         }
 
         public override void IncrementRound()
@@ -103,7 +125,12 @@ namespace DiceGame.ScriptableObjects
                 return;
             }
 
-            gameManager.ChangePlayerTurn(players.value[0].playerRef);
+            var activePlayer = players.value.FirstOrDefault(p => p.playerRef == gameManager.ActivePlayerTurn);
+            var index = players.value.IndexOf(activePlayer == null ? players.value[0] : activePlayer);
+            int nextIndex = index >= players.value.Count() - 1 ? 0 : index + 1;
+
+            gameManager.ChangePlayerTurn(players.value[nextIndex].playerRef);
+
             base.OnRoundChanged(round);
         }
     }

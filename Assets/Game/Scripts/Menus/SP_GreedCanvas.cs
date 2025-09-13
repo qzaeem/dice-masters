@@ -156,7 +156,9 @@ namespace DiceGame.UI
             foreach (var entry in playerEntries)
             {
                 entry.Value.SetHighlight(false);
+                entry.Value.BankButtonInteractable(false);
             }
+            SetDiceRollButton(true, "Roll Dice");
             playerEntries[id].SetHighlight(true);
             _activePlayerId = id;
         }

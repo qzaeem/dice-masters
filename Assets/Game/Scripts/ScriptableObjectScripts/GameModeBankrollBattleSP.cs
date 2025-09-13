@@ -41,13 +41,31 @@ namespace DiceGame.ScriptableObjects
             }
         }
 
+        private void NextPlayerTurn()
+        {
+            var index = _activePlayerID;
+            int nextIndex = index >= _playersData.Count() - 1 ? 0 : index + 1;
+            for (int i = nextIndex; i < _playersData.Count(); i++)
+            {
+                if (!_playersData[i].hasBankedScore)
+                {
+                    nextIndex = i;
+                    break;
+                }
+                if (i >= _playersData.Count() - 1)
+                    i = -1;
+            }
+
+            _activePlayerID = nextIndex;
+        }
+
         public override void Initialize()
         {
             base.Initialize();
             bankrollBattleCanvas = gameMenu as SP_BankrollBattleCanvas;
             _sevensRolled = 0;
             SpawnPlayers();
-            _activePlayerID = 0;
+            _activePlayerID = -1;
             bankrollBattleCanvas.OnPlayerTurnChange(0);
         }
 
@@ -111,21 +129,8 @@ namespace DiceGame.ScriptableObjects
                 return;
             }
 
-            var index = _activePlayerID;
-            int nextIndex = index >= _playersData.Count() - 1 ? 0 : index + 1;
-            for (int i = nextIndex; i < _playersData.Count(); i++)
-            {
-                if (!_playersData[i].hasBankedScore)
-                {
-                    nextIndex = i;
-                    break;
-                }
-                if (i >= _playersData.Count() - 1)
-                    i = -1;
-            }
-
-            _activePlayerID = nextIndex;
-            bankrollBattleCanvas.OnPlayerTurnChange(nextIndex);
+            NextPlayerTurn();
+            bankrollBattleCanvas.OnPlayerTurnChange(_activePlayerID);
         }
 
         public override void IncrementRound()
@@ -168,13 +173,23 @@ namespace DiceGame.ScriptableObjects
                 return;
             }
 
+            bool allPlayersBanked = !_playersData.Any(p => !p.Value.hasBankedScore);
+
             foreach(var kvp in _playersData)
             {
                 kvp.Value.hasBankedScore = false;
             }
 
-            _activePlayerID = 0;
-            bankrollBattleCanvas.OnPlayerTurnChange(0);
+            if (allPlayersBanked)
+            {
+                _activePlayerID = 0;
+            }
+            else
+            {
+                NextPlayerTurn();
+            }
+
+            bankrollBattleCanvas.OnPlayerTurnChange(_activePlayerID);
             gameMenu.OnRoundChanged(round);
         }
 

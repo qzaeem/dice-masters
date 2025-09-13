@@ -53,7 +53,7 @@ namespace DiceGame.UI
         {
             var entry = Instantiate(playerInfoEntryUIPrefab, playerInfoEntryContainer);
             entry.InitializeForSinglePlayer(id, OnBankButtonPressed);
-            entry.UpdateEntry(name, 0);
+            entry.UpdateEntry(name, 0, !gameMode.showScoresOnEnd);
             playerEntries.Add(id, entry);
             return entry;
         }
@@ -117,7 +117,7 @@ namespace DiceGame.UI
 
                 if (player != null)
                 {
-                    entry.Value.UpdateEntry(player.playerName, player.totalScore);
+                    entry.Value.UpdateEntry(player.playerName, player.totalScore, !gameMode.showScoresOnEnd);
                 }
             }
         }
